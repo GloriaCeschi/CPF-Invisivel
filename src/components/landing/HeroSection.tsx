@@ -79,7 +79,7 @@ const HeroSection = () => {
             size="lg"
             variant="outline"
             onClick={() => scrollTo("#problema")}
-            className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 text-base px-8 py-6 rounded-xl"
+            className="border-primary-foreground/30 text-secondary-foreground hover:bg-primary-foreground/10 text-base px-8 py-6 rounded-xl"
           >
             Saiba mais
           </Button>
