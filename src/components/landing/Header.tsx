@@ -46,7 +46,7 @@ const Header = () => {
             <span className="text-primary-foreground font-display font-bold text-sm">M</span>
           </div>
           <span className="font-display font-bold text-xl text-foreground">
-            Mask<span className="text-secondary">ID</span>
+            <span className="text-white">Renda</span><span className="text-secondary">Visível</span>
           </span>
         </button>
 
@@ -56,7 +56,7 @@ const Header = () => {
             <button
               key={link.href}
               onClick={() => scrollTo(link.href)}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-secondary after:transition-all hover:after:w-full"
+              className="text-sm font-medium text-white hover:text-slate-700 transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-secondary after:transition-all hover:after:w-full"
             >
               {link.label}
             </button>
@@ -94,7 +94,7 @@ const Header = () => {
               <button
                 key={link.href}
                 onClick={() => scrollTo(link.href)}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground py-2 text-left"
+                className="text-sm font-medium text-white hover:text-slate-700 py-2 text-left"
               >
                 {link.label}
               </button>
