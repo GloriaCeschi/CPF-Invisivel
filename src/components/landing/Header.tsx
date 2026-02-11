@@ -46,7 +46,7 @@ const Header = () => {
             <span className="text-primary-foreground font-display font-bold text-sm">M</span>
           </div>
           <span className="font-display font-bold text-xl text-foreground">
-            Mask<span className="text-secondary">ID</span>
+            <span className="text-white">Renda</span><span className="text-secondary">Visível</span>
           </span>
         </button>
 
