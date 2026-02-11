@@ -75,14 +75,6 @@ const HeroSection = () => {
           >
             Quero participar
           </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            onClick={() => scrollTo("#problema")}
-            className="bg-secondary border-secondary-foreground/30 text-secondary-foreground hover:bg-secondary-foreground/10 text-base px-8 py-6 rounded-xl"
-          >
-            Saiba mais
-          </Button>
         </motion.div>
 
         {/* Floating Cards */}
