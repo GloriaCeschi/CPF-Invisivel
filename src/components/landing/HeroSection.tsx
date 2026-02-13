@@ -12,7 +12,7 @@ const HeroSection = () => (
     <div className="absolute inset-0 bg-gradient-to-br from-rose-100 via-white to-white" />
 
     {/* Glow rosa suave */}
-    <div className="absolute top-20 right-0 w-[500px] h-[500px] rounded-full bg-primary blur-3xl" />
+    <div className="absolute top-20 right-0 w-[500px] h-[500px] rounded-full bg-rose-300/20 blur-3xl" />
 
     <div className="container mx-auto px-4 relative z-10">
       <div className="max-w-3xl mx-auto text-center">
