@@ -18,7 +18,7 @@ const HeroSection = () => (
       <div className="max-w-3xl mx-auto text-center">
         
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 bg-primary text-primary rounded-full px-4 py-1.5 text-sm font-medium mb-6">
+        <div className="inline-flex items-center gap-2 bg-primary text-gray-900 rounded-full px-4 py-1.5 text-sm font-medium mb-6">
           <Users size={16} />
           Para trabalhadores informais de 18 a 55 anos
         </div>
@@ -33,7 +33,7 @@ const HeroSection = () => (
 
         {/* Descrição */}
         <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-10">
-          O Score Complementar Comportamental avalia sua regularidade e compromisso financeiro, criando um novo caminho para inclusão no mercado de crédito.
+          O Renda Visível avalia sua regularidade e compromisso financeiro, criando um novo caminho para inclusão no mercado de crédito.
         </p>
 
         {/* Botões */}
