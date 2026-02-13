@@ -12,13 +12,13 @@ const HeroSection = () => (
     <div className="absolute inset-0 bg-gradient-to-br from-rose-100 via-white to-white" />
 
     {/* Glow rosa suave */}
-    <div className="absolute top-20 right-0 w-[500px] h-[500px] rounded-full bg-rose-300/20 blur-3xl" />
+    <div className="absolute top-20 right-0 w-[500px] h-[500px] rounded-full bg-primary blur-3xl" />
 
     <div className="container mx-auto px-4 relative z-10">
       <div className="max-w-3xl mx-auto text-center">
         
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 bg-rose-200 text-rose-700 rounded-full px-4 py-1.5 text-sm font-medium mb-6">
+        <div className="inline-flex items-center gap-2 bg-primary text-primary rounded-full px-4 py-1.5 text-sm font-medium mb-6">
           <Users size={16} />
           Para trabalhadores informais de 18 a 55 anos
         </div>
@@ -40,7 +40,7 @@ const HeroSection = () => (
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button
             size="lg"
-            className="text-base px-8 py-6 font-semibold bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-300/40"
+            className="text-base px-8 py-6 font-semibold bg-primary hover:bg-primary text-white shadow-lg shadow-primary"
             asChild
           >
             <a href="#cta-final">
@@ -52,7 +52,7 @@ const HeroSection = () => (
           <Button
             size="lg"
             variant="outline"
-            className="text-base px-8 py-6 font-semibold border-rose-300 text-rose-700 hover:bg-rose-100"
+            className="text-base px-8 py-6 font-semibold border-primary text-primary hover:bg-primary"
             asChild
           >
             <a href="#video">Entenda o Programa</a>
