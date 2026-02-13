@@ -46,7 +46,7 @@ const Header = () => {
             <Eye className="w-5 h-5 text-primary-foreground" />
           </div>
           <span className="font-display font-bold text-xl">
-            <span className="text-white">Renda</span><span className="text-primary">Visível</span>
+            <span className="text-gray-900">Renda</span><span className="text-primary">Visível</span>
           </span>
         </button>
 
