@@ -26,7 +26,7 @@ const HeroSection = () => (
         {/* Título */}
         <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
           Sua renda é real.{" "}
-          <span className="text-rose-600">
+          <span className="text-primary">
             Seu crédito também deveria ser.
           </span>
         </h1>
@@ -45,7 +45,7 @@ const HeroSection = () => (
           >
             <a href="#cta-final">
               <TrendingUp size={20} />
-             teste
+             Quero Participar
             </a>
           </Button>
 
