@@ -18,10 +18,9 @@ const HeroSection = () => {
       id="hero"
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* BG gradient parallax */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-secondary/60 parallax" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,hsl(322_80%_50%/0.15),transparent_60%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_80%,hsl(220_72%_25%/0.3),transparent_50%)]" />
+      {/* BG solid pink */}
+      <div className="absolute inset-0 bg-primary" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,hsl(322_80%_60%/0.3),transparent_60%)]" />
 
       {/* Grid pattern overlay */}
       <div className="absolute inset-0 opacity-5" style={{
@@ -47,7 +46,7 @@ const HeroSection = () => {
           className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-primary-foreground mb-6 max-w-4xl mx-auto leading-tight"
         >
           Sua renda é real.{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-foreground via-secondary/80 to-primary-foreground">
+          <span className="text-primary-foreground/80">
             Seu crédito também deveria ser.
           </span>
         </motion.h1>
@@ -59,7 +58,7 @@ const HeroSection = () => {
           className="text-lg md:text-xl text-primary-foreground/70 max-w-2xl mx-auto mb-10"
         >
           Milhões de brasileiros com renda informal são invisíveis para o sistema financeiro. 
-          A MaskID está mudando isso.
+          A Renda Visível está mudando isso.
         </motion.p>
 
         <motion.div
@@ -71,9 +70,17 @@ const HeroSection = () => {
           <Button
             size="lg"
             onClick={() => scrollTo("#cta")}
-            className="bg-secondary text-secondary-foreground hover:bg-secondary/90 text-base px-8 py-6 rounded-xl shadow-float"
+            className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 text-base px-8 py-6 rounded-xl shadow-float font-semibold"
           >
             Quero participar
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            onClick={() => scrollTo("#video")}
+            className="border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 text-base px-8 py-6 rounded-xl"
+          >
+            Entenda o programa
           </Button>
         </motion.div>
 
@@ -89,7 +96,7 @@ const HeroSection = () => {
                 i % 2 === 0 ? "animate-float" : "animate-float-delayed"
               }`}
             >
-              <card.icon className="w-5 h-5 text-secondary" />
+              <card.icon className="w-5 h-5 text-primary-foreground" />
               <span className="text-primary-foreground font-medium text-sm">{card.label}</span>
             </motion.div>
           ))}
