@@ -18,7 +18,7 @@ const HeroSection = () => (
       <div className="max-w-3xl mx-auto text-center">
         
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 bg-primary text-gray-900 rounded-full px-4 py-1.5 text-sm font-medium mb-6">
+        <div className="inline-flex items-center gap-2 bg-primary text-white rounded-full px-4 py-1.5 text-sm font-medium mb-6">
           <Users size={16} />
           Para trabalhadores informais de 18 a 55 anos
         </div>
