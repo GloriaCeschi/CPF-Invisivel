@@ -45,7 +45,7 @@ const HeroSection = () => (
           >
             <a href="#cta-final">
               <TrendingUp size={20} />
-              Quero Participar
+             teste
             </a>
           </Button>
 
