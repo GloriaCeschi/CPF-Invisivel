@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
+    --background: 0 0% 100%;
     --foreground: 220 40% 13%;
 
     --card: 0 0% 100%;
@@ -15,13 +15,13 @@
     --popover: 0 0% 100%;
     --popover-foreground: 220 40% 13%;
 
-    --primary: 220 72% 25%;
+    --primary: 322 80% 50%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 322 80% 50%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 20% 94%;
+    --muted: 340 20% 96%;
     --muted-foreground: 215 16% 47%;
 
     --accent: 322 80% 50%;
@@ -30,40 +30,37 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 220 72% 25%;
+    --border: 340 15% 90%;
+    --input: 340 15% 90%;
+    --ring: 322 80% 50%;
 
     --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-primary: 322 80% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 340 20% 96%;
     --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-border: 340 15% 91%;
+    --sidebar-ring: 322 80% 50%;
 
-    /* MaskID custom tokens */
-    --maskid-deep: 220 72% 25%;
-    --maskid-magenta: 322 80% 50%;
-    --maskid-ice: 210 20% 96%;
-    --maskid-dark: 220 40% 13%;
-    --gradient-hero: linear-gradient(135deg, hsl(220 72% 25%), hsl(322 80% 50%));
-    --gradient-cta: linear-gradient(135deg, hsl(322 80% 50%), hsl(280 70% 45%));
-    --shadow-card: 0 8px 32px -8px hsl(220 72% 25% / 0.12);
-    --shadow-float: 0 20px 60px -15px hsl(220 72% 25% / 0.2);
+    /* Renda Visível custom tokens */
+    --rv-pink: 322 80% 50%;
+    --rv-dark: 220 40% 13%;
+    --rv-light: 0 0% 100%;
+    --shadow-card: 0 8px 32px -8px hsl(322 80% 50% / 0.1);
+    --shadow-float: 0 20px 60px -15px hsl(322 80% 50% / 0.15);
   }
 
   .dark {
     --background: 220 40% 6%;
-    --foreground: 210 20% 96%;
+    --foreground: 0 0% 96%;
     --card: 220 40% 10%;
-    --card-foreground: 210 20% 96%;
+    --card-foreground: 0 0% 96%;
     --popover: 220 40% 10%;
-    --popover-foreground: 210 20% 96%;
-    --primary: 220 72% 55%;
+    --popover-foreground: 0 0% 96%;
+    --primary: 322 80% 55%;
     --primary-foreground: 0 0% 100%;
     --secondary: 322 80% 55%;
     --secondary-foreground: 0 0% 100%;
@@ -75,15 +72,15 @@
     --destructive-foreground: 210 40% 98%;
     --border: 220 30% 18%;
     --input: 220 30% 18%;
-    --ring: 220 72% 55%;
+    --ring: 322 80% 55%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary: 322 80% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 322 80% 55%;
   }
 }
 
@@ -102,18 +99,16 @@
 
 @layer utilities {
   .text-gradient {
-    @apply bg-clip-text text-transparent;
-    background-image: var(--gradient-hero);
+    @apply text-primary;
   }
   .text-gradient-cta {
-    @apply bg-clip-text text-transparent;
-    background-image: var(--gradient-cta);
+    @apply text-primary;
   }
   .bg-gradient-hero {
-    background-image: var(--gradient-hero);
+    @apply bg-primary;
   }
   .bg-gradient-cta {
-    background-image: var(--gradient-cta);
+    @apply bg-primary;
   }
   .shadow-card {
     box-shadow: var(--shadow-card);

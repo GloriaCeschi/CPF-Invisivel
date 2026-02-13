@@ -6,6 +6,7 @@ import SolutionSection from "@/components/landing/SolutionSection";
 import QuizSection from "@/components/landing/QuizSection";
 import SocialProofSection from "@/components/landing/SocialProofSection";
 import EducationSection from "@/components/landing/EducationSection";
+import VideoSection from "@/components/landing/VideoSection";
 import CTASection from "@/components/landing/CTASection";
 import Footer from "@/components/landing/Footer";
 
@@ -20,6 +21,7 @@ const Index = () => {
       <QuizSection />
       <SocialProofSection />
       <EducationSection />
+      <VideoSection />
       <CTASection />
       <Footer />
     </div>
