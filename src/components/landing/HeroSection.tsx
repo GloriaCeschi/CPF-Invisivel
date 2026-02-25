@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowDown, Shield, TrendingUp, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { TrendingUp, Users } from "lucide-react";
 
 const HeroSection = () => (
   <section

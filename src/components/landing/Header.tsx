@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Menu, X, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const navLinks = [
   { label: "Início", href: "#hero" },
@@ -65,12 +66,13 @@ const Header = () => {
 
         {/* CTA Buttons */}
         <div className="hidden md:flex items-center gap-3">
-          <Button variant="outline" size="sm" className="border-primary-foreground/30 text-foreground hover:bg-primary/10">
+          <Link to="/auth"  className="border-primary-foreground/30 text-foreground hover:bg-primary/10">
             Login
-          </Button>
-          <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 transition-opacity">
+          </Link>
+
+          <Link to="/auth" className="bg-primary text-primary-foreground hover:bg-primary/90 transition-opacity">
             Cadastro
-          </Button>
+          </Link>
         </div>
 
         {/* Mobile Toggle */}
@@ -100,7 +102,7 @@ const Header = () => {
               </button>
             ))}
             <div className="flex gap-3 pt-2">
-              <Button variant="outline" size="sm" className="flex-1 border-primary/30 text-foreground">Login</Button>
+              <Link to="/auth"  className="flex-1 border-primary/30 text-foreground">Login</Link>
               <Button size="sm" className="flex-1 bg-primary text-primary-foreground">Cadastro</Button>
             </div>
           </nav>
