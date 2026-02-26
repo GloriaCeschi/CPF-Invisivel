@@ -103,7 +103,7 @@ const Header = () => {
             ))}
             <div className="flex gap-3 pt-2">
               <Link to="/auth"  className="flex-1 border-primary/30 text-foreground">Login</Link>
-              <Button size="sm" className="flex-1 bg-primary text-primary-foreground">Cadastro</Button>
+              <Link to="/auth" className="flex-1 bg-primary text-primary-foreground">Cadastro</Link>
             </div>
           </nav>
         </motion.div>
