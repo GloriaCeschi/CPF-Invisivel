@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 
 @layer base {
   :root {
@@ -140,4 +142,96 @@
   .flip-card-back {
     transform: rotateY(180deg);
   }
+}
+
+
+/* Estilo geral */
+body {
+  font-family: 'Inter', sans-serif;
+  background:  #ffe4e6;
+  /* azul escuro */
+  color: #FFFFFF;
+  margin: 0;
+  padding: 0;
+}
+
+/* Container central */
+.login-container {
+  max-width: 400px;
+  margin: 80px auto;
+  background: #FFFFFF;
+  color: #0A2540;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Título */
+.login-container h1 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #0A2540;
+}
+
+/* Campos de input */
+.login-container input[type="text"],
+.login-container input[type="email"],
+.login-container input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.login-container input:focus {
+  border-color:  rgb(240, 117, 195);
+  /* azul claro */
+  outline: none;
+}
+
+/* Botão principal */
+.login-container button {
+  width: 100%;
+  padding: 14px;
+  background: hsl(var(--primary));
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.login-container button:hover {
+  background:  rgb(240, 117, 195);
+  /* tom mais escuro do azul claro */
+}
+
+/* Links auxiliares */
+.login-container a {
+  display: block;
+  text-align: center;
+  margin-top: 15px;
+  color:  hsl(var(--foreground));
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.login-container a:hover {
+  text-decoration: underline;
+}
+
+/* Mensagens de erro ou alerta */
+.alert {
+  background: #FF4D4D;
+  color: #FFFFFF;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  text-align: center;
 }
