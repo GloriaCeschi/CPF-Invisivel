@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const navLinks = [
   { label: "Início", href: "#hero" },
@@ -42,11 +43,11 @@ const Header = () => {
       <div className="container mx-auto flex items-center justify-between h-16 px-4 md:px-8">
         {/* Logo */}
         <button onClick={() => scrollTo("#hero")} className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-full bg-gradient-hero flex items-center justify-center">
-            <span className="text-primary-foreground font-display font-bold text-sm">M</span>
+          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+            <Eye className="w-5 h-5 text-primary-foreground" />
           </div>
-          <span className="font-display font-bold text-xl text-foreground">
-            <span className="text-white">Renda</span><span className="text-secondary">Visível</span>
+          <span className="font-display font-bold text-xl">
+            <span className="text-gray-900">Renda</span><span className="text-primary">Visível</span>
           </span>
         </button>
 
@@ -56,7 +57,7 @@ const Header = () => {
             <button
               key={link.href}
               onClick={() => scrollTo(link.href)}
-              className="text-sm font-medium text-white hover:text-slate-700 transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-secondary after:transition-all hover:after:w-full"
+              className="text-sm font-medium text-grey-900 hover:text-primary transition-colors"
             >
               {link.label}
             </button>
@@ -65,12 +66,13 @@ const Header = () => {
 
         {/* CTA Buttons */}
         <div className="hidden md:flex items-center gap-3">
-          <Button variant="ghost" size="sm" className="text-foreground">
+          <Link to="/auth"  className="border-primary-foreground/30 text-foreground hover:bg-primary/10">
             Login
-          </Button>
-          <Button size="sm" className="bg-gradient-cta text-primary-foreground hover:opacity-90 transition-opacity">
+          </Link>
+
+          <Link to="/auth" className="bg-primary text-primary-foreground hover:bg-primary/90 transition-opacity">
             Cadastro
-          </Button>
+          </Link>
         </div>
 
         {/* Mobile Toggle */}
@@ -94,14 +96,14 @@ const Header = () => {
               <button
                 key={link.href}
                 onClick={() => scrollTo(link.href)}
-                className="text-sm font-medium text-white hover:text-slate-700 py-2 text-left"
+                className="text-sm font-medium text-foreground hover:text-primary py-2 text-left"
               >
                 {link.label}
               </button>
             ))}
             <div className="flex gap-3 pt-2">
-              <Button variant="ghost" size="sm" className="flex-1">Login</Button>
-              <Button size="sm" className="flex-1 bg-gradient-cta text-primary-foreground">Cadastro</Button>
+              <Link to="/auth"  className="flex-1 border-primary/30 text-foreground">Login</Link>
+              <Link to="/auth" className="flex-1 bg-primary text-primary-foreground">Cadastro</Link>
             </div>
           </nav>
         </motion.div>

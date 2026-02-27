@@ -59,17 +59,17 @@ const questions: Question[] = [
 const getResult = (score: number) => {
   if (score >= 20) return {
     title: "🔴 CPF Altamente Invisível",
-    message: "O sistema financeiro não te enxerga — mas a MaskID pode mudar isso. Você é exatamente quem podemos ajudar.",
-    color: "text-secondary",
+    message: "O sistema financeiro não te enxerga — mas a Renda Visível pode mudar isso. Você é exatamente quem podemos ajudar.",
+    color: "text-primary",
   };
   if (score >= 14) return {
     title: "🟡 CPF Parcialmente Invisível",
-    message: "Você tem potencial financeiro que não está sendo reconhecido. Com a MaskID, seu score alternativo pode abrir portas.",
+    message: "Você tem potencial financeiro que não está sendo reconhecido. Com a Renda Visível, seu score alternativo pode abrir portas.",
     color: "text-yellow-500",
   };
   return {
     title: "🟢 CPF com Potencial Visível",
-    message: "Você já tem alguma visibilidade, mas a MaskID pode ampliar seu acesso a crédito com dados mais completos.",
+    message: "Você já tem alguma visibilidade, mas a Renda Visível pode ampliar seu acesso a crédito com dados mais completos.",
     color: "text-green-500",
   };
 };
@@ -109,11 +109,11 @@ const QuizSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <span className="inline-block px-3 py-1 rounded-full bg-secondary/10 text-secondary text-sm font-medium mb-4">
+          <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
             Quiz interativo
           </span>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
-            Seu CPF é <span className="text-gradient">invisível</span>?
+            Seu CPF é <span className="text-primary">invisível</span>?
           </h2>
           <p className="text-muted-foreground text-lg">
             Responda 5 perguntas rápidas e descubra.
@@ -136,7 +136,7 @@ const QuizSection = () => {
                     <div
                       key={i}
                       className={`h-1.5 flex-1 rounded-full transition-colors ${
-                        i <= step ? "bg-gradient-hero" : "bg-muted"
+                        i <= step ? "bg-primary" : "bg-muted"
                       }`}
                     />
                   ))}
@@ -152,10 +152,10 @@ const QuizSection = () => {
                     <button
                       key={opt.label}
                       onClick={() => handleAnswer(opt.points)}
-                      className="text-left px-5 py-4 rounded-xl border border-border bg-background hover:border-secondary hover:bg-secondary/5 transition-all text-foreground font-medium flex items-center justify-between group"
+                      className="text-left px-5 py-4 rounded-xl border border-border bg-background hover:border-primary hover:bg-primary/5 transition-all text-foreground font-medium flex items-center justify-between group"
                     >
                       {opt.label}
-                      <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-secondary transition-colors" />
+                      <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                     </button>
                   ))}
                 </div>
@@ -176,7 +176,7 @@ const QuizSection = () => {
               <div className="flex gap-4 justify-center flex-wrap">
                 <Button
                   onClick={() => document.querySelector("#cta")?.scrollIntoView({ behavior: "smooth" })}
-                  className="bg-gradient-cta text-primary-foreground px-6"
+                  className="bg-primary text-primary-foreground px-6"
                 >
                   Quero meu score alternativo
                 </Button>
