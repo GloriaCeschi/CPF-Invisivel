@@ -8,7 +8,7 @@ import NotFound from "./pages/NotFound";
 
 import Auth from "./pages/Auth";
 import Dash from './pages/Dash';
-
+import CadastroUsuario from "./pages/Profile";
 
 
 const queryClient = new QueryClient();
@@ -25,6 +25,7 @@ const App = () => (
           <Route path='/auth' element={<Auth />} />
           <Route path="*" element={<NotFound />} />
           <Route path='/dash' element={<Dash />}/>
+          <Route path="/profile" element={<CadastroUsuario />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
