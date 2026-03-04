@@ -3,9 +3,9 @@ import { useRef } from "react";
 import { Star, Quote } from "lucide-react";
 
 const testimonials = [
-  { name: "Ana, 22 anos", role: "Vendedora online", quote: "Eu fazia R$ 3.000/mês vendendo doces, mas nenhum banco acreditava em mim. Com a MaskID, finalmente consegui meu primeiro cartão.", avatar: "A" },
+  { name: "Ana, 22 anos", role: "Vendedora online", quote: "Eu fazia R$ 3.000/mês vendendo doces, mas nenhum banco acreditava em mim. Com a Renda Visível, finalmente consegui meu primeiro cartão.", avatar: "A" },
   { name: "Lucas, 19 anos", role: "Freelancer de design", quote: "Trabalho com design desde os 16, mas nunca tive como provar minha renda. O score alternativo mudou minha vida.", avatar: "L" },
-  { name: "Mariana, 25 anos", role: "Cabeleireira autônoma", quote: "Pagava aluguel, luz e internet — tudo no meu nome. Mas meu score era zero. A MaskID reconheceu meu esforço.", avatar: "M" },
+  { name: "Mariana, 25 anos", role: "Cabeleireira autônoma", quote: "Pagava aluguel, luz e internet — tudo no meu nome. Mas meu score era zero. A Renda Visível reconheceu meu esforço.", avatar: "M" },
   { name: "Pedro, 21 anos", role: "Motorista de app", quote: "Rodava 12 horas por dia, mas quando fui pedir crédito me trataram como se eu não existisse. Agora é diferente.", avatar: "P" },
 ];
 
@@ -28,7 +28,7 @@ const SocialProofSection = () => {
             Depoimentos
           </span>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
-            Quem já saiu da <span className="text-gradient">invisibilidade</span>
+            Quem já saiu da <span className="text-primary">invisibilidade</span>
           </h2>
         </motion.div>
 
@@ -41,10 +41,10 @@ const SocialProofSection = () => {
               transition={{ duration: 0.5, delay: 0.15 * i }}
               className="bg-card rounded-2xl p-6 shadow-card border border-border hover:shadow-float transition-shadow"
             >
-              <Quote className="w-8 h-8 text-secondary/30 mb-3" />
+              <Quote className="w-8 h-8 text-primary/30 mb-3" />
               <p className="text-foreground text-sm leading-relaxed mb-4">"{t.quote}"</p>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-hero flex items-center justify-center text-primary-foreground font-bold text-sm">
+                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
                   {t.avatar}
                 </div>
                 <div>
@@ -54,7 +54,7 @@ const SocialProofSection = () => {
               </div>
               <div className="flex gap-1 mt-3">
                 {[...Array(5)].map((_, j) => (
-                  <Star key={j} className="w-3.5 h-3.5 fill-secondary text-secondary" />
+                  <Star key={j} className="w-3.5 h-3.5 fill-primary text-primary" />
                 ))}
               </div>
             </motion.div>
@@ -66,7 +66,7 @@ const SocialProofSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.6 }}
-          className="bg-gradient-hero rounded-3xl p-8 md:p-12 text-center mb-16"
+          className="bg-primary rounded-3xl p-8 md:p-12 text-center mb-16"
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[

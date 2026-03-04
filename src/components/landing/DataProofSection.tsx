@@ -14,7 +14,7 @@ const pieData = [
   { name: "Sem crédito", value: 55 },
 ];
 
-const COLORS = ["hsl(220 72% 25%)", "hsl(322 80% 50%)"];
+const COLORS = ["hsl(322 80% 50%)", "hsl(322 80% 70%)"];
 
 const stats = [
   { number: "39M+", label: "Brasileiros na informalidade" },
@@ -35,11 +35,11 @@ const DataProofSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="inline-block px-3 py-1 rounded-full bg-secondary/10 text-secondary text-sm font-medium mb-4">
+          <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
             Dados reais
           </span>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
-            O Brasil que o sistema <span className="text-gradient">não enxerga</span>
+            O Brasil que o sistema <span className="text-primary">não enxerga</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
             Milhões de pessoas geram renda, pagam contas e movimentam a economia — mas continuam invisíveis para o crédito tradicional.
@@ -56,7 +56,7 @@ const DataProofSection = () => {
               transition={{ duration: 0.5, delay: 0.2 + i * 0.15 }}
               className="bg-card rounded-2xl p-8 text-center shadow-card border border-border"
             >
-              <div className="font-display text-4xl md:text-5xl font-bold text-gradient mb-2">
+              <div className="font-display text-4xl md:text-5xl font-bold text-primary mb-2">
                 {stat.number}
               </div>
               <div className="text-muted-foreground font-medium">{stat.label}</div>
@@ -77,11 +77,11 @@ const DataProofSection = () => {
             </h3>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={barData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(214 32% 91%)" />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(340 15% 90%)" />
                 <XAxis dataKey="name" tick={{ fontSize: 12 }} stroke="hsl(215 16% 47%)" />
                 <YAxis tick={{ fontSize: 12 }} stroke="hsl(215 16% 47%)" />
                 <Tooltip />
-                <Bar dataKey="valor" fill="hsl(220 72% 25%)" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="valor" fill="hsl(322 80% 50%)" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </motion.div>

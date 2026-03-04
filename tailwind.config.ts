@@ -51,11 +51,10 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        maskid: {
-          deep: "hsl(var(--maskid-deep))",
-          magenta: "hsl(var(--maskid-magenta))",
-          ice: "hsl(var(--maskid-ice))",
-          dark: "hsl(var(--maskid-dark))",
+        rv: {
+          pink: "hsl(var(--rv-pink))",
+          dark: "hsl(var(--rv-dark))",
+          light: "hsl(var(--rv-light))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

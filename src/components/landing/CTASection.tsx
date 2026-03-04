@@ -24,10 +24,9 @@ const CTASection = () => {
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6 }}
           >
-            <div className="bg-gradient-hero rounded-3xl p-12 relative overflow-hidden">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,hsl(322_80%_50%/0.2),transparent_50%)]" />
+            <div className="bg-primary rounded-3xl p-12 relative overflow-hidden">
               <div className="relative z-10">
-                <Sparkles className="w-12 h-12 text-secondary mb-6" />
+                <Sparkles className="w-12 h-12 text-primary-foreground/80 mb-6" />
                 <h3 className="font-display text-3xl md:text-4xl font-bold text-primary-foreground mb-4 leading-tight">
                   Passe a existir financeiramente hoje
                 </h3>
@@ -37,7 +36,7 @@ const CTASection = () => {
                 <div className="flex flex-col gap-3">
                   {["Sem taxas de cadastro", "100% online e seguro", "Resultado em semanas"].map((t) => (
                     <div key={t} className="flex items-center gap-2 text-primary-foreground/80">
-                      <CheckCircle2 className="w-4 h-4 text-secondary" />
+                      <CheckCircle2 className="w-4 h-4 text-primary-foreground" />
                       <span className="text-sm">{t}</span>
                     </div>
                   ))}
@@ -70,7 +69,7 @@ const CTASection = () => {
                       <label className="text-sm font-medium text-foreground mb-1.5 block">E-mail</label>
                       <Input type="email" placeholder="seu@email.com" required className="rounded-xl h-12" />
                     </div>
-                    <Button type="submit" size="lg" className="bg-gradient-cta text-primary-foreground w-full rounded-xl h-12 mt-2">
+                    <Button type="submit" size="lg" className="bg-primary text-primary-foreground w-full rounded-xl h-12 mt-2">
                       Quero participar
                     </Button>
                     <p className="text-xs text-muted-foreground text-center">
@@ -84,7 +83,7 @@ const CTASection = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   className="text-center py-8"
                 >
-                  <CheckCircle2 className="w-16 h-16 text-secondary mx-auto mb-4" />
+                  <CheckCircle2 className="w-16 h-16 text-primary mx-auto mb-4" />
                   <h3 className="font-display text-2xl font-bold text-foreground mb-2">Cadastro recebido! 🎉</h3>
                   <p className="text-muted-foreground">Você será um dos primeiros a construir seu score alternativo.</p>
                 </motion.div>

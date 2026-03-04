@@ -30,11 +30,11 @@ const EducationSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="inline-block px-3 py-1 rounded-full bg-secondary/10 text-secondary text-sm font-medium mb-4">
+          <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
             Educação financeira
           </span>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
-            Aprenda, jogue e <span className="text-gradient">cresça</span>
+            Aprenda, jogue e <span className="text-primary">cresça</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
             Cursos gratuitos, gamificação e suporte para você dominar suas finanças.
@@ -71,7 +71,7 @@ const EducationSection = () => {
           {/* Gamification */}
           <div>
             <h3 className="font-display text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
-              <Gamepad2 className="w-5 h-5 text-secondary" /> Gamificação
+              <Gamepad2 className="w-5 h-5 text-primary" /> Gamificação
             </h3>
             <div className="bg-card rounded-2xl border border-border p-6 shadow-card">
               <p className="text-muted-foreground text-sm mb-5">
@@ -87,10 +87,10 @@ const EducationSection = () => {
                     className="flex items-center justify-between py-3 px-4 bg-muted rounded-lg"
                   >
                     <div className="flex items-center gap-3">
-                      <g.icon className="w-5 h-5 text-secondary" />
+                      <g.icon className="w-5 h-5 text-primary" />
                       <span className="text-foreground text-sm font-medium">{g.label}</span>
                     </div>
-                    <span className="text-secondary font-bold text-sm">{g.points}</span>
+                    <span className="text-primary font-bold text-sm">{g.points}</span>
                   </motion.div>
                 ))}
               </div>
@@ -102,7 +102,7 @@ const EducationSection = () => {
       {/* Chatbot FAB */}
       <button
         onClick={() => setChatOpen(true)}
-        className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-gradient-cta rounded-full shadow-float flex items-center justify-center text-primary-foreground hover:scale-110 transition-transform"
+        className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-primary rounded-full shadow-float flex items-center justify-center text-primary-foreground hover:scale-110 transition-transform"
       >
         <MessageCircle className="w-6 h-6" />
       </button>
@@ -110,10 +110,10 @@ const EducationSection = () => {
       {/* Chatbot Modal */}
       {chatOpen && (
         <div className="fixed bottom-24 right-6 z-50 w-80 bg-card rounded-2xl shadow-float border border-border overflow-hidden">
-          <div className="bg-gradient-hero p-4 flex items-center justify-between">
+          <div className="bg-primary p-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <MessageCircle className="w-5 h-5 text-primary-foreground" />
-              <span className="text-primary-foreground font-semibold text-sm">MaskID Assistente</span>
+              <span className="text-primary-foreground font-semibold text-sm">Renda Visível Assistente</span>
             </div>
             <button onClick={() => setChatOpen(false)} className="text-primary-foreground/70 hover:text-primary-foreground">
               <X className="w-4 h-4" />
@@ -121,7 +121,7 @@ const EducationSection = () => {
           </div>
           <div className="p-4 h-48 flex flex-col justify-end">
             <div className="bg-muted rounded-xl rounded-bl-none p-3 mb-3 max-w-[85%]">
-              <p className="text-foreground text-sm">Olá! 👋 Eu sou o assistente da MaskID. Como posso te ajudar hoje?</p>
+              <p className="text-foreground text-sm">Olá! 👋 Eu sou o assistente da Renda Visível. Como posso te ajudar hoje?</p>
             </div>
             <div className="bg-muted rounded-xl rounded-bl-none p-3 max-w-[85%]">
               <p className="text-foreground text-sm">Posso tirar dúvidas sobre score alternativo, cadastro e muito mais!</p>
@@ -132,10 +132,10 @@ const EducationSection = () => {
               <input
                 type="text"
                 placeholder="Digite sua dúvida..."
-                className="flex-1 px-3 py-2 rounded-lg bg-muted text-foreground text-sm outline-none border border-border focus:border-secondary"
+                className="flex-1 px-3 py-2 rounded-lg bg-muted text-foreground text-sm outline-none border border-border focus:border-primary"
                 readOnly
               />
-              <Button size="sm" className="bg-gradient-cta text-primary-foreground">
+              <Button size="sm" className="bg-primary text-primary-foreground">
                 Enviar
               </Button>
             </div>

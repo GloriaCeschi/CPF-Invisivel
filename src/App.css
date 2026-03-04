@@ -1,7 +1,16 @@
+
+
 /* Reset app container constraints for landing page */
+
+
 #root {
   max-width: 100%;
   margin: 0;
   padding: 0;
   text-align: left;
+}
+
+.forms {
+  display: "flex";
+  flex-direction: "column"
 }
