@@ -50,7 +50,7 @@ function CadastroUsuario() {
   };
 
   return (
-    <div style={styles.container}>
+    <div>
       <h2>Complete seu cadastro</h2>
       <form onSubmit={handleSubmit} className="forms">
         <label>Nome</label>
@@ -77,12 +77,12 @@ function CadastroUsuario() {
         <label>Data de Nascimento</label>
         <input type="date" name="data_nascimento" value={formData.data_nascimento} onChange={handleChange} required />
 
-        <button type="submit" style={styles.button}>Salvar</button>
+        <button type="submit">Salvar</button>
       </form>
     </div>
   );
 }
-
+/*
 const styles = {
   container: {
     max-width: "400px",
@@ -103,7 +103,7 @@ const styles = {
     cursor: "pointer"
   }
 };
-
+*/
 export default CadastroUsuario;
 
 
