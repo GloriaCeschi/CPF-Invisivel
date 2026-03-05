@@ -9,6 +9,11 @@ import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Dash from './pages/Dash';
 import CadastroUsuario from "./pages/Profile";
+import Gamificacao from "./pages/Gamificacao";
+import Score from "./pages/Score";
+import Perfil from "./pages/Perfil";
+import EducacaoFinanceira from "./pages/EducacaoFinanceira";
+import Cursos from "./pages/Cursos";
 
 
 const queryClient = new QueryClient();
@@ -26,6 +31,11 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
           <Route path='/dash' element={<Dash />}/>
           <Route path="/profile" element={<CadastroUsuario />} />
+          <Route path="/gamificacao" element={<Gamificacao />} />
+          <Route path="/score" element={<Score />} />
+          <Route path="/perfil" element={<Perfil />} />
+          <Route path="/educacao" element={<EducacaoFinanceira />} />
+          <Route path="/cursos" element={<Cursos />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
