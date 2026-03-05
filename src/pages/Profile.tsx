@@ -50,8 +50,8 @@ function CadastroUsuario() {
   };
 
   return (
-    <div>
-      <h2>Complete seu cadastro</h2>
+    <div className="login-container-profile ">
+      <h1>Complete seu cadastro</h1>
       <form onSubmit={handleSubmit} className="forms">
         <label>Nome</label>
         <input type="text" name="nome" value={formData.nome} onChange={handleChange} required />
@@ -77,33 +77,13 @@ function CadastroUsuario() {
         <label>Data de Nascimento</label>
         <input type="date" name="data_nascimento" value={formData.data_nascimento} onChange={handleChange} required />
 
-        <button type="submit">Salvar</button>
+        <button type="submit" className="button">Salvar</button>
       </form>
     </div>
   );
 }
-/*
-const styles = {
-  container: {
-    max-width: "400px",
-    margin: "50px auto",
-    padding: "20px",
-    background: "#fff",
-    borderRadius: "8px",
-    boxShadow: "0px 0px 10px rgba(0,0,0,0.1)"
-  },
- 
-  button: {
-    marginTop: "20px",
-    padding: "10px",
-    background: "#007BFF",
-    color: "#fff",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer"
-  }
-};
-*/
+
+
 export default CadastroUsuario;
 
 
