@@ -31,11 +31,11 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
           <Route path='/dash' element={<Dash />}/>
           <Route path="/profile" element={<CadastroUsuario />} />
-          <Route path="/gamificacao" element={<Gamificacao />} />
-          <Route path="/score" element={<Score />} />
-          <Route path="/perfil" element={<Perfil />} />
-          <Route path="/educacao" element={<EducacaoFinanceira />} />
-          <Route path="/cursos" element={<Cursos />} />
+          <Route path="/dash/gamificacao" element={<Gamificacao />} />
+          <Route path="/dash/score" element={<Score />} />
+          <Route path="/dash/perfil" element={<Perfil />} />
+          <Route path="/dash/educacao" element={<EducacaoFinanceira />} />
+          <Route path="/dash/cursos" element={<Cursos />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
