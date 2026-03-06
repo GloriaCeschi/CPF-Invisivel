@@ -27,6 +27,7 @@ export default function Auth() {
     );
     if (loged) {
       showToast("login realizado");
+      localStorage.setItem("userName", loged.email.split("@")[0]);
       nav("/dash");
     } else {
       showToast("Email e senha inválidos");
@@ -51,6 +52,7 @@ export default function Auth() {
       sertPtoast("");
     }, 5000);
   }
+
 
   return (
     <div className="login-container">
