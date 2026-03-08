@@ -28,7 +28,7 @@ export default function Auth() {
     if (loged) {
       showToast("login realizado");
       localStorage.setItem("userName", loged.email.split("@")[0]);
-      nav("/dash");
+      nav("/home");
     } else {
       showToast("Email e senha inválidos");
     }

@@ -7,7 +7,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
 import Auth from "./pages/Auth";
-import Dash from './pages/Dash';
+import Home from './pages/Home';
 import CadastroUsuario from "./pages/Profile";
 import Gamificacao from "./pages/Gamificacao";
 import Score from "./pages/Score";
@@ -29,13 +29,13 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path='/auth' element={<Auth />} />
           <Route path="*" element={<NotFound />} />
-          <Route path='/dash' element={<Dash />}/>
+          <Route path='/home' element={<Home />}/>
           <Route path="/profile" element={<CadastroUsuario />} />
-          <Route path="/dash/gamificacao" element={<Gamificacao />} />
-          <Route path="/dash/score" element={<Score />} />
-          <Route path="/dash/perfil" element={<Perfil />} />
-          <Route path="/dash/educacao" element={<EducacaoFinanceira />} />
-          <Route path="/dash/cursos" element={<Cursos />} />
+          <Route path="/gamificacao" element={<Gamificacao />} />
+          <Route path="/score" element={<Score />} />
+          <Route path="/perfil" element={<Perfil />} />
+          <Route path="/educacao" element={<EducacaoFinanceira />} />
+          <Route path="/cursos" element={<Cursos />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
