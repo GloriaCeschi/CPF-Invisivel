@@ -44,6 +44,7 @@ const Profile = () => {
     toast.success("Perfil atualizado com sucesso!");
   };
 
+
   return (
     <div className="min-h-screen rgb(255, 240, 242)">
       <main className="max-w-2xl mx-auto px-4 py-8">

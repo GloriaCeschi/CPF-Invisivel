@@ -2,12 +2,13 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import supabase from "../utils/supabase";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogIn, Eye, EyeOff } from "lucide-react";
+import { UserPlus, LogIn, Eye, EyeOff } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export type User = {
+  name?: string;
   email?: string;
   pass?: string;
 };
@@ -87,16 +88,41 @@ export default function Auth() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md animate-fade-in">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+          
+           {login ? (<>
+           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
             <LogIn className="h-7 w-7 text-primary" />
           </div>
-          <CardTitle className="font-display text-2xl">Bem-vindo de volta</CardTitle>
+            <CardTitle className="font-display text-2xl">Bem-vindo de volta</CardTitle>
           <CardDescription>Entre na sua conta para acessar sua jornada financeira</CardDescription>
+           </>):(<>
+           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+            <UserPlus className="h-7 w-7 text-primary" />
+          </div>
+           <CardTitle className="font-display text-2xl">Criar sua conta</CardTitle>
+          <CardDescription>Comece sua jornada para a inclusão financeira</CardDescription>
+           </>)}
+          
         </CardHeader>
 
         {/* Alterna entre login e cadastro */}
         <form onSubmit={login ? checkedLogin : handleRegister}>
           <CardContent className="space-y-4">
+
+            {!login && (
+            <div className="space-y-2">
+              <Label htmlFor="name">Nome</Label>
+              <Input
+                id="name"
+                type="name"
+                placeholder="nome completo"
+                value={user?.name || ""}
+                onChange={(e) => setUser({ ...user, name: e.target.value })}
+                required
+              />
+            </div>)
+}
+
             <div className="space-y-2">
               <Label htmlFor="email">E-mail</Label>
               <Input
@@ -131,23 +157,23 @@ export default function Auth() {
           </CardContent>
 
           <CardFooter className="flex-col gap-3">
-            <Button type="submit" className="w-full">
+            <Button onClick={login? checkedLogin:handleRegister} className="w-full">
               {login ? "Entrar" : "Cadastrar"}
             </Button>
             <p className="text-sm text-muted-foreground">
               {login ? (
                 <>
                   Não tem conta?{" "}
-                  <Link to="/register" className="text-primary font-semibold hover:underline">
+                  <a onClick={() => setLogin(false)} className="text-primary font-semibold hover:underline">
                     Cadastre-se
-                  </Link>
+                  </a>
                 </>
               ) : (
                 <>
                   Já tem conta?{" "}
-                  <Link to="/login" className="text-primary font-semibold hover:underline">
+                  <a onClick={() => setLogin(true)}  className="text-primary font-semibold hover:underline">
                     Entrar
-                  </Link>
+                  </a>
                 </>
               )}
             </p>
