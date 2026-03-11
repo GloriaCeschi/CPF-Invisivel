@@ -7,13 +7,17 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
 import Auth from "./pages/Auth";
-import Dash from './pages/Dash';
+import Home from './pages/Home';
 import CadastroUsuario from "./pages/Profile";
 import Gamificacao from "./pages/Gamificacao";
 import Score from "./pages/Score";
 import Perfil from "./pages/Perfil";
 import EducacaoFinanceira from "./pages/EducacaoFinanceira";
 import Cursos from "./pages/Cursos";
+import { AuthProvider } from "./context/AuthContext";
+import AuthRoute from "./components/AuthRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Jornada from "./pages/Jornada";
 
 
 const queryClient = new QueryClient();
@@ -24,19 +28,22 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <AuthProvider>
         <Routes>
           <Route path="/" element={<Index />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path='/auth' element={<Auth />} />
+          <Route path='/auth' element={<AuthRoute> <Auth /> </AuthRoute>} />
           <Route path="*" element={<NotFound />} />
-          <Route path='/dash' element={<Dash />}/>
-          <Route path="/profile" element={<CadastroUsuario />} />
-          <Route path="/dash/gamificacao" element={<Gamificacao />} />
-          <Route path="/dash/score" element={<Score />} />
-          <Route path="/dash/perfil" element={<Perfil />} />
-          <Route path="/dash/educacao" element={<EducacaoFinanceira />} />
-          <Route path="/dash/cursos" element={<Cursos />} />
+          <Route path='/home' element={<ProtectedRoute> <Home /> </ProtectedRoute>}/>
+          <Route path="/profile" element={<ProtectedRoute> <CadastroUsuario /> </ProtectedRoute>} />
+          <Route path="/gamificacao" element={<ProtectedRoute> <Gamificacao /> </ProtectedRoute>} />
+          <Route path="/score" element={<ProtectedRoute> <Score /> </ProtectedRoute>} />
+          <Route path="/perfil" element={<ProtectedRoute> <Perfil /> </ProtectedRoute>} />
+          <Route path="/educacao" element={<ProtectedRoute> <EducacaoFinanceira /> </ProtectedRoute>} />
+          <Route path="/cursos" element={<ProtectedRoute> <Cursos /> </ProtectedRoute>} />
+          <Route path="/jornada" element={<ProtectedRoute> <Jornada /> </ProtectedRoute> } />
         </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

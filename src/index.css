@@ -303,3 +303,204 @@ body {
   /* azul claro */
   outline: none;
 }
+
+
+/* pagina cursos */
+
+@layer base {
+  :root {
+    /* Renda Visível — Light Mode */
+    --background: 350 100% 97%; /* #FFF1F2 */
+    --foreground: 218 26% 29%; /* #374151 */
+
+    --card: 0 0% 100%;
+    --card-foreground: 218 26% 29%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 218 26% 29%;
+
+    --primary: 330 81% 60%; /* #EC4899 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 38 95% 50%; /* #F9A804 */
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 350 60% 95%;
+    --muted-foreground: 218 16% 46%;
+
+    --accent: 38 97% 56%; /* #FB8F24 */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%; /* #EF4444 */
+    --destructive-foreground: 0 0% 100%;
+
+    --info: 217 91% 60%; /* #3882F6 */
+    --info-foreground: 0 0% 100%;
+
+    --success: 174 80% 30%; /* #108981 */
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 97% 56%; /* #FB8F24 */
+    --warning-foreground: 218 26% 29%;
+
+    --border: 330 30% 88%;
+    --input: 330 30% 88%;
+    --ring: 330 81% 60%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 218 26% 29%;
+    --sidebar-primary: 330 81% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 350 60% 95%;
+    --sidebar-accent-foreground: 218 26% 29%;
+    --sidebar-border: 330 30% 88%;
+    --sidebar-ring: 330 81% 60%;
+  }
+
+  .dark {
+    --background: 220 20% 10%;
+    --foreground: 210 40% 92%;
+
+    --card: 220 20% 14%;
+    --card-foreground: 210 40% 92%;
+
+    --popover: 220 20% 14%;
+    --popover-foreground: 210 40% 92%;
+
+    --primary: 330 81% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 38 95% 50%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 220 16% 20%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 38 97% 56%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62% 40%;
+    --destructive-foreground: 0 0% 100%;
+
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
+
+    --success: 174 80% 30%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 97% 56%;
+    --warning-foreground: 218 26% 29%;
+
+    --border: 220 16% 22%;
+    --input: 220 16% 22%;
+    --ring: 330 81% 60%;
+
+    --sidebar-background: 220 20% 12%;
+    --sidebar-foreground: 210 40% 92%;
+    --sidebar-primary: 330 81% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 16% 20%;
+    --sidebar-accent-foreground: 210 40% 92%;
+    --sidebar-border: 220 16% 22%;
+    --sidebar-ring: 330 81% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Accessibility filters */
+.a11y-protanopia {
+  filter: url('#protanopia-filter') !important;
+}
+.a11y-deuteranopia {
+  filter: url('#deuteranopia-filter') !important;
+}
+.a11y-tritanopia {
+  filter: url('#tritanopia-filter') !important;
+}
+.a11y-high-contrast {
+  filter: contrast(1.5) !important;
+}
+.a11y-large-font {
+  font-size: 120% !important;
+}
+
+/* Parallax */
+.parallax-section {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* Progress bar animation */
+@keyframes progress-fill {
+  from { width: 0%; }
+  to { width: var(--progress-width); }
+}
+.animate-progress {
+  animation: progress-fill 1.5s ease-out forwards;
+}
+
+/* Pulse glow for locked cards */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(330 81% 60% / 0.2); }
+  50% { box-shadow: 0 0 20px 4px hsl(330 81% 60% / 0.15); }
+}
+.pulse-glow {
+  animation: pulse-glow 3s infinite;
+}
+
+.courses-container{
+  background: #FFFFFF;
+  padding: 12px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 6px 3px #d6d4d4;
+  -webkit-box-shadow: 2px 2px 6px 3px #d6d4d4;
+  -moz-box-shadow: 2px 2px 6px 3px #d6d4d4;
+}
+
+/* pagina home */
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-family: var(--font-sans);
+  }
+}
+
+@layer utilities {
+  .score-ring {
+    filter: drop-shadow(0 0 12px hsl(330 81% 60% / 0.3));
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5;
+  }
+
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(330 81% 60%), hsl(330 70% 50%));
+  }
+
+  .gradient-score {
+    background: conic-gradient(
+      hsl(330 81% 60%) var(--score-percent, 0%),
+      hsl(330 20% 90%) var(--score-percent, 0%)
+    );
+  }
+}
