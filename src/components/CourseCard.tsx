@@ -17,7 +17,7 @@ export function CourseCard({ course }: { course: CourseData }) {
   const isComplete = course.progress === 100;
 
   return (
-    <div className="opacity-0 animate-fade-in" style={{ animationDelay: `${course.id * 80}ms` }}>
+    <div className=" animate-fade-in" style={{ animationDelay: `${course.id * 80}ms` }}>
       {course.locked ? (
         <Tooltip>
           <TooltipTrigger asChild>

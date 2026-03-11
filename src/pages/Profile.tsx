@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import supabase from "@/utils/supabase";
+import { useAuth } from "@/context/AuthContext";
 
 const ESTADOS = [
   "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA",
@@ -28,8 +30,21 @@ const Profile = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   
-
+  const {user, signOutUser} = useAuth();
   const [prof, setProf] = useState<Profile>({});
+
+  async function handleProfile(){
+    const data = {...prof, user_id: user.id};
+
+    const {error} = await supabase.from('profiles').insert(data);
+
+    if(error){
+      alert(error.message);
+      return;
+    }
+
+    alert("Cadastrado com sucesso")
+  };
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -39,10 +54,7 @@ const Profile = () => {
     }
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
-    toast.success("Perfil atualizado com sucesso!");
-  };
+ 
 
 
   return (
@@ -182,7 +194,7 @@ const Profile = () => {
                   <Button variant="outline" onClick={() => setIsEditing(false)}>
                     Cancelar
                   </Button>
-                  <Button onClick={handleSave}>
+                  <Button onClick={handleProfile}>
                     Salvar Alterações
                   </Button>
                 </>
