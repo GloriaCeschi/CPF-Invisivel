@@ -12,7 +12,7 @@ const Gamificacao = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background ">
       {/* Header */}
       <header className="sticky top-0 z-10 bg-card/80 backdrop-blur-md border-b border-border px-4 py-3">
         <div className="w-full flex items-center gap-3">
