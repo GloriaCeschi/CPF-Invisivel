@@ -18,6 +18,7 @@ import Credit from "./pages/Credit";
 import { AuthProvider } from "./context/AuthContext";
 import AuthRoute from "./components/AuthRoute";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Jornada from "./pages/Jornada";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/perfil" element={<ProtectedRoute> <Perfil /> </ProtectedRoute>} />
           <Route path="/educacao" element={<ProtectedRoute> <EducacaoFinanceira /> </ProtectedRoute>} />
           <Route path="/cursos" element={<ProtectedRoute> <Cursos /> </ProtectedRoute>} />
+          <Route path="/jornada" element={<ProtectedRoute> <Jornada /> </ProtectedRoute> } />
         </Routes>
         </AuthProvider>
       </BrowserRouter>
