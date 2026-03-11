@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import ProfileHeader from "@/components/ProfileHeader";
+
 
 const ESTADOS = [
   "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA",
@@ -45,8 +47,13 @@ const Profile = () => {
   };
 
   return (
+    
+
+
     <div className="min-h-screen rgb(255, 240, 242)">
-      <main className="max-w-2xl mx-auto px-4 py-8">
+      <ProfileHeader/>
+      
+    <main className="max-w-2xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-foreground">Meu Perfil</h2>
           <p className="text-muted-foreground mt-1">Visualize e atualize suas informações.</p>
@@ -57,7 +64,7 @@ const Profile = () => {
             {/* Avatar */}
             <div className="flex justify-center mb-8">
               <div className="relative group">
-                <div className="w-28 h-28 rounded-full bg-secondary border-4 border-primary/20 overflow-hidden flex items-center justify-center">
+                <div className="w-28 h-28 rounded-full rgb(255, 240, 242) border-4 border-primary/20 overflow-hidden flex items-center justify-center">
                   {photoUrl ? (
                     <img src={photoUrl} alt="Foto de perfil" className="w-full h-full object-cover" />
                   ) : (
