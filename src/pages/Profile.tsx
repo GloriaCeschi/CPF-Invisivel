@@ -12,24 +12,24 @@ const ESTADOS = [
   "PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"
 ];
 
+type Profile = {
+    nome?: string,
+    idade?: string,
+    cpf?: string,
+    dataNascimento?: string,
+    telefone?: string,
+    estado?: string,
+    cidade?: string,
+};
+
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [form, setForm] = useState({
-    nome: "",
-    idade: "",
-    cpf: "",
-    dataNascimento: "",
-    telefone: "",
-    estado: "",
-    cidade: "",
-  });
+  
 
-  const handleChange = (field: string, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-  };
+  const [prof, setProf] = useState<Profile>({});
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -63,7 +63,7 @@ const Profile = () => {
                     <img src={photoUrl} alt="Foto de perfil" className="w-full h-full object-cover" />
                   ) : (
                     <span className="text-3xl font-bold text-primary">
-                      {form.nome ? form.nome[0].toUpperCase() : "?"}
+                      {prof.nome ? prof.nome[0].toUpperCase() : "?"}
                     </span>
                   )}
                 </div>
@@ -90,8 +90,8 @@ const Profile = () => {
                 <Input
                   id="nome"
                   placeholder="Seu nome completo"
-                  value={form.nome}
-                  onChange={(e) => handleChange("nome", e.target.value)}
+                  value={prof.nome}
+                  onChange={(e) => setProf({...prof, nome: e.target.value})}
                   disabled={!isEditing}
                 />
               </div>
@@ -102,8 +102,8 @@ const Profile = () => {
                   id="idade"
                   type="number"
                   placeholder="Ex: 25"
-                  value={form.idade}
-                  onChange={(e) => handleChange("idade", e.target.value)}
+                  value={prof.idade}
+                  onChange={(e) => setProf({...prof, idade: e.target.value})}
                   disabled={!isEditing}
                 />
               </div>
@@ -113,8 +113,8 @@ const Profile = () => {
                 <Input
                   id="cpf"
                   placeholder="000.000.000-00"
-                  value={form.cpf}
-                  onChange={(e) => handleChange("cpf", e.target.value)}
+                  value={prof.cpf}
+                  onChange={(e) => setProf({...prof, cpf: e.target.value})}
                   disabled={!isEditing}
                 />
               </div>
@@ -124,8 +124,8 @@ const Profile = () => {
                 <Input
                   id="dataNascimento"
                   type="date"
-                  value={form.dataNascimento}
-                  onChange={(e) => handleChange("dataNascimento", e.target.value)}
+                  value={prof.dataNascimento}
+                  onChange={(e) => setProf({...prof, dataNascimento: e.target.value})}
                   disabled={!isEditing}
                 />
               </div>
@@ -135,8 +135,8 @@ const Profile = () => {
                 <Input
                   id="telefone"
                   placeholder="(00) 00000-0000"
-                  value={form.telefone}
-                  onChange={(e) => handleChange("telefone", e.target.value)}
+                  value={prof.telefone}
+                  onChange={(e) => setProf({...prof, telefone: e.target.value})}
                   disabled={!isEditing}
                 />
               </div>
@@ -144,8 +144,8 @@ const Profile = () => {
               <div>
                 <Label htmlFor="estado">Estado</Label>
                 <Select
-                  value={form.estado}
-                  onValueChange={(v) => handleChange("estado", v)}
+                  value={prof.estado}
+                  onValueChange={(v) => setProf({...prof, estado: v})}
                   disabled={!isEditing}
                 >
                   <SelectTrigger id="estado">
@@ -164,8 +164,8 @@ const Profile = () => {
                 <Input
                   id="cidade"
                   placeholder="Sua cidade"
-                  value={form.cidade}
-                  onChange={(e) => handleChange("cidade", e.target.value)}
+                  value={prof.cidade}
+                  onChange={(e) => setProf({...prof, cidade: e.target.value})}
                   disabled={!isEditing}
                 />
               </div>
