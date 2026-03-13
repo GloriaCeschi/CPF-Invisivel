@@ -32,7 +32,7 @@ const menuItems = [
   { title: "Crédito", url: "/credito", icon: CreditCard },
   { title: "Notificações", url: "/notificacoes", icon: Bell },
   { title: "Cursos", url: "/cursos", icon: GraduationCap },
-  { title: "Jornada Financeira", url: "/jornada", icon: Route },
+  
 ];
 
 export function AppSidebar() {
