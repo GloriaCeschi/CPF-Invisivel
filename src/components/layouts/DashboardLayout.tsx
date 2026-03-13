@@ -23,7 +23,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center font-bold">3</span>
             </button>
           </header>
-          <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+          <main className="flex-1 overflow-y-auto">
             {children}
           </main>
         </div>

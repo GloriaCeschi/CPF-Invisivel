@@ -9,6 +9,8 @@ import BillSection from "@/components/jornada/BillSection";
 import PendingSection from "@/components/jornada/PendingSection";
 import BillModal from "@/components/jornada/BillModal";
 import type { Tables } from "@/integrations/supabase/types";
+import { DashboardLayout } from "@/components/layouts/DashboardLayout";
+
 
 export default function Jornada() {
   const { user, signOut } = useAuth();
@@ -48,18 +50,9 @@ export default function Jornada() {
   const monthName = now.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
 
   return (
+    <DashboardLayout>
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-30 border-b bg-card/80 backdrop-blur-md">
-        <div className="container mx-auto flex items-center justify-between px-4 py-3">
-          <div>
-            <h1 className="text-2xl font-bold font-display text-primary">Renda Visível</h1>
-            <p className="text-sm text-muted-foreground capitalize">{monthName}</p>
-          </div>
-          <Button variant="ghost" size="sm" onClick={signOut}>
-            <LogOut className="h-4 w-4 mr-1" /> Sair
-          </Button>
-        </div>
-      </header>
+      
 
       <main className="container mx-auto px-4 py-6 space-y-8 max-w-4xl">
         <MonthlySummary totalIncome={totalIncome} totalExpenses={totalExpenses} />
@@ -70,5 +63,6 @@ export default function Jornada() {
 
       <BillModal open={pendingModalOpen} onClose={() => setPendingModalOpen(false)} onSaved={fetchData} />
     </div>
+    </DashboardLayout>
   );
 }

@@ -6,29 +6,44 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import supabase from "@/utils/supabase";
+import { useAuth } from "@/context/AuthContext";
 
 const ESTADOS = [
   "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA",
   "PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"
 ];
 
+type Profile = {
+    nome?: string,
+    idade?: string,
+    cpf?: string,
+    dataNascimento?: string,
+    telefone?: string,
+    estado?: string,
+    cidade?: string,
+};
+
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [form, setForm] = useState({
-    nome: "",
-    idade: "",
-    cpf: "",
-    dataNascimento: "",
-    telefone: "",
-    estado: "",
-    cidade: "",
-  });
+  
+  const {user, signOutUser} = useAuth();
+  const [prof, setProf] = useState<Profile>({});
 
-  const handleChange = (field: string, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+  async function handleProfile(){
+    const data = {...prof, user_id: user.id};
+
+    const {error} = await supabase.from('profiles').insert(data);
+
+    if(error){
+      alert(error.message);
+      return;
+    }
+
+    alert("Cadastrado com sucesso")
   };
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,15 +54,17 @@ const Profile = () => {
     }
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
-    toast.success("Perfil atualizado com sucesso!");
-  };
+ 
 
 
   return (
+    
+
+
     <div className="min-h-screen rgb(255, 240, 242)">
-      <main className="max-w-2xl mx-auto px-4 py-8">
+      <ProfileHeader/>
+      
+    <main className="max-w-2xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-foreground">Meu Perfil</h2>
           <p className="text-muted-foreground mt-1">Visualize e atualize suas informações.</p>
@@ -58,12 +75,12 @@ const Profile = () => {
             {/* Avatar */}
             <div className="flex justify-center mb-8">
               <div className="relative group">
-                <div className="w-28 h-28 rounded-full bg-secondary border-4 border-primary/20 overflow-hidden flex items-center justify-center">
+                <div className="w-28 h-28 rounded-full rgb(255, 240, 242) border-4 border-primary/20 overflow-hidden flex items-center justify-center">
                   {photoUrl ? (
                     <img src={photoUrl} alt="Foto de perfil" className="w-full h-full object-cover" />
                   ) : (
                     <span className="text-3xl font-bold text-primary">
-                      {form.nome ? form.nome[0].toUpperCase() : "?"}
+                      {prof.nome ? prof.nome[0].toUpperCase() : "?"}
                     </span>
                   )}
                 </div>
@@ -90,8 +107,8 @@ const Profile = () => {
                 <Input
                   id="nome"
                   placeholder="Seu nome completo"
-                  value={form.nome}
-                  onChange={(e) => handleChange("nome", e.target.value)}
+                  value={prof.nome}
+                  onChange={(e) => setProf({...prof, nome: e.target.value})}
                   disabled={!isEditing}
                 />
               </div>
@@ -102,8 +119,8 @@ const Profile = () => {
                   id="idade"
                   type="number"
                   placeholder="Ex: 25"
-                  value={form.idade}
-                  onChange={(e) => handleChange("idade", e.target.value)}
+                  value={prof.idade}
+                  onChange={(e) => setProf({...prof, idade: e.target.value})}
                   disabled={!isEditing}
                 />
               </div>
@@ -113,8 +130,8 @@ const Profile = () => {
                 <Input
                   id="cpf"
                   placeholder="000.000.000-00"
-                  value={form.cpf}
-                  onChange={(e) => handleChange("cpf", e.target.value)}
+                  value={prof.cpf}
+                  onChange={(e) => setProf({...prof, cpf: e.target.value})}
                   disabled={!isEditing}
                 />
               </div>
@@ -124,8 +141,8 @@ const Profile = () => {
                 <Input
                   id="dataNascimento"
                   type="date"
-                  value={form.dataNascimento}
-                  onChange={(e) => handleChange("dataNascimento", e.target.value)}
+                  value={prof.dataNascimento}
+                  onChange={(e) => setProf({...prof, dataNascimento: e.target.value})}
                   disabled={!isEditing}
                 />
               </div>
@@ -135,8 +152,8 @@ const Profile = () => {
                 <Input
                   id="telefone"
                   placeholder="(00) 00000-0000"
-                  value={form.telefone}
-                  onChange={(e) => handleChange("telefone", e.target.value)}
+                  value={prof.telefone}
+                  onChange={(e) => setProf({...prof, telefone: e.target.value})}
                   disabled={!isEditing}
                 />
               </div>
@@ -144,8 +161,8 @@ const Profile = () => {
               <div>
                 <Label htmlFor="estado">Estado</Label>
                 <Select
-                  value={form.estado}
-                  onValueChange={(v) => handleChange("estado", v)}
+                  value={prof.estado}
+                  onValueChange={(v) => setProf({...prof, estado: v})}
                   disabled={!isEditing}
                 >
                   <SelectTrigger id="estado">
@@ -164,8 +181,8 @@ const Profile = () => {
                 <Input
                   id="cidade"
                   placeholder="Sua cidade"
-                  value={form.cidade}
-                  onChange={(e) => handleChange("cidade", e.target.value)}
+                  value={prof.cidade}
+                  onChange={(e) => setProf({...prof, cidade: e.target.value})}
                   disabled={!isEditing}
                 />
               </div>
@@ -182,7 +199,7 @@ const Profile = () => {
                   <Button variant="outline" onClick={() => setIsEditing(false)}>
                     Cancelar
                   </Button>
-                  <Button onClick={handleSave}>
+                  <Button onClick={handleProfile}>
                     Salvar Alterações
                   </Button>
                 </>
