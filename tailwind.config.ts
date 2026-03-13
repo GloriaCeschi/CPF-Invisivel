@@ -29,7 +29,7 @@ export default {
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          foreground: "hsl(var(--secondary-foreground))",   //laranja//
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -40,7 +40,7 @@ export default {
           foreground: "hsl(var(--success-foreground))",
         },
         warning: {
-          DEFAULT: "hsl(var(--warning))",
+          DEFAULT: "hsl(var(--warning))",                   //amarelo//
           foreground: "hsl(var(--warning-foreground))",
         },
         info: {
