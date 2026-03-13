@@ -38,21 +38,6 @@ export function ScoreFactors() {
 
   return (
     <div className="space-y-6">
-      {/* Achievement banner */}
-      {achievements.some((a) => a.achieved) && (
-        <div className="flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
-          <Trophy className="h-6 w-6 shrink-0 text-primary" />
-          <div>
-            <p className="text-sm font-bold text-foreground">
-              Parabéns! Você manteve tudo em dia por 3 meses consecutivos 🎉
-            </p>
-            <p className="text-xs text-muted-foreground">
-              Continue assim para desbloquear mais conquistas!
-            </p>
-          </div>
-        </div>
-      )}
-
       {/* Negative factors */}
       {negatives.length > 0 && (
         <div>
