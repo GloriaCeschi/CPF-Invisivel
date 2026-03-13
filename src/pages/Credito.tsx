@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { MessageCircle, X } from "lucide-react"
 import { toast } from "@/hooks/use-toast";
+import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 
 function solicitar(nomeBanco: string) {
   toast({
@@ -67,18 +68,11 @@ const [chatOpen, setChatOpen] = useState(false);
       : valorNum / prazoNum;
 
   return (
+    <DashboardLayout>
     <div className="min-h-screen bg-background">
       {/* LOGO */}
       <div className="flex items-center gap-3 p-5">
-        <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
-            <circle cx="12" cy="12" r="3" />
-          </svg>
-        </div>
-        <span className="font-semibold text-gary text-foreground">
-          Renda<span className="text-primary">Visível</span>
-        </span>
+      
       </div>
 
       {/* TÍTULO */}
@@ -204,10 +198,8 @@ const [chatOpen, setChatOpen] = useState(false);
             </button>
           </div>
         </div>
-      </div>
-      <footer className="bg-[#1e3a5f] text-white p-6 text-center mt-10">
-        © 2025 Renda Visível. Todos os direitos reservados.
-</footer>
+      </div>  
     </div>
+    </DashboardLayout>
 );
 }
