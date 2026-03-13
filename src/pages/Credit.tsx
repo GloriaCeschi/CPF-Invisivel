@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MessageCircle, X } from "lucide-react"
 import { toast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import supabase from "@/utils/supabase";
+
 
 function solicitar(nomeBanco: string) {
   toast({
     title: "Solicitação enviada com sucesso!",
-    description: "O banco " + nomeBanco + " irá analisar seu pedido.",
+    description: "O Banco " + nomeBanco + " irá analisar seu pedido.",
   });
 }
 
@@ -41,6 +44,8 @@ interface DataRowProps {
   value: string;
 }
 
+
+
 function DataRow({ label, value }: DataRowProps) {
   return (
     <p className="text-sm text-card-foreground">
@@ -48,14 +53,55 @@ function DataRow({ label, value }: DataRowProps) {
     </p>
   );
 }
+ 
+// colocar o type tabela 
+
+export type Banks = {
+  cnpj?: text,
+  name?: text,
+  credit?: test,
+  interest?: numeric,
+  max_amount?: numeric,
+  max_term?: numeric
+}
+
+export type Service = {
+  service: text,
+  created_at:
+  credit_limit:
+  interest_rate:
+}
 
 export default function BancosParceiros() {
 const [chatOpen, setChatOpen] = useState(false);
+const {user, signOutUser} = useAuth(); 
+
 
 
   const [valor, setValor] = useState("3000");
   const [prazo, setPrazo] = useState("12");
   const [taxa, setTaxa] = useState("3.1");
+
+  const [prof, SetProf] = useState<Credit>({});
+
+  useEffect (() => {
+     if (user) syncCredit (user_id); 
+     }, []);
+
+     async function syncCredit(user_id: string): Promisse<void> {
+      const {data, error} = await supabase.from('credit')
+      . select('*').eq("user_id", user_id);
+
+      if(error){
+        alert(error.message)
+        return
+      }
+
+      setProf(data)
+
+     }
+
+
 
   const valorNum = parseFloat(valor) || 0;
   const taxaNum = parseFloat(taxa) / 100;
@@ -86,8 +132,8 @@ const [chatOpen, setChatOpen] = useState(false);
         Bancos Parceiros
       </h2>
       <p className="text-center text-muted-foreground max-w-xl mx-auto mb-10 px-4">
-        Compare taxas, limites e prazos dos bancos parceiros e solicite o
-        empréstimo que melhor se adapta à sua realidade.
+        Compare taxas, limites e prazos entre nossos bancos parceiros < br/ >
+        e enconre o crédito ideal para a sua realidade.
       </p>
 
       {/* CARDS */}
@@ -131,7 +177,7 @@ const [chatOpen, setChatOpen] = useState(false);
       {/* SIMULADOR */}
       <div className="max-w-2xl mx-auto px-6 pb-12">
         <div className="bg-card p-6 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] border border-card-border">
-          <h3 className="text-xl font-semibold text-card-foreground mb-5">
+          <h3 className="text-lg font-semibold text-card-foreground mb-5">
             Simular Empréstimo
           </h3>
 
@@ -206,8 +252,77 @@ const [chatOpen, setChatOpen] = useState(false);
         </div>
       </div>
       <footer className="bg-[#1e3a5f] text-white p-6 text-center mt-10">
-        © 2025 Renda Visível. Todos os direitos reservados.
+
+  <p className="text-sm">
+  🔒 Seus dados são protegidos e utilizados apenas para análise de crédito. 
+  </p>
+
+  <p className="text-base font-semibold"> 
+  Renda Visível — Todos os direitos reservados. 
+  </p>
+
 </footer>
+
+{/* Chatbot FAB */}
+<button
+onClick={() => setChatOpen(true)}
+className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-primary rounded-full shadow-float flex items-center justify-center"
+>
+<MessageCircle className="w-6 h-6 text-primary-foreground" />
+</button>
+
+{/* Chatbot Modal */}
+{chatOpen && (
+<div className="fixed bottom-24 right-6 z-50 w-80 bg-card rounded-2xl shadow-float border border-border overflow-hidden">
+
+<div className="bg-primary p-4 flex items-center justify-between">
+<div className="flex items-center gap-2">
+<MessageCircle className="w-5 h-5 text-primary-foreground" />
+<span className="text-primary-foreground font-semibold text-sm">
+Renda Visível Assistente
+</span>
+</div>
+
+<button
+onClick={() => setChatOpen(false)}
+className="text-primary-foreground/70 hover:text-primary-foreground"
+>
+<X className="w-4 h-4" />
+</button>
+</div>
+
+<div className="p-4 h-48 flex flex-col justify-end">
+<div className="bg-muted rounded-xl rounded-bl-none p-3 mb-3 max-w-[85%]">
+<p className="text-foreground text-sm">
+Olá! 👋 Eu sou o assistente da Renda Visível. Como posso te ajudar hoje?
+</p>
+</div>
+
+<div className="bg-muted rounded-xl rounded-bl-none p-3 max-w-[85%]">
+<p className="text-foreground text-sm">
+Posso tirar dúvidas sobre score alternativo, cadastro e muito mais!
+</p>
+</div>
+</div>
+
+<div className="p-3 border-t border-border">
+<div className="flex gap-2">
+<input
+type="text"
+placeholder="Digite sua dúvida..."
+className="flex-1 px-3 py-2 rounded-lg bg-muted text-foreground text-sm outline-none border border-border focus:border-primary"
+readOnly
+/>
+
+<Button size="sm" className="bg-primary text-primary-foreground">
+Enviar
+</Button>
+</div>
+</div>
+
+</div>
+)}
+
     </div>
 );
 }
