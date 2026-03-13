@@ -4,9 +4,11 @@ import { ScoreEvolutionChart } from "@/components/ScoreEvolutionChart";
 import { ScoreFactors } from "@/components/ScoreFactors";
 import { ActionButtons } from "@/components/ActionButtons";
 import { currentScore } from "@/data/mockData";
+import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 
 const Score = () => {
   return (
+    <DashboardLayout>
     <div className="mx-auto max-w-6xl space-y-8 px-4 py-8">
       {/* Header */}
       <div>
@@ -32,6 +34,7 @@ const Score = () => {
       {/* Factors */}
       <ScoreFactors />
     </div>
+    </DashboardLayout>
   );
 };
 
