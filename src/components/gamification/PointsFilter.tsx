@@ -27,7 +27,7 @@ export const PointsFilter = () => {
     <div className="rounded-2xl bg-card p-5 shadow-lg border border-border">
       <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Pontos por período</h3>
       <Tabs value={period} onValueChange={setPeriod}>
-        <TabsList className="w-full bg-secondary">
+        <TabsList className="w-full bg-background">
           {PERIODS.map((p) => (
             <TabsTrigger key={p.key} value={p.key} className="flex-1 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               {p.label}

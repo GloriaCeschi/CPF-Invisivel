@@ -82,7 +82,7 @@ export function AppSidebar() {
       <SidebarFooter className="p-4 border-t border-sidebar-border">
         <div className="flex items-center gap-3">
           <Avatar className="h-9 w-9 flex-shrink-0">
-            <AvatarFallback className="bg-secondary text-secondary-foreground font-semibold text-sm">
+            <AvatarFallback className="bg-primary text-secondary-foreground font-semibold text-sm">
               CA
             </AvatarFallback>
           </Avatar>
