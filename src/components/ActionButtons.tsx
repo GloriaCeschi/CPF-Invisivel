@@ -6,7 +6,7 @@ const actions = [
     label: "Atualizar Renda",
     description: "Envie seus comprovantes de renda atualizados",
     icon: Wallet,
-    path: "/renda",
+    path: "#renda",
   },
   {
     label: "Adicionar Contas",
