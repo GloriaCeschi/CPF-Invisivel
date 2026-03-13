@@ -11,7 +11,6 @@ import Home from './pages/Home';
 import CadastroUsuario from "./pages/Profile";
 import Gamificacao from "./pages/Gamificacao";
 import Score from "./pages/Score";
-import Perfil from "./pages/Perfil";
 import EducacaoFinanceira from "./pages/EducacaoFinanceira";
 import Cursos from "./pages/Cursos";
 import Credito from "./pages/Credito";
@@ -39,7 +38,6 @@ const App = () => (
           <Route path="/profile" element={<ProtectedRoute> <CadastroUsuario /> </ProtectedRoute>} />
           <Route path="/gamificacao" element={<ProtectedRoute> <Gamificacao /> </ProtectedRoute>} />
           <Route path="/score" element={<ProtectedRoute> <Score /> </ProtectedRoute>} />
-          <Route path="/perfil" element={<ProtectedRoute> <Perfil /> </ProtectedRoute>} />
           <Route path="/educacao" element={<ProtectedRoute> <EducacaoFinanceira /> </ProtectedRoute>} />
           <Route path="/cursos" element={<ProtectedRoute> <Cursos /> </ProtectedRoute>} />
 

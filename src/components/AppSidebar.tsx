@@ -32,6 +32,7 @@ const menuItems = [
   { title: "Crédito", url: "/credito", icon: CreditCard },
   { title: "Notificações", url: "/notificacoes", icon: Bell },
   { title: "Cursos", url: "/cursos", icon: GraduationCap },
+  { title: "Perfil", url: "/profile", icon: User },
   
 ];
 

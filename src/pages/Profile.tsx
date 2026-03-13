@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import supabase from "@/utils/supabase";
 import { useAuth } from "@/context/AuthContext";
+import ProfileHeader from "@/components/ProfileHeader";
+import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 
 const ESTADOS = [
   "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA",
@@ -32,6 +34,22 @@ const Profile = () => {
   
   const {user, signOutUser} = useAuth();
   const [prof, setProf] = useState<Profile>({});
+
+  useEffect (() => {
+    syncProfile(user.id);
+
+  }, []);
+
+  function syncProfile(user_id: string ){
+    const {data, error} = supabase.from('profiles').select('*').eq("user_id", user_id).single();
+    // order('created_at', {ascending: false})
+
+    if(error){
+      alert(error.message)
+      return
+    }
+
+  }
 
   async function handleProfile(){
     const data = {...prof, user_id: user.id};
@@ -60,9 +78,9 @@ const Profile = () => {
   return (
     
 
-
+    <DashboardLayout>
     <div className="min-h-screen rgb(255, 240, 242)">
-      <ProfileHeader/>
+      
       
     <main className="max-w-2xl mx-auto px-4 py-8">
         <div className="mb-8">
@@ -209,6 +227,7 @@ const Profile = () => {
         </Card>
       </main>
     </div>
+    </DashboardLayout>
   );
 };
 
