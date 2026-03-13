@@ -7,24 +7,17 @@ import { ActivityHistory } from "@/components/gamification/ActivityHistory";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 
 const Gamificacao = () => {
   const navigate = useNavigate();
 
   return (
+
+    <DashboardLayout>
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-card/80 backdrop-blur-md border-b border-border px-4 py-3">
-        <div className="w-full flex items-center gap-3">
-          <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-gold" />
-            <h1 className="text-lg font-bold text-foreground">Gamificação</h1>
-          </div>
-        </div>
-      </header>
+    <div className="flex items-center gap-3 p-5">
 
       <main className="w-full px-4 py-6 space-y-5 pb-20">
         <LevelProgress />
@@ -37,6 +30,8 @@ const Gamificacao = () => {
         <ActivityHistory />
       </main>
     </div>
+    </div>
+    </DashboardLayout>
   );
 };
 
