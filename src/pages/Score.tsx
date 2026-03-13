@@ -1,4 +1,3 @@
-import "../styles/score.css";
 
 import { ScoreGauge } from "@/components/ScoreGauge";
 import { ScoreEvolutionChart } from "@/components/ScoreEvolutionChart";
