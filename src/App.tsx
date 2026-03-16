@@ -13,7 +13,7 @@ import Gamificacao from "./pages/Gamificacao";
 import Score from "./pages/Score";
 import EducacaoFinanceira from "./pages/EducacaoFinanceira";
 import Cursos from "./pages/Cursos";
-import Credito from "./pages/Credito";
+import Credito from "./pages/credit";
 import { AuthProvider } from "./context/AuthContext";
 import AuthRoute from "./components/AuthRoute";
 import ProtectedRoute from "./components/ProtectedRoute";
