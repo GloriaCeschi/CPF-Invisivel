@@ -77,7 +77,7 @@ const Score = () => {
           <ScoreGauge score={currentScore} />
         </div>
         <div className="space-y-6">
-          <ActionButtons />
+          <ActionButtons /> 
           <ScoreEvolutionChart />
         </div>
       </div>
@@ -91,8 +91,12 @@ const Score = () => {
           <main className="container mx-auto px-4 py-6 space-y-8 max-w-4xl">
             
             <PendingSection bills={bills} onAddBill={() => setPendingModalOpen(true)} />
-            <IncomeSection incomes={incomes} onRefresh={fetchData} />
-            <BillSection bills={monthlyBills} onRefresh={fetchData} />
+            <div id ='renda'>
+              <IncomeSection  incomes={incomes} onRefresh={fetchData} /> 
+            </div>
+            <div id = 'contas'>
+              <BillSection bills={monthlyBills} onRefresh={fetchData} />
+            </div>
           </main>
     
           <BillModal open={pendingModalOpen} onClose={() => setPendingModalOpen(false)} onSaved={fetchData} />
