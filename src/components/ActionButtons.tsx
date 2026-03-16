@@ -12,7 +12,7 @@ const actions = [
     label: "Adicionar Contas",
     description: "Cadastre contas recorrentes para aumentar seu score",
     icon: Receipt,
-    path: "/contas",
+    path: "#contas",
   },
   {
     label: "Gamificação",

@@ -91,10 +91,12 @@ const Score = () => {
           <main className="container mx-auto px-4 py-6 space-y-8 max-w-4xl">
             
             <PendingSection bills={bills} onAddBill={() => setPendingModalOpen(true)} />
-            <div>
-              <IncomeSection id ='renda' incomes={incomes} onRefresh={fetchData} /> 
+            <div id ='renda'>
+              <IncomeSection  incomes={incomes} onRefresh={fetchData} /> 
             </div>
-            <BillSection bills={monthlyBills} onRefresh={fetchData} />
+            <div id = 'contas'>
+              <BillSection bills={monthlyBills} onRefresh={fetchData} />
+            </div>
           </main>
     
           <BillModal open={pendingModalOpen} onClose={() => setPendingModalOpen(false)} onSaved={fetchData} />
