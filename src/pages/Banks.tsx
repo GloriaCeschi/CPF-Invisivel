@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { MessageCircle, X } from "lucide-react"
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import  supabase from   "../utils/supabase";
+import supabase from "../utils/supabase";
 import { useAuth } from "../context/AuthContext";
 import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 
@@ -89,7 +89,7 @@ export default function BancosParceiros() {
     if (user) syncCredit(user.id);
   }, []);
 
-  async function syncCredit(user_id: string):Promise<void> {
+  async function syncCredit(user_id: string): Promise<void> {
     const { data, error } = await supabase.from('Banks')
       .select('*').eq("user_id", user_id);
 
