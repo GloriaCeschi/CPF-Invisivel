@@ -14,11 +14,11 @@ import Score from "./pages/Score";
 import Perfil from "./pages/Perfil";
 import EducacaoFinanceira from "./pages/EducacaoFinanceira";
 import Cursos from "./pages/Cursos";
-import Credit from "./pages/Credit";
+import Credito from "./pages/Credito";
 import { AuthProvider } from "./context/AuthContext";
 import AuthRoute from "./components/AuthRoute";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Jornada from "./pages/Jornada";
+
 
 const queryClient = new QueryClient();
 
@@ -33,7 +33,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path='/auth' element={<AuthRoute> <Auth /> </AuthRoute>} />
-          <Route path="/credit" element={<Credit />} />
+          <Route path="/credito" element={<Credito />} />
           <Route path="*" element={<NotFound />} />
           <Route path='/home' element={<ProtectedRoute> <Home /> </ProtectedRoute>}/>
           <Route path="/profile" element={<ProtectedRoute> <CadastroUsuario /> </ProtectedRoute>} />
@@ -42,7 +42,7 @@ const App = () => (
           <Route path="/perfil" element={<ProtectedRoute> <Perfil /> </ProtectedRoute>} />
           <Route path="/educacao" element={<ProtectedRoute> <EducacaoFinanceira /> </ProtectedRoute>} />
           <Route path="/cursos" element={<ProtectedRoute> <Cursos /> </ProtectedRoute>} />
-          <Route path="/jornada" element={<ProtectedRoute> <Jornada /> </ProtectedRoute> } />
+
         </Routes>
         </AuthProvider>
       </BrowserRouter>

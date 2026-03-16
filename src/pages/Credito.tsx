@@ -4,6 +4,7 @@ import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import supabase from "@/utils/supabase";
 
+import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 
 function solicitar(nomeBanco: string) {
   toast({
@@ -113,18 +114,11 @@ const {user, signOutUser} = useAuth();
       : valorNum / prazoNum;
 
   return (
+    <DashboardLayout>
     <div className="min-h-screen bg-background">
       {/* LOGO */}
       <div className="flex items-center gap-3 p-5">
-        <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
-            <circle cx="12" cy="12" r="3" />
-          </svg>
-        </div>
-        <span className="font-semibold text-gary text-foreground">
-          Renda<span className="text-primary">Visível</span>
-        </span>
+      
       </div>
 
       {/* TÍTULO */}
@@ -250,79 +244,8 @@ const {user, signOutUser} = useAuth();
             </button>
           </div>
         </div>
-      </div>
-      <footer className="bg-[#1e3a5f] text-white p-6 text-center mt-10">
-
-  <p className="text-sm">
-  🔒 Seus dados são protegidos e utilizados apenas para análise de crédito. 
-  </p>
-
-  <p className="text-base font-semibold"> 
-  Renda Visível — Todos os direitos reservados. 
-  </p>
-
-</footer>
-
-{/* Chatbot FAB */}
-<button
-onClick={() => setChatOpen(true)}
-className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-primary rounded-full shadow-float flex items-center justify-center"
->
-<MessageCircle className="w-6 h-6 text-primary-foreground" />
-</button>
-
-{/* Chatbot Modal */}
-{chatOpen && (
-<div className="fixed bottom-24 right-6 z-50 w-80 bg-card rounded-2xl shadow-float border border-border overflow-hidden">
-
-<div className="bg-primary p-4 flex items-center justify-between">
-<div className="flex items-center gap-2">
-<MessageCircle className="w-5 h-5 text-primary-foreground" />
-<span className="text-primary-foreground font-semibold text-sm">
-Renda Visível Assistente
-</span>
-</div>
-
-<button
-onClick={() => setChatOpen(false)}
-className="text-primary-foreground/70 hover:text-primary-foreground"
->
-<X className="w-4 h-4" />
-</button>
-</div>
-
-<div className="p-4 h-48 flex flex-col justify-end">
-<div className="bg-muted rounded-xl rounded-bl-none p-3 mb-3 max-w-[85%]">
-<p className="text-foreground text-sm">
-Olá! 👋 Eu sou o assistente da Renda Visível. Como posso te ajudar hoje?
-</p>
-</div>
-
-<div className="bg-muted rounded-xl rounded-bl-none p-3 max-w-[85%]">
-<p className="text-foreground text-sm">
-Posso tirar dúvidas sobre score alternativo, cadastro e muito mais!
-</p>
-</div>
-</div>
-
-<div className="p-3 border-t border-border">
-<div className="flex gap-2">
-<input
-type="text"
-placeholder="Digite sua dúvida..."
-className="flex-1 px-3 py-2 rounded-lg bg-muted text-foreground text-sm outline-none border border-border focus:border-primary"
-readOnly
-/>
-
-<Button size="sm" className="bg-primary text-primary-foreground">
-Enviar
-</Button>
-</div>
-</div>
-
-</div>
-)}
-
+      </div>  
     </div>
+    </DashboardLayout>
 );
 }

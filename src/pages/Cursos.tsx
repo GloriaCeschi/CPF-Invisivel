@@ -60,7 +60,7 @@ export default function Cursos() {
           <main className="flex-1 overflow-auto">
             {/* Hero Section */}
             <section className="relative px-6 py-10 md:px-12 lg:px-20 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-              <div className="mx-auto px-6 md:px-12 lg:px-20">
+              <div className="mx-auto">
                 <div className="flex items-center gap-3 mb-2">
                   <BookOpen className="h-6 w-6 text-primary" />
                   <h1 className="text-2xl font-bold text-foreground md:text-3xl">Educação Financeira</h1>
@@ -69,7 +69,7 @@ export default function Cursos() {
                   Cada curso concluído é um passo a mais rumo à sua independência financeira. Você está no caminho certo! 💪
                 </p>
 
-                <div className="rounded-xl border border-border bg-card p-">
+                <div className="rounded-xl border border-border bg-card p-4">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <TrendingUp className="h-4 w-4 text-success" />
