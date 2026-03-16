@@ -17,13 +17,14 @@ const ESTADOS = [
 ];
 
 type Profile = {
-    nome?: string,
-    idade?: string,
+    id?: string,
+    name?: string,
+    age?: string,
     cpf?: string,
-    dataNascimento?: string,
-    telefone?: string,
-    estado?: string,
-    cidade?: string,
+    birth?: string,
+    phone?: string,
+    state?: string,
+    city?: string,
 };
 
 const Profile = () => {
@@ -41,7 +42,7 @@ const Profile = () => {
   }, []);
 
   async function syncProfile(user_id: string ):Promise<void>{
-    const {data, error} = await supabase.from('profiles').select('*').eq("user_id", user_id).single();
+    const {data, error} = await supabase.from('profiles').select('*').eq("user_id", user_id).maybeSingle();
     // order('created_at', {ascending: false})
 
     if(error){
@@ -49,19 +50,27 @@ const Profile = () => {
       return
     }
 
+    if (data){
+       setProf(data);
+    }
+
   }
+
+ 
 
   async function handleProfile(){
     const data = {...prof, user_id: user.id};
 
-    const {error} = await supabase.from('profiles').insert(data);
+    console.log(data)
+
+    const {error} = await supabase.from('profiles').upsert(data, {onConflict: "user_id"});
 
     if(error){
       alert(error.message);
       return;
     }
 
-    alert("Cadastrado com sucesso")
+    alert("Perfil atualizado com sucesso")
   };
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,7 +107,7 @@ const Profile = () => {
                     <img src={photoUrl} alt="Foto de perfil" className="w-full h-full object-cover" />
                   ) : (
                     <span className="text-3xl font-bold text-primary">
-                      {prof.nome ? prof.nome[0].toUpperCase() : "?"}
+                      {prof.name ? prof.name[0].toUpperCase() : "?"}
                     </span>
                   )}
                 </div>
@@ -121,24 +130,24 @@ const Profile = () => {
             {/* Fields */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div className="sm:col-span-2">
-                <Label htmlFor="nome">Nome</Label>
+                <Label htmlFor="name">Nome</Label>
                 <Input
-                  id="nome"
+                  id="name"
                   placeholder="Seu nome completo"
-                  value={prof.nome}
-                  onChange={(e) => setProf({...prof, nome: e.target.value})}
+                  value={prof.name}
+                  onChange={(e) => setProf({...prof, name: e.target.value})}
                   disabled={!isEditing}
                 />
               </div>
 
               <div>
-                <Label htmlFor="idade">Idade</Label>
+                <Label htmlFor="age">Idade</Label>
                 <Input
-                  id="idade"
+                  id="age"
                   type="number"
                   placeholder="Ex: 25"
-                  value={prof.idade}
-                  onChange={(e) => setProf({...prof, idade: e.target.value})}
+                  value={prof.age}
+                  onChange={(e) => setProf({...prof, age: e.target.value})}
                   disabled={!isEditing}
                 />
               </div>
@@ -155,35 +164,35 @@ const Profile = () => {
               </div>
 
               <div>
-                <Label htmlFor="dataNascimento">Data de Nascimento</Label>
+                <Label htmlFor="birth">Data de Nascimento</Label>
                 <Input
-                  id="dataNascimento"
+                  id="birth"
                   type="date"
-                  value={prof.dataNascimento}
-                  onChange={(e) => setProf({...prof, dataNascimento: e.target.value})}
+                  value={prof.birth}
+                  onChange={(e) => setProf({...prof, birth: e.target.value})}
                   disabled={!isEditing}
                 />
               </div>
 
               <div>
-                <Label htmlFor="telefone">Telefone</Label>
+                <Label htmlFor="phone">Telefone</Label>
                 <Input
-                  id="telefone"
+                  id="phone"
                   placeholder="(00) 00000-0000"
-                  value={prof.telefone}
-                  onChange={(e) => setProf({...prof, telefone: e.target.value})}
+                  value={prof.phone}
+                  onChange={(e) => setProf({...prof, phone: e.target.value})}
                   disabled={!isEditing}
                 />
               </div>
 
               <div>
-                <Label htmlFor="estado">Estado</Label>
+                <Label htmlFor="state">Estado</Label>
                 <Select
-                  value={prof.estado}
-                  onValueChange={(v) => setProf({...prof, estado: v})}
+                  value={prof.state}
+                  onValueChange={(v) => setProf({...prof, state: v})}
                   disabled={!isEditing}
                 >
-                  <SelectTrigger id="estado">
+                  <SelectTrigger id="state">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
                   <SelectContent>
@@ -195,12 +204,12 @@ const Profile = () => {
               </div>
 
               <div>
-                <Label htmlFor="cidade">Cidade</Label>
+                <Label htmlFor="city">Cidade</Label>
                 <Input
-                  id="cidade"
+                  id="city"
                   placeholder="Sua cidade"
-                  value={prof.cidade}
-                  onChange={(e) => setProf({...prof, cidade: e.target.value})}
+                  value={prof.city}
+                  onChange={(e) => setProf({...prof, city: e.target.value})}
                   disabled={!isEditing}
                 />
               </div>
