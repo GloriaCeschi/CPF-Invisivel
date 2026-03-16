@@ -40,8 +40,8 @@ const Profile = () => {
 
   }, []);
 
-  function syncProfile(user_id: string ){
-    const {data, error} = supabase.from('profiles').select('*').eq("user_id", user_id).single();
+  async function syncProfile(user_id: string ):Promise<void>{
+    const {data, error} = await supabase.from('profiles').select('*').eq("user_id", user_id).single();
     // order('created_at', {ascending: false})
 
     if(error){
