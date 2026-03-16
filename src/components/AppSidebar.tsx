@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/context/AuthContext";
 import {
   Home,
   TrendingUp,
@@ -42,11 +42,11 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
 
-  const { signOut } = useAuth();
+  const {user, signOutUser} = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    await signOut();
+    await signOutUser();
     navigate("/auth");
   };
 
