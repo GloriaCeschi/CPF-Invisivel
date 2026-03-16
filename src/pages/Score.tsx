@@ -85,7 +85,7 @@ const Score = () => {
       {/* Factors */}
       <ScoreFactors />
     </div>
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen ">
           
     
           <main className="container mx-auto px-4 py-6 space-y-8 max-w-4xl">
