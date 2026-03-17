@@ -49,7 +49,7 @@ export default function BillSection({ bills, onRefresh }: BillSectionProps) {
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold font-display">📄 Contas Pagas</h2>
+        <h2 className="text-xl font-bold font-display text-customBlue">Contas Pagas</h2>
         <Button size="sm" onClick={() => { setEditing(null); setModalOpen(true); }}>
           <Plus className="h-4 w-4 mr-1" /> Adicionar Conta
         </Button>

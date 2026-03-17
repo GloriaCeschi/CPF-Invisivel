@@ -4,7 +4,9 @@ export default {
   darkMode: ["class"],
   content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
   prefix: "",
+
   theme: {
+
     container: {
       center: true,
       padding: "2rem",
@@ -16,11 +18,13 @@ export default {
       fontFamily: {
         sans: ["Plus Jakarta Sans", "sans-serif"],
         display: ["Space Grotesk", "sans-serif"],
+
       },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
+        customBlue: "hsl(218, 26%, 29%)",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
