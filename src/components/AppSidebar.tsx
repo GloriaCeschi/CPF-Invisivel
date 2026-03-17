@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 import {
   Home,
   TrendingUp,
@@ -29,16 +31,24 @@ const menuItems = [
   { title: "Início", url: "/home", icon: Home },
   { title: "Meu Score", url: "/score", icon: TrendingUp },
   { title: "Gamificação", url: "/gamificacao", icon: Gamepad2 },
-  { title: "Crédito", url: "/credito", icon: CreditCard },
+  { title: "Crédito", url: "/credit", icon: CreditCard },
   { title: "Notificações", url: "/notificacoes", icon: Bell },
   { title: "Cursos", url: "/cursos", icon: GraduationCap },
   { title: "Perfil", url: "/profile", icon: User },
-  
+
 ];
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
+
+  const {user, signOutUser} = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await signOutUser();
+    navigate("/auth");
+  };
 
   return (
     <Sidebar collapsible="icon">
@@ -93,7 +103,15 @@ export function AppSidebar() {
                 <p className="text-sm font-semibold text-sidebar-foreground truncate">Caroline</p>
                 <p className="text-xs text-muted-foreground truncate">caroline@email.com</p>
               </div>
-              <button className="text-muted-foreground hover:text-destructive transition-colors" title="Sair">
+              <button
+                onClick={() => {
+                  if (confirm("Deseja sair da conta?")) {
+                    handleLogout();
+                  }
+                }}
+                className="text-muted-foreground hover:text-destructive transition-colors"
+                title="Sair"
+              >
                 <LogOut className="h-4 w-4" />
               </button>
             </>

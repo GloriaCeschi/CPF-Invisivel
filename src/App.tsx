@@ -13,7 +13,7 @@ import Gamificacao from "./pages/Gamificacao";
 import Score from "./pages/Score";
 import EducacaoFinanceira from "./pages/EducacaoFinanceira";
 import Cursos from "./pages/Cursos";
-import Credito from "./pages/credit";
+import Credit from "./pages/Credit";
 import { AuthProvider } from "./context/AuthContext";
 import AuthRoute from "./components/AuthRoute";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -32,7 +32,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path='/auth' element={<AuthRoute> <Auth /> </AuthRoute>} />
-          <Route path="/credito" element={<Credito />} />
+          {/*<Route path="/credito" element={<Credito />} />*/}
           <Route path="*" element={<NotFound />} />
           <Route path='/home' element={<ProtectedRoute> <Home /> </ProtectedRoute>}/>
           <Route path="/profile" element={<ProtectedRoute> <CadastroUsuario /> </ProtectedRoute>} />
@@ -40,6 +40,7 @@ const App = () => (
           <Route path="/score" element={<ProtectedRoute> <Score /> </ProtectedRoute>} />
           <Route path="/educacao" element={<ProtectedRoute> <EducacaoFinanceira /> </ProtectedRoute>} />
           <Route path="/cursos" element={<ProtectedRoute> <Cursos /> </ProtectedRoute>} />
+          <Route path="/credit" element={<ProtectedRoute> <Credit /> </ProtectedRoute>} />
 
         </Routes>
         </AuthProvider>
