@@ -39,7 +39,7 @@ export default function IncomeSection({ incomes, onRefresh }: IncomeSectionProps
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold font-display">💰 Minhas Rendas</h2>
+        <h2 className="text-xl font-bold font-display text-[hsl(218,26%,29%)] "> Minhas Rendas</h2>
         <Button size="sm" onClick={() => { setEditing(null); setModalOpen(true); }}>
           <Plus className="h-4 w-4 mr-1" /> Adicionar Renda
         </Button>
