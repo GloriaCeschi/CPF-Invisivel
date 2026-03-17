@@ -13,7 +13,7 @@ import Gamificacao from "./pages/Gamificacao";
 import Score from "./pages/Score";
 import EducacaoFinanceira from "./pages/EducacaoFinanceira";
 import Cursos from "./pages/Cursos";
-//import Credito from "./pages/Credito";
+import Credit from "./pages/Credit";
 import { AuthProvider } from "./context/AuthContext";
 import AuthRoute from "./components/AuthRoute";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -40,6 +40,7 @@ const App = () => (
           <Route path="/score" element={<ProtectedRoute> <Score /> </ProtectedRoute>} />
           <Route path="/educacao" element={<ProtectedRoute> <EducacaoFinanceira /> </ProtectedRoute>} />
           <Route path="/cursos" element={<ProtectedRoute> <Cursos /> </ProtectedRoute>} />
+          <Route path="/credit" element={<ProtectedRoute> <Credit /> </ProtectedRoute>} />
 
         </Routes>
         </AuthProvider>

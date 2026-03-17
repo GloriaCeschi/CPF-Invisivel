@@ -58,19 +58,23 @@ function DataRow({ label, value }: DataRowProps) {
 }
 
 
-export type Banks = {
+export type banks = {
+  id: string,
   cnpj?: string,
   name?: string,
   credit?: string,
   interest?: number,
   max_amount?: number,
-  max_term?: number
+  max_term?: number,
+  criator_id: string
 }
 
 export type Service = {
+  id: string,
   service: string,
   credit_limit: string,
-  interest_rate: string
+  interest_rate: string,
+  criator_id: string
 }
 
 export default function BancosParceiros() {
@@ -83,14 +87,14 @@ export default function BancosParceiros() {
   const [prazo, setPrazo] = useState("12");
   const [taxa, setTaxa] = useState("3.1");
 
-  const [Banks, SetBanks] = useState<Banks[]>([]);
+  const [banks, Setbanks] = useState<banks[]>([]);
 
   useEffect(() => {
     if (user) syncCredit(user.id);
   }, []);
 
-  async function syncCredit(user_id: string): Promise<void> {
-    const { data, error } = await supabase.from('Banks')
+  async function syncCredit(user_id: string): Promise<void> { //"void" é 
+    const { data, error } = await supabase.from('banks')
       .select('*').eq("user_id", user_id);
 
     if (error) {
@@ -98,7 +102,7 @@ export default function BancosParceiros() {
       return
     }
 
-    SetBanks(data)
+    Setbanks(data) // "data" é dados
 
   }
 
@@ -113,7 +117,7 @@ export default function BancosParceiros() {
 
   return (
     <DashboardLayout>
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-hsl">
         {/* LOGO */}
         <div className="flex items-center gap-3 p-5">
 
@@ -169,9 +173,17 @@ export default function BancosParceiros() {
         {/* SIMULADOR */}
         <div className="max-w-2xl mx-auto px-6 pb-12">
           <div className="bg-card p-6 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] border border-card-border">
-            <h3 className="text-lg font-semibold text-card-foreground mb-5">
-              Simular Empréstimo
-            </h3>
+            <div className="text-center mb-4">
+              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+                Simulação
+              </h3>
+              <h2 className="text-lg font-semibold text-gray-800 mt-1">
+                Simule seu empréstimo
+              </h2>
+            </div>
+            <p className="text-sm text-gray-500 mt-1 mb-4">
+              Descubra o valor aproximado da sua parcela.
+            </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
               <div>
@@ -202,7 +214,7 @@ export default function BancosParceiros() {
               </div>
               <div>
                 <label className="text-sm text-muted-foreground mb-1 block">
-                  Taxa
+                  Taxa 
                 </label>
                 <select
                   value={taxa}
@@ -227,6 +239,19 @@ export default function BancosParceiros() {
                     / mês
                   </span>
                 </p>
+                <div className="mt-2">
+                  <p className="text-xs text-gray-500">
+                    Total a pagar
+                  </p>
+                  <p className="text-sm font-bold text-foreground ">
+                    R$ {parcela}
+                  </p>
+                </div>
+              </div>
+              <div className="mt-3 bg-green-50 p-3 rounded-lg text-center">
+                <p className="text-sm text-green-600 font-medium">
+                  ✔ Pré-aprovado
+                </p>
               </div>
               <button
                 onClick={() => {
@@ -244,6 +269,64 @@ export default function BancosParceiros() {
           </div>
         </div>
       </div>
+
+      <div className="text-center mt-10 mb-10">
+
+        <h3 className="text-lg font-semibold text-foreground mb-4">
+          Por que usar a Renda Visível?
+        </h3>
+
+        <p className="text-gray-500">
+          ✔ Compare opções de crédito em um só lugar
+        </p>
+
+        <p className="text-gray-500">
+          ✔ Simulação rápida e transparente
+        </p>
+
+        <p className="text-gray-500">
+          ✔ Processo simples e seguro
+        </p>
+
+      </div>
+
+      <footer className="bg-foreground text-white text-center p-6 mt-10">
+        <p className="text-sm">
+          🔒 Seus dados são protegidos e utilizados apenas para análise de crédito.
+        </p>
+        <p className="font-semibold mt-2">
+          Renda Visível — Todos os direitos reservados.
+        </p>
+      </footer>
+
+      <button
+        onClick={() => setChatOpen(true)}
+        className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-primary rounded-full shadow-lg flex items-center justify-center"
+      >
+        <MessageCircle className="w-6 h-6 text-white" />
+      </button>
+
+      {chatOpen && (
+        <div className="fixed bottom-40 right-6 z-50 w-80 bg-white rounded-2xl shadow-lg border overflow-hidden">
+
+          <div className="bg-primary p-4 flex justify-between items-center">
+            <span className="text-white font-semibold text-sm">
+              Renda Visível Assistente
+            </span>
+
+            <button onClick={() => setChatOpen(false)}>
+              <X className="w-4 h-4 text-white" />
+            </button>
+          </div>
+
+          <div className="p-4">
+            <p className="text-sm text-foreground">
+              Olá! 👋 Como posso ajudar você hoje?
+            </p>
+          </div>
+
+        </div>
+      )}
     </DashboardLayout>
   );
 }

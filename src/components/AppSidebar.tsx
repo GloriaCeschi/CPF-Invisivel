@@ -26,12 +26,14 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useEffect, useState } from "react";
+import supabase from "@/utils/supabase";
 
 const menuItems = [
   { title: "Início", url: "/home", icon: Home },
   { title: "Meu Score", url: "/score", icon: TrendingUp },
   { title: "Gamificação", url: "/gamificacao", icon: Gamepad2 },
-  { title: "Crédito", url: "/credito", icon: CreditCard },
+  { title: "Crédito", url: "/credit", icon: CreditCard },
   { title: "Notificações", url: "/notificacoes", icon: Bell },
   { title: "Cursos", url: "/cursos", icon: GraduationCap },
   { title: "Perfil", url: "/profile", icon: User },
@@ -49,6 +51,21 @@ export function AppSidebar() {
     await signOutUser();
     navigate("/auth");
   };
+
+  const [prof, setProf] = useState<{ name?: string }>({});
+
+  useEffect(() => {
+    async function loadProfile() {
+      if (!user) return;
+      const { data } = await supabase
+        .from("profiles")
+        .select("name")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (data) setProf(data);
+    }
+    loadProfile();
+  }, [user]);
 
   return (
     <Sidebar collapsible="icon">
@@ -100,8 +117,8 @@ export function AppSidebar() {
           {!collapsed && (
             <>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-sidebar-foreground truncate">Caroline</p>
-                <p className="text-xs text-muted-foreground truncate">caroline@email.com</p>
+                <p className="text-sm font-semibold text-sidebar-foreground truncate">{prof?.name || "Usuário"}</p>
+                <p className="text-xs text-muted-foreground truncate">{user?.email || "email não disponível"} </p>
               </div>
               <button
                 onClick={() => {
