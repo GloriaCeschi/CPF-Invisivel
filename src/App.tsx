@@ -17,7 +17,7 @@ import Credit from "./pages/Credit";
 import { AuthProvider } from "./context/AuthContext";
 import AuthRoute from "./components/AuthRoute";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Notifications from "./pages/Notificatios";
+import Notifications from "./pages/Notifications";
 
 
 const queryClient = new QueryClient();
