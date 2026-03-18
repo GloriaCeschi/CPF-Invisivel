@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import supabase from "../utils/supabase";
 import { useAuth } from "../context/AuthContext";
+import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 
 type notifications = {
     user_id?:string
@@ -33,7 +34,9 @@ export default function Notifications(){
     
     return(
     <>
-        <div className="min-h-screen flex items-center justify-center text-black">
+        
+        
+            <DashboardLayout>
             <div className="text-center p-8">
                 <h1 className="text-4xl mb-5">Perfil</h1>
 
@@ -51,7 +54,8 @@ export default function Notifications(){
                     Sair
                 </button>
             </div>
-        </div>
+            </DashboardLayout>
+        
     </>
 )
 
