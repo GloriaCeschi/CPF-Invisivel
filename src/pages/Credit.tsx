@@ -77,8 +77,18 @@ export type Service = {
   criator_id: string
 }
 
+type Mensagem= {
+  texto: string;
+  autor: "bot" | "user";
+};
+
 export default function BancosParceiros() {
   const [chatOpen, setChatOpen] = useState(false);
+
+  const [mensagens, setMensagens] = useState<Mensagem[]>([
+  { texto: "Olá! 👋 Como posso ajudar você hoje?", autor: "bot"}
+  ]);
+  const [ input, setInput] = useState ("");
   const { user, signOutUser } = useAuth();
 
 
@@ -87,7 +97,7 @@ export default function BancosParceiros() {
   const [prazo, setPrazo] = useState("12");
   const [taxa, setTaxa] = useState("3.1");
 
-  const [banks, Setbanks] = useState<banks[]>([]);
+  const [banks, setBanks] = useState<banks[]>([]);
 
   useEffect(() => {
     if (user) syncCredit(user.id);
@@ -102,7 +112,7 @@ export default function BancosParceiros() {
       return
     }
 
-    Setbanks(data) // "data" é dados
+    setBanks(data) // "data" é dados
 
   }
 
@@ -128,7 +138,7 @@ export default function BancosParceiros() {
           Bancos Parceiros
         </h2>
         <p className="text-center text-muted-foreground max-w-xl mx-auto mb-10 px-4">
-          Compare taxas, limites e prazos entre nossos bancos parceiros < br />
+          Compare taxas, limites e prazos entre nossos bancos parceiros <   br />
           e enconre o crédito ideal para a sua realidade.
         </p>
 
@@ -203,7 +213,7 @@ export default function BancosParceiros() {
                 </label>
                 <select
                   value={prazo}
-                  onChange={(e) => setPrazo(e.target.value)}
+                  onChange={(e) => setPrazo((e.target.value))}
                   className="w-full border border-input rounded-lg px-3 py-2 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="6">6 meses</option>
@@ -218,7 +228,7 @@ export default function BancosParceiros() {
                 </label>
                 <select
                   value={taxa}
-                  onChange={(e) => setTaxa(e.target.value)}
+                  onChange={(e) => setTaxa((e.target.value))}
                   className="w-full border border-input rounded-lg px-3 py-2 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="2.5">2.5%</option>
@@ -244,7 +254,7 @@ export default function BancosParceiros() {
                     Total a pagar
                   </p>
                   <p className="text-sm font-bold text-foreground ">
-                    R$ {parcela}
+                    R$ {(parcela * prazoNum).toFixed(2)}
                   </p>
                 </div>
               </div>
