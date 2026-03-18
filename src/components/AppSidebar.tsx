@@ -34,7 +34,7 @@ const menuItems = [
   { title: "Meu Score", url: "/score", icon: TrendingUp },
   { title: "Gamificação", url: "/gamificacao", icon: Gamepad2 },
   { title: "Crédito", url: "/credit", icon: CreditCard },
-  { title: "Notificações", url: "/notificacoes", icon: Bell },
+  { title: "Notificações", url: "/notifications", icon: Bell },
   { title: "Cursos", url: "/cursos", icon: GraduationCap },
   { title: "Perfil", url: "/profile", icon: User },
 
