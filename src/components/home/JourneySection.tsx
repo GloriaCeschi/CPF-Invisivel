@@ -1,5 +1,6 @@
 import { Route, UserPlus, Receipt, BarChart3, ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 
 const journeyItems = [
   {
@@ -28,7 +29,11 @@ const journeyItems = [
   },
 ];
 
+
+
 export function JourneySection() {
+  const navigate = useNavigate();
+
   return (
     <section>
       <div className="flex items-center gap-2 mb-4">
@@ -44,7 +49,10 @@ export function JourneySection() {
               </div>
               <h3 className="font-bold text-sm mb-1">{item.title}</h3>
               <p className="text-xs text-muted-foreground mb-4">{item.desc}</p>
-              <button className="flex items-center gap-1 text-sm text-primary font-semibold hover:underline">
+              <button
+                onClick={() => navigate("/score#contas")}
+                className="flex items-center gap-1 text-sm text-primary font-semibold hover:underline"
+              >
                 {item.action}
                 <ChevronRight className="h-4 w-4" />
               </button>
