@@ -1,6 +1,7 @@
 import { GraduationCap, BookOpen, Briefcase, ShieldCheck, Lock, ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
 
 const courses = [
   {
@@ -35,12 +36,13 @@ const courses = [
 
 export function CoursesSection() {
   const currentScore = 420;
+  const navigate = useNavigate();
 
   return (
     <section>
       <div className="flex items-center gap-2 mb-4">
         <GraduationCap className="h-5 w-5 text-primary" />
-        <h2 className="text-lg font-bold">Cursos e Educação</h2>
+        <h2 className="text-customBlue font-bold">Cursos e Educação</h2>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {courses.map((course, i) => {
@@ -78,7 +80,10 @@ export function CoursesSection() {
                     </div>
                   </div>
                 )}
-                <button className="flex items-center gap-1 text-sm text-primary font-semibold hover:underline">
+                <button
+                  onClick={() => navigate("/cursos")}
+                  className="flex items-center gap-1 text-sm text-primary font-semibold hover:underline"
+                >
                   {course.progress > 0 ? "Continuar" : "Começar"}
                   <ChevronRight className="h-4 w-4" />
                 </button>

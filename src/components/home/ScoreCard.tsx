@@ -1,6 +1,7 @@
 import { TrendingUp, ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { useNavigate } from "react-router-dom";
 
 export function ScoreCard() {
   const score = 420;
@@ -15,6 +16,7 @@ export function ScoreCard() {
   };
 
   const { label, color } = getScoreLabel(score);
+  const navigate = useNavigate();
 
   return (
     <Card className="card-hover overflow-hidden">
@@ -41,7 +43,10 @@ export function ScoreCard() {
           <Progress value={percent} className="h-3 bg-muted [&>div]:gradient-primary [&>div]:rounded-full" />
         </div>
 
-        <button className="flex items-center gap-1 text-sm text-primary font-semibold mt-4 hover:underline">
+        <button
+          onClick={() => navigate("/score")}
+          className="flex pt-2 items-center gap-1 text-sm font-semibold text-primary hover:underline"
+        >
           Ver detalhes do score
           <ChevronRight className="h-4 w-4" />
         </button>

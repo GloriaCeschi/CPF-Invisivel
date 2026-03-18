@@ -31,7 +31,7 @@ import supabase from "@/utils/supabase";
 
 const menuItems = [
   { title: "Início", url: "/home", icon: Home },
-  { title: "Meu Score", url: "/score", icon: TrendingUp },
+  { title: "Jornada Financeira", url: "/score", icon: Route },
   { title: "Gamificação", url: "/gamificacao", icon: Gamepad2 },
   { title: "Crédito", url: "/credit", icon: CreditCard },
   { title: "Notificações", url: "/notifications", icon: Bell },
@@ -66,6 +66,15 @@ export function AppSidebar() {
     }
     loadProfile();
   }, [user]);
+
+  function getInitials(name?: string) {
+  if (!name) return "US"; // fallback para "Usuário"
+  const parts = name.trim().split(" ");
+  if (parts.length === 1) {
+    return parts[0].substring(0, 2).toUpperCase();
+  }
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
 
   return (
     <Sidebar collapsible="icon">
@@ -111,7 +120,7 @@ export function AppSidebar() {
         <div className="flex items-center gap-3">
           <Avatar className="h-9 w-9 flex-shrink-0">
             <AvatarFallback className="bg-primary text-secondary-foreground font-semibold text-sm">
-              CA
+              {getInitials(prof?.name)}
             </AvatarFallback>
           </Avatar>
           {!collapsed && (
