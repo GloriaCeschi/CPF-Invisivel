@@ -270,34 +270,9 @@ export default function BancosParceiros() {
         </div>
       </div>
 
-      <div className="text-center mt-10 mb-10">
+      
 
-        <h3 className="text-lg font-semibold text-foreground mb-4">
-          Por que usar a Renda Visível?
-        </h3>
-
-        <p className="text-gray-500">
-          ✔ Compare opções de crédito em um só lugar
-        </p>
-
-        <p className="text-gray-500">
-          ✔ Simulação rápida e transparente
-        </p>
-
-        <p className="text-gray-500">
-          ✔ Processo simples e seguro
-        </p>
-
-      </div>
-
-      <footer className="bg-foreground text-white text-center p-6 mt-10">
-        <p className="text-sm">
-          🔒 Seus dados são protegidos e utilizados apenas para análise de crédito.
-        </p>
-        <p className="font-semibold mt-2">
-          Renda Visível — Todos os direitos reservados.
-        </p>
-      </footer>
+     
 
       <button
         onClick={() => setChatOpen(true)}
