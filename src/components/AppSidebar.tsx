@@ -67,6 +67,15 @@ export function AppSidebar() {
     loadProfile();
   }, [user]);
 
+  function getInitials(name?: string) {
+  if (!name) return "US"; // fallback para "Usuário"
+  const parts = name.trim().split(" ");
+  if (parts.length === 1) {
+    return parts[0].substring(0, 2).toUpperCase();
+  }
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="p-4 border-b border-sidebar-border">
@@ -111,7 +120,7 @@ export function AppSidebar() {
         <div className="flex items-center gap-3">
           <Avatar className="h-9 w-9 flex-shrink-0">
             <AvatarFallback className="bg-primary text-secondary-foreground font-semibold text-sm">
-              CA
+              {getInitials(prof?.name)}
             </AvatarFallback>
           </Avatar>
           {!collapsed && (
