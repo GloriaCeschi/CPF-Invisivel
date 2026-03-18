@@ -31,7 +31,7 @@ import supabase from "@/utils/supabase";
 
 const menuItems = [
   { title: "Início", url: "/home", icon: Home },
-  { title: "Meu Score", url: "/score", icon: TrendingUp },
+  { title: "Jornada Financeira", url: "/score", icon: Route },
   { title: "Gamificação", url: "/gamificacao", icon: Gamepad2 },
   { title: "Crédito", url: "/credit", icon: CreditCard },
   { title: "Notificações", url: "/notifications", icon: Bell },
