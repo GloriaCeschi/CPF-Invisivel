@@ -104,7 +104,7 @@ export default function Cursos() {
             </TooltipProvider>
           </main>
 
-          <AppFooter />
+          
         </div>
       </div>
       </DashboardLayout>  
