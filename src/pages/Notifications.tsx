@@ -11,48 +11,74 @@ type notifications = {
     created_at: string
 };
 export default function Notifications() {
-    const { user, signOutUser } = useAuth();
 
+    function handleArchive(index: number) {
+        const item = notifications[index];
+
+        // remove da lista principal
+        const updated = notifications.filter((_, i) => i !== index);
+
+        // adiciona nos arquivados
+        setArchived(prev => [item, ...prev]);
+
+        setNotifications(updated);
+        setOpenMenuIndex(null);
+    }
+
+    function handleDelete(index: number) {
+        const updated = notifications.filter((_, i) => i !== index);
+
+        setNotifications(updated);
+        setOpenMenuIndex(null);
+    }
+
+
+
+
+    const { user, signOutUser } = useAuth();
+    const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
+    const [archived, setArchived] = useState<notifications[]>([]);
     const [notifications, setNotifications] = useState<notifications[]>([
-  {
-    "user_id": "user_01",
-    "key_id": "1",
-    "message": "Sua conta foi atualizada com sucesso",
-    "viewed": false,
-    "created_at": "2026-03-18T10:30:00"
-  },
-  {
-    "user_id": "user_02",
-    "key_id": "2",
-    "message": "Você recebeu uma nova mensagem",
-    "viewed": false,
-    "created_at": "2026-03-18T09:15:00"
-  },
-  {
-    "user_id": "user_03",
-    "key_id": "3",
-    "message": "Pagamento confirmado",
-    "viewed": true,
-    "created_at": "2026-03-17T18:40:00"
-  },
-  {
-    "user_id": "user_04",
-    "key_id": "4",
-    "message": "Novo acesso detectado",
-    "viewed": false,
-    "created_at": "2026-03-17T14:20:00"
-  },
-  {
-    "user_id": "user_05",
-    "key_id": "5",
-    "message": "Atualização disponível no sistema",
-    "viewed": true,
-    "created_at": "2026-03-16T11:00:00"
-  }
-]);
+
+        {
+            "user_id": "user_01",
+            "key_id": "1",
+            "message": "Sua conta foi atualizada com sucesso",
+            "viewed": false,
+            "created_at": "2026-03-18T10:30:00"
+        },
+        {
+            "user_id": "user_02",
+            "key_id": "2",
+            "message": "Você recebeu uma nova mensagem",
+            "viewed": false,
+            "created_at": "2026-03-18T09:15:00"
+        },
+        {
+            "user_id": "user_03",
+            "key_id": "3",
+            "message": "Pagamento confirmado",
+            "viewed": true,
+            "created_at": "2026-03-17T18:40:00"
+        },
+        {
+            "user_id": "user_04",
+            "key_id": "4",
+            "message": "Novo acesso detectado",
+            "viewed": false,
+            "created_at": "2026-03-17T14:20:00"
+        },
+        {
+            "user_id": "user_05",
+            "key_id": "5",
+            "message": "Atualização disponível no sistema",
+            "viewed": true,
+            "created_at": "2026-03-16T11:00:00"
+        }
+    ]);
 
     useEffect(() => {
-       // if (user) loadNotifications(user.id);
+        // if (user) loadNotifications(user.id);
     }, [user]);
 
     async function loadNotifications(user_id: string): Promise<void> {
@@ -80,7 +106,7 @@ export default function Notifications() {
 
                         {/* Header */}
                         <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-sm text-zinc-600 font-medium">Arquivados</h2>
+                            <h2 className="text-sm text-zinc-600 font-medium">Notificações</h2>
                             <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full font-semibold">
                                 {notifications.filter(n => !n.viewed).length} não lidas
                             </span>
@@ -127,20 +153,42 @@ export default function Notifications() {
                                         </div>
 
                                         {/* Botão */}
-                                        <button className="text-zinc-400 hover:text-zinc-700 transition">
-                                            •••
-                                        </button>
+                                        <div className="relative">
+                                            <button
+                                                onClick={() =>
+                                                    setOpenMenuIndex(openMenuIndex === index ? null : index)
+                                                }
+                                                className="text-zinc-400 hover:text-zinc-700 transition px-2 py-1 rounded-md"
+                                            >
+                                                •••
+                                            </button>
+
+                                            {openMenuIndex === index && (
+                                                <div className="absolute right-0 mt-2 w-36 bg-white border border-black/20 rounded-lg shadow-lg z-50 animate-fade-in">
+
+                                                    <button
+                                                        onClick={() => handleArchive(index)}
+                                                        className="w-full text-left px-3 py-2 text-sm text-black font-semibold hover:bg-zinc-100 flex items-center gap-2"
+                                                    >
+                                                        📥 Arquivar
+                                                    </button>
+                                                    <div className="border-t border-black/20 my-1"></div>
+                                                    <button
+                                                        onClick={() => handleDelete(index)}
+                                                        className="w-full text-left px-3 py-2 text-sm text-black font-semibold hover:bg-red-50 flex items-center gap-2"
+                                                    >
+                                                        🗑️ Deletar
+                                                    </button>
+
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 );
                             })}
                         </div>
 
-                        {/* Footer */}
-                        <div className="flex justify-center mt-4 gap-2">
-                            <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                            <span className="w-2 h-2 bg-zinc-300 rounded-full"></span>
-                            <span className="w-2 h-2 bg-zinc-300 rounded-full"></span>
-                        </div>
+
                     </div>
                 </div>
             </DashboardLayout>
