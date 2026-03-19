@@ -3,9 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 const offers = [
-  { bank: "FinBank Digital", limit: "R$ 500,00", status: "Pré-aprovado", available: true },
-  { bank: "CrediJá", limit: "R$ 300,00", status: "Em análise", available: false },
-  { bank: "NovaCred", limit: "R$ 1.000,00", status: "Score 600+", available: false },
+  { bank: "Caixa Econômica Federal", limit: "R$ 5.000", status: "Pré-aprovado", available: true },
+  { bank: "Banco Inter", limit: "R$ 6.000", status: "Em análise", available: false },
+  { bank: "Nubank", limit: "R$ 7.000", status: "Score 600+", available: false },
 ];
 
 export function CreditAreaCard() {
