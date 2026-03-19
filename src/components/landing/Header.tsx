@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Menu, X, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { User } from "lucide-react";
 
 const navLinks = [
   { label: "Início", href: "#hero" },
@@ -66,12 +67,11 @@ const Header = () => {
 
         {/* CTA Buttons */}
         <div className="hidden md:flex items-center gap-3">
-          <Link to="/auth"  className="border-primary-foreground/30 text-foreground hover:bg-primary/10">
-            Login
-          </Link>
+          
 
-          <Link to="/auth" className="bg-primary text-primary-foreground hover:bg-primary/90 transition-opacity">
-            Cadastro
+          <Link  to="/auth" className="inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border bg-background hover:text-accent-foreground h-6 rounded-md text-base px-1 py-1 font-semibold border-primary text-primary hover:bg-primary">
+            <User className="w-4 h-4" />
+            Área Exclusiva
           </Link>
         </div>
 
@@ -102,8 +102,10 @@ const Header = () => {
               </button>
             ))}
             <div className="flex gap-3 pt-2">
-              <Link to="/auth"  className="flex-1 border-primary/30 text-foreground">Login</Link>
-              <Link to="/auth" className="flex-1 bg-primary text-primary-foreground">Cadastro</Link>
+              <Link  to="/auth" className="inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border bg-background hover:text-accent-foreground h-6 rounded-md text-base px-1 py-1 font-semibold border-primary text-primary hover:bg-primary">
+            <User className="w-4 h-4" />
+            Área Exclusiva
+          </Link>
             </div>
           </nav>
         </motion.div>
