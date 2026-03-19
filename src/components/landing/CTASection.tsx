@@ -30,12 +30,12 @@ const CTASection = () => {
                 <h3 className="font-display text-3xl md:text-4xl font-bold text-primary-foreground mb-4 leading-tight">
                   Passe a existir financeiramente hoje
                 </h3>
-                <p className="text-primary-foreground/70 text-lg mb-6">
+                <p className="text-primary-foreground text-lg mb-6">
                   Cadastre-se gratuitamente e comece a construir seu score alternativo agora mesmo.
                 </p>
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3 ">
                   {["Sem taxas de cadastro", "100% online e seguro", "Resultado em semanas"].map((t) => (
-                    <div key={t} className="flex items-center gap-2 text-primary-foreground/80">
+                    <div key={t} className="flex items-center gap-2 text-primary-foreground">
                       <CheckCircle2 className="w-4 h-4 text-primary-foreground" />
                       <span className="text-sm">{t}</span>
                     </div>
