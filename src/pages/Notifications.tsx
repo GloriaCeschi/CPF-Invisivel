@@ -90,7 +90,7 @@ export default function Notifications() {
 
 
     useEffect(() => {
-        if (user) loadNotifications(user.id);
+        // if (user) loadNotifications(user.id);
     }, [user]);
 
     async function loadNotifications(user_id: string): Promise<void> {
