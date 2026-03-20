@@ -18,7 +18,7 @@ export default function Auth() {
   const [tentativa, setTentativa] = useState(0);
   const [login, setLogin] = useState(true);
 
-  const [user, setUser] = useState<User>({ email: "", pass: "" });
+  const [user, setUser] = useState<User>({ name: "", email: "", pass: "" });
   const [users, setUsers] = useState<User[]>([]);
 
   async function checkedLogin(e: React.FormEvent) {

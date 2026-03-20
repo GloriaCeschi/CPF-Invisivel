@@ -77,21 +77,31 @@ export type Service = {
   criator_id: string
 }
 
+type Mensagem = {
+  texto: string;
+  autor: "bot" | "user";
+};
+
 export default function BancosParceiros() {
   const [chatOpen, setChatOpen] = useState(false);
-  const { user, signOutUser } = useAuth();
 
-
+  const [mensagens, setMensagens] = useState<Mensagem[]>([
+    { texto: "Olá! 👋 Como posso ajudar você hoje?", autor: "bot" }
+  ]);
+  const [input, setInput] = useState("");
+  const { user } = useAuth();
 
   const [valor, setValor] = useState("3000");
   const [prazo, setPrazo] = useState("12");
   const [taxa, setTaxa] = useState("3.1");
 
-  const [banks, Setbanks] = useState<banks[]>([]);
+  const [banks, setBanks] = useState<banks[]>([]);
 
   useEffect(() => {
-    if (user) syncCredit(user.id);
-  }, []);
+    if (user?.id) {
+      syncCredit(user.id);
+    }
+  }, [user]);
 
   async function syncCredit(user_id: string): Promise<void> { //"void" é 
     const { data, error } = await supabase.from('banks')
@@ -99,10 +109,11 @@ export default function BancosParceiros() {
 
     if (error) {
       alert(error.message)
+
       return
     }
 
-    Setbanks(data) // "data" é dados
+    setBanks(data) // "data" é dados
 
   }
 
@@ -114,6 +125,46 @@ export default function BancosParceiros() {
       ? (valorNum * taxaNum * Math.pow(1 + taxaNum, prazoNum)) /
       (Math.pow(1 + taxaNum, prazoNum) - 1)
       : valorNum / prazoNum;
+
+  function responder(pergunta: string) {
+    const texto = pergunta.toLowerCase();
+
+    if (texto.includes("taxa") || texto.includes("juros")) {
+      return "As taxas variam entre 2.5% e 3.1% ao mês.";
+    }
+
+    if (texto.includes("prazo")) {
+      return "Os prazos vão de 6 a 24 meses.";
+    }
+
+    if (texto.includes("limite")) {
+      return "Os limites podem chegar até R$ 8.000.";
+    }
+
+    if (texto.includes("banco")) {
+      return "Trabalhamos com Caixa, Inter e Nubank.";
+    }
+
+    return "Boa pergunta! 😊 Estamos analisando sua dúvida.";
+  }
+
+  function enviarMensagem() {
+    console.log("clicou enviar");
+    if (!input.trim()) return;
+
+    const mensagemUser = {
+      texto: input,
+      autor: "user" as const,
+    };
+
+    const mensagemBot = {
+      texto: responder(input),
+      autor: "bot" as const,
+    };
+
+    setMensagens((prev) => [...prev, mensagemUser, mensagemBot]);
+    setInput("");
+  }
 
   return (
     <DashboardLayout>
@@ -128,7 +179,7 @@ export default function BancosParceiros() {
           Bancos Parceiros
         </h2>
         <p className="text-center text-muted-foreground max-w-xl mx-auto mb-10 px-4">
-          Compare taxas, limites e prazos entre nossos bancos parceiros < br />
+          Compare taxas, limites e prazos entre nossos bancos parceiros <br />
           e enconre o crédito ideal para a sua realidade.
         </p>
 
@@ -203,7 +254,7 @@ export default function BancosParceiros() {
                 </label>
                 <select
                   value={prazo}
-                  onChange={(e) => setPrazo(e.target.value)}
+                  onChange={(e) => setPrazo((e.target.value))}
                   className="w-full border border-input rounded-lg px-3 py-2 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="6">6 meses</option>
@@ -214,11 +265,11 @@ export default function BancosParceiros() {
               </div>
               <div>
                 <label className="text-sm text-muted-foreground mb-1 block">
-                  Taxa 
+                  Taxa
                 </label>
                 <select
                   value={taxa}
-                  onChange={(e) => setTaxa(e.target.value)}
+                  onChange={(e) => setTaxa((e.target.value))}
                   className="w-full border border-input rounded-lg px-3 py-2 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="2.5">2.5%</option>
@@ -244,7 +295,7 @@ export default function BancosParceiros() {
                     Total a pagar
                   </p>
                   <p className="text-sm font-bold text-foreground ">
-                    R$ {parcela}
+                    R$ {(parcela * prazoNum).toFixed(2)}
                   </p>
                 </div>
               </div>
@@ -270,34 +321,9 @@ export default function BancosParceiros() {
         </div>
       </div>
 
-      <div className="text-center mt-10 mb-10">
 
-        <h3 className="text-lg font-semibold text-foreground mb-4">
-          Por que usar a Renda Visível?
-        </h3>
 
-        <p className="text-gray-500">
-          ✔ Compare opções de crédito em um só lugar
-        </p>
 
-        <p className="text-gray-500">
-          ✔ Simulação rápida e transparente
-        </p>
-
-        <p className="text-gray-500">
-          ✔ Processo simples e seguro
-        </p>
-
-      </div>
-
-      <footer className="bg-foreground text-white text-center p-6 mt-10">
-        <p className="text-sm">
-          🔒 Seus dados são protegidos e utilizados apenas para análise de crédito.
-        </p>
-        <p className="font-semibold mt-2">
-          Renda Visível — Todos os direitos reservados.
-        </p>
-      </footer>
 
       <button
         onClick={() => setChatOpen(true)}
@@ -319,10 +345,36 @@ export default function BancosParceiros() {
             </button>
           </div>
 
-          <div className="p-4">
-            <p className="text-sm text-foreground">
-              Olá! 👋 Como posso ajudar você hoje?
-            </p>
+          <div className="p-4 h-60 overflow-y-auto">
+            {mensagens.map((msg, index) => (
+              <p
+                key={index}
+                className={`text-sm mb-2 p-2 rounded-lg max-w-[80%] ${msg.autor === "user"
+                  ? "bg-primary text-white ml-auto text-right"
+                  : "bg-gray-200 text-black mr-auto text-left"
+                  }`}
+              >
+                {msg.texto}
+              </p>
+            ))}
+          </div>
+
+
+          <div className="flex border-t">
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Digite sua mensagem..."
+              style={{ color: "black", background: "white", caretColor: "black" }}
+              className="flex-1 p-2 text-sm outline-none"
+            />
+
+            <button
+              onClick={enviarMensagem}
+              className="bg-primary text-white px-4"
+            >
+              Enviar
+            </button>
           </div>
 
         </div>
