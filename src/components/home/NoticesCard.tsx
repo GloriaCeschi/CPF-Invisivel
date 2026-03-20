@@ -62,3 +62,60 @@ export function NoticesCard() {
     </Card>
   );
 }
+
+{/*
+import { useEffect, useState } from "react";
+import { Bell } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+type Notice = {
+  icon: string; // pode ser o nome do ícone ou algum identificador
+  color: string;
+  bg: string;
+  title: string;
+  desc: string;
+  time: string;
+};
+
+export function NoticesCard() {
+  const [notices, setNotices] = useState<Notice[]>([]);
+
+  useEffect(() => {
+    async function loadNotices() {
+      try {
+        const res = await fetch("/notifications"); // rota da sua API
+        const data = await res.json();
+        setNotices(data);
+      } catch (err) {
+        console.error("Erro ao carregar notificações", err);
+      }
+    }
+    loadNotices();
+  }, []);
+
+  return (
+    <Card className="card-hover">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <Bell className="h-5 w-5 text-support" />
+          Avisos e Notificações
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {notices.map((n, i) => (
+          <div key={i} className="flex gap-3 items-start">
+            <div className={`w-9 h-9 rounded-lg ${n.bg} flex items-center justify-center flex-shrink-0`}>
+              {/* Aqui você pode mapear o nome do ícone para o componente real */}
+              {/* Exemplo: n.icon === "TrendingUp" ? <TrendingUp ... /> : null */} 
+            /* </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold">{n.title}</p>
+              <p className="text-xs text-muted-foreground">{n.desc}</p>
+              <p className="text-xs text-muted-foreground mt-1">{n.time}</p>
+            </div>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+} */
