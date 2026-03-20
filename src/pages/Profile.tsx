@@ -25,6 +25,7 @@ type Profile = {
     phone?: string,
     state?: string,
     city?: string,
+    photo_url?: string,
 };
 
 const Profile = () => {
@@ -73,11 +74,44 @@ const Profile = () => {
     alert("Perfil atualizado com sucesso")
   };
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPhotoUrl(url);
+    if (!file) return;
+
+    try {
+      // Nome único para o arquivo
+      const fileName = `${user.id}-${Date.now()}.${file.name.split(".").pop()}`;
+      // Upload para Supabase Storage
+      const {error} = await supabase.storage
+      .from("avatars")
+      .upload(fileName, file);
+
+      if (error) {
+        toast.error("Erro ao enviar foto:"+ error.message);
+        return;
+      }
+      // Obter URL pública
+      const {data} = supabase.storage.from("avatars").getPublicUrl(fileName);
+      const publicUrl = data.publicUrl;
+
+      // Atualizar estado local
+      setPhotoUrl(publicUrl);
+
+      //Salvar no perfil
+      const {error: updateError} = await supabase
+      .from("profiles")
+      .update({photo_url: publicUrl})
+      .eq("user_id", user.id);
+
+      if (updateError){
+        toast.error("Erro ao salvar foto no perfil:" + updateError.message);
+        return;
+      }
+
+      toast.success("Foto de perfil atualizada!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Erro inesperado ao enviar foto.");
     }
   };
 
@@ -104,7 +138,7 @@ const Profile = () => {
               <div className="relative group">
                 <div className="w-28 h-28 rounded-full rgb(255, 240, 242) border-4 border-primary/20 overflow-hidden flex items-center justify-center">
                   {photoUrl ? (
-                    <img src={photoUrl} alt="Foto de perfil" className="w-full h-full object-cover" />
+                    <img src={photoUrl || prof.photo_url} alt="Foto de perfil" className="w-full h-full object-cover" />
                   ) : (
                     <span className="text-3xl font-bold text-primary">
                       {prof.name ? prof.name[0].toUpperCase() : "?"}
