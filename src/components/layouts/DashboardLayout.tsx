@@ -6,7 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
 import supabase from "@/utils/supabase";
 import { useNavigate } from "react-router-dom";
-import ChatBot from "..//gamification/ChatBot";
+
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
@@ -60,7 +60,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </main>
 
           {/* CHAT AQUI */}
-          <ChatBot />
+          
         </div>
       </div>
     </SidebarProvider>
