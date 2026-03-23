@@ -80,6 +80,7 @@ export type Service = {
 type Mensagem = {
   texto: string;
   autor: "bot" | "user";
+  hora?: string;
 };
 
 export default function BancosParceiros() {
@@ -89,6 +90,9 @@ export default function BancosParceiros() {
     { texto: "Olá! 👋 Como posso ajudar você hoje?", autor: "bot" }
   ]);
   const [input, setInput] = useState("");
+  const [nome, setNome] = useState("");
+  const [etapa, setEtapa] = useState("inicio");
+  const [typing, setTyping] = useState(false);
   const { user } = useAuth();
 
   const [valor, setValor] = useState("3000");
@@ -102,6 +106,16 @@ export default function BancosParceiros() {
       syncCredit(user.id);
     }
   }, [user]);
+  function getHoraAtual() {
+    const now = new Date();
+
+    const hora = String(now.getHours()).padStart(2, "0");
+    const minuto = String(now.getMinutes()).padStart(2, "0");
+
+    return `${hora}:${minuto}`;
+  }
+
+
 
   async function syncCredit(user_id: string): Promise<void> { //"void" é 
     const { data, error } = await supabase.from('banks')
@@ -115,6 +129,9 @@ export default function BancosParceiros() {
 
     setBanks(data) // "data" é dados
 
+
+
+
   }
 
   const valorNum = parseFloat(valor) || 0;
@@ -126,47 +143,100 @@ export default function BancosParceiros() {
       (Math.pow(1 + taxaNum, prazoNum) - 1)
       : valorNum / prazoNum;
 
-  function responder(pergunta: string) {
-    const texto = pergunta.toLowerCase();
+  function gerarResposta(msg: string) {
+    const texto = msg.toLowerCase();
 
-    if (texto.includes("taxa") || texto.includes("juros")) {
-      return "As taxas variam entre 2.5% e 3.1% ao mês.";
+    // ETAPA 1 - perguntar nome
+    if (etapa === "inicio") {
+      setEtapa("nome");
+      return "Oi! 👋 Qual seu nome?";
+    }
+
+    // ETAPA 2 - salvar nome formatado
+    if (etapa === "nome") {
+      const nomeFormatado =
+        msg.charAt(0).toUpperCase() + msg.slice(1).toLowerCase();
+
+      setNome(nomeFormatado);
+      setEtapa("menu");
+
+      return `Prazer, ${nomeFormatado}! 😊 Como posso te ajudar?\n\nVocê pode perguntar sobre:\n- Taxas\n- Prazos\n- Bancos\n- Empréstimos`;
+    }
+
+    // ETAPA 3 - conversa normal
+
+    if (texto.includes("taxa")) {
+      return `${nome}, veja as taxas:\n` +
+        bancos.map(b => `${b.nome}: ${b.taxa}`).join("\n");
     }
 
     if (texto.includes("prazo")) {
-      return "Os prazos vão de 6 a 24 meses.";
-    }
-
-    if (texto.includes("limite")) {
-      return "Os limites podem chegar até R$ 8.000.";
+      return `${nome}, os prazos vão até 24 meses dependendo do banco.`;
     }
 
     if (texto.includes("banco")) {
-      return "Trabalhamos com Caixa, Inter e Nubank.";
+      return `${nome}, trabalhamos com Caixa, Inter e Nubank.`;
     }
 
-    return "Boa pergunta! 😊 Estamos analisando sua dúvida.";
+    if (texto.includes("como funciona")) {
+      return `${nome}, o empréstimo funciona por análise de crédito. O banco avalia seu perfil antes de aprovar.`;
+    }
+
+    if (texto.includes("empréstimo") || texto.includes("simular")) {
+      return `${nome}, me diga o valor e o prazo que você quer 😉`;
+    }
+
+    return `${nome}, não entendi muito bem 🤔 Pode explicar melhor?`;
   }
 
-  function enviarMensagem() {
+  async function enviarMensagem() {
     console.log("clicou enviar");
+
     if (!input.trim()) return;
 
+    const mensagemAtual = input;
+
     const mensagemUser = {
-      texto: input,
+      texto: mensagemAtual,
       autor: "user" as const,
+      hora: getHoraAtual(),
     };
 
-    const mensagemBot = {
-      texto: responder(input),
-      autor: "bot" as const,
-    };
-
-    setMensagens((prev) => [...prev, mensagemUser, mensagemBot]);
+    setMensagens((prev) => [...prev, mensagemUser]);
     setInput("");
+
+    setTyping(true);
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const resposta = gerarResposta(mensagemAtual);
+
+      const mensagemBot = {
+        texto: resposta,
+        autor: "bot" as const,
+        hora: getHoraAtual(),
+      };
+
+      setMensagens((prev) => [...prev, mensagemBot]);
+    } catch (error) {
+      setMensagens((prev) => [
+        ...prev,
+        {
+          texto: "Erro ao responder 😕",
+          autor: "bot",
+          hora: getHoraAtual(),
+        },
+      ]);
+    }
+
+    setTyping(false);
   }
 
   return (
+
+
+
     <DashboardLayout>
       <div className="min-h-screen bg-hsl">
         {/* LOGO */}
@@ -346,22 +416,42 @@ export default function BancosParceiros() {
           </div>
 
           <div className="p-4 h-60 overflow-y-auto">
+
             {mensagens.map((msg, index) => (
-              <p
+              <div
                 key={index}
-                className={`text-sm mb-2 p-2 rounded-lg max-w-[80%] ${msg.autor === "user"
+                className={`text-sm px-3 py-1 mb-1 max-w-[60%] w-fit break-words rounded-lg ${msg.autor === "user"
                   ? "bg-primary text-white ml-auto text-right"
                   : "bg-gray-200 text-black mr-auto text-left"
                   }`}
               >
-                {msg.texto}
-              </p>
+                <p>{msg.texto}</p>
+
+                {msg.hora && (
+                  <span className="block text-[10px] opacity-60 mt-1">
+                    {msg.hora}
+                  </span>
+                )}
+              </div>
             ))}
+
+            {typing && (
+              <div className="text-sm px-3 py-2 mb-1 w-fit rounded-lg bg-gray-200 text-black mr-auto">
+                digitando...
+              </div>
+            )}
+
           </div>
 
 
           <div className="flex border-t">
             <input
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  enviarMensagem();
+                }
+              }}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Digite sua mensagem..."
