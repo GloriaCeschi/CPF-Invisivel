@@ -75,28 +75,34 @@ const Profile = () => {
   };
 
   const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+   
   const file = e.target.files?.[0];
   if (!file) return;
-
   try {
-    const fileName = `${user.id}-${Date.now()}.${file.name.split(".").pop()}`;
+    
+     const fileName = `${user.id}-${Date.now()}.${file.name.split(".").pop()}`;
 
-    const { error } = await supabase.storage
-      .from("avatars")
-      .upload(fileName, file);
-
-    if (error) {
+  
+      const { data, error } = await supabase.storage.from('avatars').upload(fileName , file)  
+       if (error) {
       toast.error("Erro ao enviar foto: " + error.message);
       return;
     }
+    console.log(data)
+  
+  const { data: publicData } = supabase.storage
+    .from("avatars")
+    .getPublicUrl(fileName);
 
-    const { data } = supabase.storage.from("avatars").getPublicUrl(fileName);
-    const publicUrl = data.publicUrl;
+const publicUrl = publicData.publicUrl;
+
+
+    console.log(publicUrl)
 
     // Salvar no banco com upsert
     const { error: updateError } = await supabase
       .from("profiles")
-      .upsert({ user_id: user.id, photo_url: publicUrl }, { onConflict: "user_id" });
+      .upsert({user_id: user.id, photo_url: publicUrl });
 
     if (updateError) {
       toast.error("Erro ao salvar foto no perfil: " + updateError.message);
