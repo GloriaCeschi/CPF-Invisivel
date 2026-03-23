@@ -169,8 +169,8 @@ export default function IncomeModal({ open, onClose, onSaved, editingIncome }: I
             <Label className="text-[hsl(218,26%,29%)]">Comprovante (PDF ou imagem)</Label>
             <div className="flex items-center gap-2">
               <label className="flex-1 flex items-center gap-2 rounded-md border border-border bg-muted px-3 py-2 text-sm cursor-pointer hover:bg-muted/80 transition-colors text-[hsl(218,26%,29%)]">
-                <Upload className="h-4 w-4 text-[hsl(218,26%,29%)]" />
-                <span className="text-[hsl(218,26%,29%)] truncate">
+                <Upload className="h-4 w-4 flex-shrink-0 text-[hsl(218,26%,29%)]" />
+                <span className="text-[hsl(218,26%,29%)] ">
                   {file ? file.name : "Selecionar arquivo"}
                 </span>
                 <input
