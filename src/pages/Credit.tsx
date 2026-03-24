@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { MessageCircle, X } from "lucide-react"
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import supabase from "../utils/supabase";
@@ -17,7 +16,7 @@ function solicitar(nomeBanco: string) {
 
 const bancos = [
   {
-    nome: "Caixa Econômica Fedeal",
+    nome: "Caixa Econômica Federal",
     icone: "🏦",
     taxa: "2.5% ao mês",
     limite: "R$ 5.000",
@@ -66,7 +65,7 @@ export type banks = {
   interest?: number,
   max_amount?: number,
   max_term?: number,
-  criator_id: string
+  user_id: string
 }
 
 export type Service = {
@@ -77,22 +76,10 @@ export type Service = {
   criator_id: string
 }
 
-type Mensagem = {
-  texto: string;
-  autor: "bot" | "user";
-  hora?: string;
-};
+
 
 export default function BancosParceiros() {
-  const [chatOpen, setChatOpen] = useState(false);
 
-  const [mensagens, setMensagens] = useState<Mensagem[]>([
-    { texto: "Olá! 👋 Como posso ajudar você hoje?", autor: "bot" }
-  ]);
-  const [input, setInput] = useState("");
-  const [nome, setNome] = useState("");
-  const [etapa, setEtapa] = useState("inicio");
-  const [typing, setTyping] = useState(false);
   const { user } = useAuth();
 
   const [valor, setValor] = useState("3000");
@@ -100,20 +87,14 @@ export default function BancosParceiros() {
   const [taxa, setTaxa] = useState("3.1");
 
   const [banks, setBanks] = useState<banks[]>([]);
+  const listaBancos = banks.length > 0 ? banks : bancos;
 
   useEffect(() => {
     if (user?.id) {
       syncCredit(user.id);
     }
   }, [user]);
-  function getHoraAtual() {
-    const now = new Date();
 
-    const hora = String(now.getHours()).padStart(2, "0");
-    const minuto = String(now.getMinutes()).padStart(2, "0");
-
-    return `${hora}:${minuto}`;
-  }
 
 
 
@@ -127,7 +108,7 @@ export default function BancosParceiros() {
       return
     }
 
-    setBanks(data) // "data" é dados
+    setBanks(data || []) // "data" é dados
 
 
 
@@ -143,95 +124,10 @@ export default function BancosParceiros() {
       (Math.pow(1 + taxaNum, prazoNum) - 1)
       : valorNum / prazoNum;
 
-  function gerarResposta(msg: string) {
-    const texto = msg.toLowerCase();
 
-    // ETAPA 1 - perguntar nome
-    if (etapa === "inicio") {
-      setEtapa("nome");
-      return "Oi! 👋 Qual seu nome?";
-    }
 
-    // ETAPA 2 - salvar nome formatado
-    if (etapa === "nome") {
-      const nomeFormatado =
-        msg.charAt(0).toUpperCase() + msg.slice(1).toLowerCase();
 
-      setNome(nomeFormatado);
-      setEtapa("menu");
 
-      return `Prazer, ${nomeFormatado}! 😊 Como posso te ajudar?\n\nVocê pode perguntar sobre:\n- Taxas\n- Prazos\n- Bancos\n- Empréstimos`;
-    }
-
-    // ETAPA 3 - conversa normal
-
-    if (texto.includes("taxa")) {
-      return `${nome}, veja as taxas:\n` +
-        bancos.map(b => `${b.nome}: ${b.taxa}`).join("\n");
-    }
-
-    if (texto.includes("prazo")) {
-      return `${nome}, os prazos vão até 24 meses dependendo do banco.`;
-    }
-
-    if (texto.includes("banco")) {
-      return `${nome}, trabalhamos com Caixa, Inter e Nubank.`;
-    }
-
-    if (texto.includes("como funciona")) {
-      return `${nome}, o empréstimo funciona por análise de crédito. O banco avalia seu perfil antes de aprovar.`;
-    }
-
-    if (texto.includes("empréstimo") || texto.includes("simular")) {
-      return `${nome}, me diga o valor e o prazo que você quer 😉`;
-    }
-
-    return `${nome}, não entendi muito bem 🤔 Pode explicar melhor?`;
-  }
-
-  async function enviarMensagem() {
-    console.log("clicou enviar");
-
-    if (!input.trim()) return;
-
-    const mensagemAtual = input;
-
-    const mensagemUser = {
-      texto: mensagemAtual,
-      autor: "user" as const,
-      hora: getHoraAtual(),
-    };
-
-    setMensagens((prev) => [...prev, mensagemUser]);
-    setInput("");
-
-    setTyping(true);
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const resposta = gerarResposta(mensagemAtual);
-
-      const mensagemBot = {
-        texto: resposta,
-        autor: "bot" as const,
-        hora: getHoraAtual(),
-      };
-
-      setMensagens((prev) => [...prev, mensagemBot]);
-    } catch (error) {
-      setMensagens((prev) => [
-        ...prev,
-        {
-          texto: "Erro ao responder 😕",
-          autor: "bot",
-          hora: getHoraAtual(),
-        },
-      ]);
-    }
-
-    setTyping(false);
-  }
 
   return (
 
@@ -255,26 +151,56 @@ export default function BancosParceiros() {
 
         {/* CARDS */}
         <div className="flex justify-center gap-6 flex-wrap px-6 pb-8">
-          {bancos.map((banco, index) => (
+          {listaBancos.map((banco: any, index) => (
             <div
-              key={index}
+              key={banco.id || index}
               className="bg-card p-6 rounded-xl w-[280px] shadow-[0_4px_20px_rgba(0,0,0,0.06)] border border-card-border"
             >
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-xl text-primary">{banco.icone}</span>
+                <span className="text-xl text-primary">
+                  {banco.icone || "🏦"}
+                </span>
+
                 <h3 className="text-base font-semibold text-card-foreground">
-                  {banco.nome}
+                  {banco.name || banco.nome}
                 </h3>
               </div>
 
               <div className="space-y-1 mb-4">
-                <DataRow label="Taxa" value={banco.taxa} />
-                <DataRow label="Limite" value={banco.limite} />
-                <DataRow label="Prazo" value={banco.prazo} />
+                <DataRow
+                  label="Taxa"
+                  value={
+                    banco.interest
+                      ? banco.interest + "% ao mês"
+                      : banco.taxa
+                  }
+                />
+
+                <DataRow
+                  label="Limite"
+                  value={
+                    banco.max_amount
+                      ? "R$ " + banco.max_amount
+                      : banco.limite
+                  }
+                />
+
+                <DataRow
+                  label="Prazo"
+                  value={
+                    banco.max_term
+                      ? banco.max_term + " meses"
+                      : banco.prazo
+                  }
+                />
               </div>
 
               <div className="space-y-1 mb-5">
-                {banco.vantagens.map((v, i) => (
+                {(banco.vantagens || [
+                  "Aprovação rápida",
+                  "Sem burocracia",
+                  "Resposta rápida"
+                ]).map((v: any, i: number) => (
                   <p key={i} className="text-sm text-card-foreground">
                     <span className="text-primary">✔</span> {v}
                   </p>
@@ -282,7 +208,7 @@ export default function BancosParceiros() {
               </div>
 
               <button
-                onClick={() => solicitar(banco.nome)}
+                onClick={() => solicitar(banco.name || banco.nome)}
                 className="w-full bg-primary text-primary-foreground border-none py-2.5 rounded-lg cursor-pointer font-medium text-sm hover:opacity-90 transition-opacity"
               >
                 Solicitar Empréstimo
@@ -290,7 +216,6 @@ export default function BancosParceiros() {
             </div>
           ))}
         </div>
-
         {/* SIMULADOR */}
         <div className="max-w-2xl mx-auto px-6 pb-12">
           <div className="bg-card p-6 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] border border-card-border">
@@ -395,80 +320,8 @@ export default function BancosParceiros() {
 
 
 
-      <button
-        onClick={() => setChatOpen(true)}
-        className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-primary rounded-full shadow-lg flex items-center justify-center"
-      >
-        <MessageCircle className="w-6 h-6 text-white" />
-      </button>
-
-      {chatOpen && (
-        <div className="fixed bottom-40 right-6 z-50 w-80 bg-white rounded-2xl shadow-lg border overflow-hidden">
-
-          <div className="bg-primary p-4 flex justify-between items-center">
-            <span className="text-white font-semibold text-sm">
-              Renda Visível Assistente
-            </span>
-
-            <button onClick={() => setChatOpen(false)}>
-              <X className="w-4 h-4 text-white" />
-            </button>
-          </div>
-
-          <div className="p-4 h-60 overflow-y-auto">
-
-            {mensagens.map((msg, index) => (
-              <div
-                key={index}
-                className={`text-sm px-3 py-1 mb-1 max-w-[60%] w-fit break-words rounded-lg ${msg.autor === "user"
-                  ? "bg-primary text-white ml-auto text-right"
-                  : "bg-gray-200 text-black mr-auto text-left"
-                  }`}
-              >
-                <p>{msg.texto}</p>
-
-                {msg.hora && (
-                  <span className="block text-[10px] opacity-60 mt-1">
-                    {msg.hora}
-                  </span>
-                )}
-              </div>
-            ))}
-
-            {typing && (
-              <div className="text-sm px-3 py-2 mb-1 w-fit rounded-lg bg-gray-200 text-black mr-auto">
-                digitando...
-              </div>
-            )}
-
-          </div>
 
 
-          <div className="flex border-t">
-            <input
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  enviarMensagem();
-                }
-              }}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Digite sua mensagem..."
-              style={{ color: "black", background: "white", caretColor: "black" }}
-              className="flex-1 p-2 text-sm outline-none"
-            />
-
-            <button
-              onClick={enviarMensagem}
-              className="bg-primary text-white px-4"
-            >
-              Enviar
-            </button>
-          </div>
-
-        </div>
-      )}
     </DashboardLayout>
   );
 }
