@@ -5,7 +5,7 @@ import { Plus, Pencil, Trash2, FileText } from "lucide-react";
 import  supabase  from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import IncomeModal from "./IncomeModal";
-import type { Tables } from "@/integrations/supabase/types";
+import type { Income } from "@/types/jornada";
 
 const RECEIPT_LABELS: Record<string, string> = {
   pix: "PIX",
