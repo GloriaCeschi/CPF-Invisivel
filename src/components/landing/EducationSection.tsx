@@ -2,7 +2,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { BookOpen, Gamepad2, Trophy, Target, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DashboardLayout } from "@/components/layouts/DashboardLayout";
+
 
 const courses = [
   { icon: BookOpen, title: "Organização Financeira", desc: "Aprenda a controlar seus ganhos informais e criar uma reserva." },
@@ -22,7 +22,7 @@ const EducationSection = () => {
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <DashboardLayout>
+    
       <section id="educacao" className="py-20 md:py-28 bg-background" ref={ref}>
         <div className="container mx-auto px-4 md:px-8">
           <motion.div
@@ -102,7 +102,7 @@ const EducationSection = () => {
 
 
       </section>
-    </DashboardLayout>
+  
   );
 };
 
