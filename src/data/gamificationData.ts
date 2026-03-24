@@ -68,3 +68,10 @@ export const USER_MOCK = {
   scoreContribution: 12,
   scoreTotal: 48,
 };
+
+export const ACTIVITY_ICONS: Record<Activity["type"], string> = {
+  aula: "📘",
+  comprovante: "📄",
+  quiz: "❓",
+  meta: "🎯",
+};
