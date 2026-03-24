@@ -50,6 +50,51 @@ export type Database = {
         }
         Relationships: []
       }
+      bills: {
+        Row: {
+          amount: number
+          created_at: string
+          current_installment: number
+          description: string | null
+          id: string
+          next_due_date: string | null
+          payment_date: string
+          receipt_url: string | null
+          status: string
+          title: string
+          total_installments: number
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          current_installment?: number
+          description?: string | null
+          id?: string
+          next_due_date?: string | null
+          payment_date?: string
+          receipt_url?: string | null
+          status?: string
+          title: string
+          total_installments?: number
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          current_installment?: number
+          description?: string | null
+          id?: string
+          next_due_date?: string | null
+          payment_date?: string
+          receipt_url?: string | null
+          status?: string
+          title?: string
+          total_installments?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       classes: {
         Row: {
           certificate: string | null
@@ -110,6 +155,42 @@ export type Database = {
           points?: number | null
           progress?: number
           title?: string
+        }
+        Relationships: []
+      }
+      incomes: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          id: string
+          receipt_type: string
+          receipt_url: string | null
+          recorded_at: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          receipt_type?: string
+          receipt_url?: string | null
+          recorded_at?: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          receipt_type?: string
+          receipt_url?: string | null
+          recorded_at?: string
+          title?: string
+          user_id?: string
         }
         Relationships: []
       }

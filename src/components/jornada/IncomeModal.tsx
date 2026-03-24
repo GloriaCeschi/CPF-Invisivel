@@ -9,13 +9,13 @@ import  supabase  from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import { Upload } from "lucide-react";
-import type { Tables } from "@/integrations/supabase/types";
+import type { Income } from "@/types/jornada";
 
 interface IncomeModalProps {
   open: boolean;
   onClose: () => void;
   onSaved: () => void;
-  editingIncome?: Tables<"incomes"> | null;
+  editingIncome?: Income | null;
 }
 
 const RECEIPT_TYPES = [
