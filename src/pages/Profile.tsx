@@ -116,20 +116,30 @@ const Profile = () => {
 
       const publicUrl = publicData.publicUrl;
 
-      const { data: updatedProfile, error: updateError } = await supabase
+      const { data: existingProfile, error: findError } = await supabase
         .from("profiles")
-        .update({ photo_url: publicUrl })
-        .eq("user_id", user.id)
         .select("id")
+        .eq("user_id", user.id)
         .maybeSingle();
 
-      if (updateError) {
-        console.error(updateError);
-        toast.error(`Erro ao salvar no banco: ${updateError.message}`);
+      if (findError) {
+        console.error(findError);
+        toast.error(`Erro ao localizar perfil: ${findError.message}`);
         return;
       }
 
-      if (!updatedProfile) {
+      if (existingProfile?.id) {
+        const { error: updateError } = await supabase
+          .from("profiles")
+          .update({ photo_url: publicUrl })
+          .eq("id", existingProfile.id);
+
+        if (updateError) {
+          console.error(updateError);
+          toast.error(`Erro ao salvar no banco: ${updateError.message}`);
+          return;
+        }
+      } else {
         const { error: insertError } = await supabase
           .from("profiles")
           .insert({
