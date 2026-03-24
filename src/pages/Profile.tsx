@@ -116,21 +116,33 @@ const Profile = () => {
 
       const publicUrl = publicData.publicUrl;
 
-      console.log("ANTES DO UPSERT");
-
-      const { error: updateError } = await supabase
+      const { data: updatedProfile, error: updateError } = await supabase
         .from("profiles")
-        .upsert(
-          { user_id: user.id, photo_url: publicUrl },
-          { onConflict: "user_id" }
-        );
-
-      console.log("UPSERT RESULT:", updateError);
+        .update({ photo_url: publicUrl })
+        .eq("user_id", user.id)
+        .select("id")
+        .maybeSingle();
 
       if (updateError) {
         console.error(updateError);
-        toast.error("Erro ao salvar no banco");
+        toast.error(`Erro ao salvar no banco: ${updateError.message}`);
         return;
+      }
+
+      if (!updatedProfile) {
+        const { error: insertError } = await supabase
+          .from("profiles")
+          .insert({
+            user_id: user.id,
+            photo_url: publicUrl,
+            phone: prof.phone || "",
+          });
+
+        if (insertError) {
+          console.error(insertError);
+          toast.error(`Erro ao criar perfil: ${insertError.message}`);
+          return;
+        }
       }
 
       setProf((prev) => ({ ...prev, photo_url: publicUrl }));
