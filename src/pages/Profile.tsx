@@ -93,8 +93,6 @@ const Profile = () => {
 
       const { data, error } = await supabase.storage.from('avatars').upload(fileName, file, { upsert: true });
 
-        console.log("PATH REAL:", data.path);
-
       console.log("UPLOAD RESULT:", { data, error });
 
       if (error || !data) {
