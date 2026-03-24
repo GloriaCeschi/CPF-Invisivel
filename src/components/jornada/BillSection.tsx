@@ -5,14 +5,14 @@ import { Plus, Pencil, Trash2, FileText, AlertTriangle, CheckCircle, XCircle } f
 import  supabase  from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import BillModal from "./BillModal";
-import type { Tables } from "@/integrations/supabase/types.ts";
+import type { Bill } from "@/types/jornada";
 
 interface BillSectionProps {
-  bills: Tables<"bills">[];
+  bills: Bill[];
   onRefresh: () => void;
 }
 
-function getBillStatus(bill: Tables<"bills">): "pago" | "proximo" | "atrasado" {
+function getBillStatus(bill: Bill): "pago" | "proximo" | "atrasado" {
   if (!bill.next_due_date) return "pago";
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -31,7 +31,7 @@ const STATUS_CONFIG = {
 
 export default function BillSection({ bills, onRefresh }: BillSectionProps) {
   const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<Tables<"bills"> | null>(null);
+  const [editing, setEditing] = useState<Bill | null>(null);
 
   const handleDelete = async (id: string) => {
     const { error } = await supabase.from("bills").delete().eq("id", id);

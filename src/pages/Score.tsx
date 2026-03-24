@@ -13,7 +13,7 @@ import IncomeSection from "@/components/jornada/IncomeSection";
 import BillSection from "@/components/jornada/BillSection";
 import PendingSection from "@/components/jornada/PendingSection";
 import BillModal from "@/components/jornada/BillModal";
-import type { Tables } from "@/integrations/supabase/types";
+import type { Bill, Income } from "@/types/jornada";
 
 
 
@@ -22,8 +22,8 @@ import type { Tables } from "@/integrations/supabase/types";
 const Score = () => {
 
  const { user, signOut } = useAuth();
-  const [incomes, setIncomes] = useState<Tables<"incomes">[]>([]);
-  const [bills, setBills] = useState<Tables<"bills">[]>([]);
+  const [incomes, setIncomes] = useState<Income[]>([]);
+  const [bills, setBills] = useState<Bill[]>([]);
   const [pendingModalOpen, setPendingModalOpen] = useState(false);
 
   const fetchData = useCallback(async () => {
