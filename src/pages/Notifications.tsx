@@ -10,6 +10,7 @@ type notifications = {
     message?: string
     viewed?: boolean
     created_at: string
+    id?: string
 };
 export default function Notifications() {
 
@@ -34,23 +35,26 @@ export default function Notifications() {
     }
 
     async function handleMarkAsRead(index: number) {
-        if (notifications[index].viewed) return;
+    const item = notifications[index];
 
-        const updated = [...notifications];
-        updated[index].viewed = true;
+    if (item.viewed) return;
 
+    const updated = [...notifications];
+    updated[index].viewed = true;
 
+    const { error } = await supabase
+        .from('notifications')
+        .update({ viewed: true }) // boolean, não string!
+        .eq('id', item.id); // 🔥 aqui está a chave
 
-        const { data, error } = await supabase
-            .from('notifications')
-            .update({ viewed: 'true' })
-            .eq('user_id', user.id)
-            .eq('id', user.id)
-            .select()
-
-
-        setNotifications(updated);
+    if (error) {
+        console.log(error.message);
+        return;
     }
+
+    setNotifications(updated);
+}
+
 
 
 
@@ -79,6 +83,9 @@ export default function Notifications() {
         }
 
         setNotifications(data);
+
+
+
     }
 
 
@@ -140,9 +147,7 @@ export default function Notifications() {
 
                                             {/* Texto */}
                                             <div>
-                                                <p className="text-sm text-zinc-800 font-semibold">
-                                                    {item.user_id?.replace("user_", "Usuário ")}
-                                                </p>
+                                                
                                                 <p className="text-xs text-zinc-500">
                                                     {item.message}
                                                 </p>
