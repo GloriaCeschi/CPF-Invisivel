@@ -14,32 +14,7 @@ function solicitar(nomeBanco: string) {
   });
 }
 
-const bancos = [
-  {
-    nome: "Caixa Econômica Federal",
-    icone: "🏦",
-    taxa: "2.5% ao mês",
-    limite: "R$ 5.000",
-    prazo: "12 meses",
-    vantagens: ["Aprovação rápida", "Sem burocracia", "Resposta em até 48h"],
-  },
-  {
-    nome: "Banco Inter",
-    icone: "💳",
-    taxa: "3.1% ao mês",
-    limite: "R$ 8.000",
-    prazo: "18 meses",
-    vantagens: ["Crédito imediato", "Análise simples", "Parcelas flexíveis"],
-  },
-  {
-    nome: "Nubank",
-    icone: "🟣",
-    taxa: "2.8% ao mês",
-    limite: "R$ 6.500",
-    prazo: "15 meses",
-    vantagens: ["Ideal para pequenos negócios", "Taxas reduzidas"],
-  },
-];
+
 
 interface DataRowProps {
   label: string;
@@ -87,7 +62,7 @@ export default function BancosParceiros() {
   const [taxa, setTaxa] = useState("3.1");
 
   const [banks, setBanks] = useState<banks[]>([]);
-  const listaBancos = banks.length > 0 ? banks : bancos;
+  const listaBancos = banks;
 
   useEffect(() => {
     if (user?.id) {
@@ -98,22 +73,26 @@ export default function BancosParceiros() {
 
 
 
-  async function syncCredit(user_id: string): Promise<void> { //"void" é 
-    const { data, error } = await supabase.from('banks')
-      .select('*').eq("user_id", user_id);
+  async function syncCredit(user_id: string): Promise<void> {
+    const { data, error } = await supabase
+      .from('banks')
+      .select('*');
+
+    console.log("dados do supabase:", data);
 
     if (error) {
-      alert(error.message)
-
-      return
+      alert(error.message);
+      return;
     }
 
-    setBanks(data || []) // "data" é dados
-
-
-
-
+    setBanks(
+      (data || []).sort((a, b) => {
+        const ordem = ["Caixa Econômica Federal", "Banco Inter", "Nubank"];
+        return ordem.indexOf(a.name) - ordem.indexOf(b.name);
+      })
+    );
   }
+
 
   const valorNum = parseFloat(valor) || 0;
   const taxaNum = parseFloat(taxa) / 100;
@@ -154,17 +133,31 @@ export default function BancosParceiros() {
           {listaBancos.map((banco: any, index) => (
             <div
               key={banco.id || index}
-              className="bg-card p-6 rounded-xl w-[280px] shadow-[0_4px_20px_rgba(0,0,0,0.06)] border border-card-border"
+              className="bg-card p-6 rounded-2xl w-[280px] shadow-md border border-pink-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
             >
               <div className="flex items-center gap-2 mb-4">
                 <span className="text-xl text-primary">
-                  {banco.icone || "🏦"}
+                  {banco.name?.includes("Caixa")
+                    ? "🏦"
+                    : banco.name?.includes("Inter")
+                      ? "💳"
+                      : banco.name?.includes("Nubank")
+                        ? "🟣"
+                        : "🏦"}
                 </span>
+              <div className="flex items-center gap-2">
+  <h3 className="text-base font-semibold text-card-foreground flex items-center gap-2">
+  {banco.name}
 
-                <h3 className="text-base font-semibold text-card-foreground">
-                  {banco.name || banco.nome}
-                </h3>
+  {banco.name?.includes("Caixa") && (
+    <span className="bg-primary text-white text-sm px-3 py-1 rounded-full font-medium">
+      Melhor opção
+    </span>
+  )}
+</h3>
+</div>
               </div>
+              
 
               <div className="space-y-1 mb-4">
                 <DataRow
@@ -209,7 +202,7 @@ export default function BancosParceiros() {
 
               <button
                 onClick={() => solicitar(banco.name || banco.nome)}
-                className="w-full bg-primary text-primary-foreground border-none py-2.5 rounded-lg cursor-pointer font-medium text-sm hover:opacity-90 transition-opacity"
+               className="w-full mt-4 bg-primary text-white py-2.5 rounded-xl font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition"
               >
                 Solicitar Empréstimo
               </button>
