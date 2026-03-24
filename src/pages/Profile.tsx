@@ -38,9 +38,10 @@ const Profile = () => {
   const [prof, setProf] = useState<Profile>({});
 
   useEffect(() => {
-    syncProfile(user.id);
-
-  }, []);
+    if (user?.id) {
+      syncProfile(user.id);
+    }
+  }, [user]);
 
   async function syncProfile(user_id: string): Promise<void> {
     const { data, error } = await supabase.from('profiles').select('*').eq("user_id", user_id).maybeSingle();
@@ -53,6 +54,7 @@ const Profile = () => {
 
     if (data) {
       setProf(data);
+      setPhotoUrl(data.photo_url);
     }
 
   }
@@ -75,51 +77,73 @@ const Profile = () => {
   };
 
   const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-   
-  const file = e.target.files?.[0];
-  if (!file) return;
-  try {
-    
-     const fileName = `${user.id}-${Date.now()}.${file.name.split(".").pop()}`;
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  
-      const { data, error } = await supabase.storage.from('avatars').upload(fileName , file)  
-       if (error) {
-      toast.error("Erro ao enviar foto: " + error.message);
-      return;
-    }
-    console.log(data)
-  
-  const { data: publicData } = supabase.storage
-    .from("avatars")
-    .getPublicUrl(fileName);
-
-const publicUrl = publicData.publicUrl;
-
-
-    console.log(publicUrl)
-
-    // Salvar no banco com upsert
-    const { error: updateError } = await supabase
-      .from("profiles")
-      .upsert({user_id: user.id, photo_url: publicUrl });
-
-    if (updateError) {
-      toast.error("Erro ao salvar foto no perfil: " + updateError.message);
+    if (!user?.id) {
+      console.log("USER INVALID:", user);
+      toast.error("Usuário não carregado");
       return;
     }
 
-    // Atualizar estado local
-    setProf((prev) => ({ ...prev, photo_url: publicUrl }));
-    setPhotoUrl(publicUrl);
+    try {
+      const fileName = `${user.id}-${Date.now()}.${file.name.split(".").pop()}`;
 
-    toast.success("Foto de perfil atualizada!");
-  } catch (err) {
-    console.error(err);
-    toast.error("Erro inesperado ao enviar foto.");
-  }
-};
+      console.log("UPLOAD START");
 
+      const { data, error } = await supabase.storage.from('avatars').upload(fileName, file, { upsert: true });
+
+        console.log("PATH REAL:", data.path);
+
+      console.log("UPLOAD RESULT:", { data, error });
+
+      if (error || !data) {
+        console.error("UPLOAD ERROR:", error);
+        toast.error("Erro no upload");
+        return;
+      }
+
+      const filePath = data.path;
+
+      const { data: publicData } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(filePath);
+
+      console.log("PUBLIC URL:", publicData);
+
+      if (!publicData?.publicUrl) {
+        toast.error("Erro ao gerar URL");
+        return;
+      }
+
+      const publicUrl = publicData.publicUrl;
+
+      console.log("ANTES DO UPSERT");
+
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .upsert(
+          { user_id: user.id, photo_url: publicUrl },
+          { onConflict: "user_id" }
+        );
+
+      console.log("UPSERT RESULT:", updateError);
+
+      if (updateError) {
+        console.error(updateError);
+        toast.error("Erro ao salvar no banco");
+        return;
+      }
+
+      setProf((prev) => ({ ...prev, photo_url: publicUrl }));
+      setPhotoUrl(publicUrl);
+
+      toast.success("Foto atualizada!");
+    } catch (err) {
+      console.error("CATCH ERROR:", err);
+      toast.error("Erro inesperado");
+    }
+  };
 
 
 
