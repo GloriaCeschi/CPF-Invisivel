@@ -13,7 +13,7 @@ import IncomeSection from "@/components/jornada/IncomeSection";
 import BillSection from "@/components/jornada/BillSection";
 import PendingSection from "@/components/jornada/PendingSection";
 import BillModal from "@/components/jornada/BillModal";
-import type { Tables } from "@/integrations/supabase/types";
+import type { Bill, Income } from "@/types/jornada";
 
 
 
