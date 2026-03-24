@@ -10,120 +10,287 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.1"
+    PostgrestVersion: "14.4"
   }
   public: {
     Tables: {
-      bills: {
+      banks: {
         Row: {
-          amount: number
+          cnpj: string | null
           created_at: string
-          current_installment: number
-          description: string | null
+          credit: string | null
           id: string
-          next_due_date: string | null
-          payment_date: string
-          receipt_url: string | null
-          status: string
-          title: string
-          total_installments: number
-          updated_at: string
+          interest: number | null
+          max_amount: number | null
+          max_term: number | null
+          name: string | null
           user_id: string
         }
         Insert: {
-          amount: number
+          cnpj?: string | null
           created_at?: string
-          current_installment?: number
-          description?: string | null
+          credit?: string | null
           id?: string
-          next_due_date?: string | null
-          payment_date?: string
-          receipt_url?: string | null
-          status?: string
-          title: string
-          total_installments?: number
-          updated_at?: string
+          interest?: number | null
+          max_amount?: number | null
+          max_term?: number | null
+          name?: string | null
           user_id: string
         }
         Update: {
-          amount?: number
+          cnpj?: string | null
           created_at?: string
-          current_installment?: number
-          description?: string | null
+          credit?: string | null
           id?: string
-          next_due_date?: string | null
-          payment_date?: string
-          receipt_url?: string | null
-          status?: string
-          title?: string
-          total_installments?: number
-          updated_at?: string
+          interest?: number | null
+          max_amount?: number | null
+          max_term?: number | null
+          name?: string | null
           user_id?: string
         }
         Relationships: []
       }
-      incomes: {
+      classes: {
         Row: {
-          amount: number
+          certificate: string | null
           created_at: string
-          description: string | null
           id: string
-          receipt_type: string
-          receipt_url: string | null
-          recorded_at: string
-          title: string
-          updated_at: string
-          user_id: string
+          id_courses: string
+          id_user: string
         }
         Insert: {
-          amount: number
+          certificate?: string | null
           created_at?: string
-          description?: string | null
           id?: string
-          receipt_type: string
-          receipt_url?: string | null
-          recorded_at?: string
-          title: string
-          updated_at?: string
-          user_id: string
+          id_courses: string
+          id_user: string
         }
         Update: {
-          amount?: number
+          certificate?: string | null
+          created_at?: string
+          id?: string
+          id_courses?: string
+          id_user?: string
+        }
+        Relationships: []
+      }
+      courses: {
+        Row: {
+          category: string | null
+          class: string | null
+          created_at: string
+          description: string | null
+          id: number
+          lock_reason: string | null
+          locked: boolean | null
+          points: number | null
+          progress: number
+          title: string
+        }
+        Insert: {
+          category?: string | null
+          class?: string | null
           created_at?: string
           description?: string | null
-          id?: string
-          receipt_type?: string
-          receipt_url?: string | null
-          recorded_at?: string
+          id?: number
+          lock_reason?: string | null
+          locked?: boolean | null
+          points?: number | null
+          progress?: number
+          title: string
+        }
+        Update: {
+          category?: string | null
+          class?: string | null
+          created_at?: string
+          description?: string | null
+          id?: number
+          lock_reason?: string | null
+          locked?: boolean | null
+          points?: number | null
+          progress?: number
           title?: string
-          updated_at?: string
-          user_id?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          key_id: string | null
+          message: string | null
+          type: string | null
+          user_id: string | null
+          viewed: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          key_id?: string | null
+          message?: string | null
+          type?: string | null
+          user_id?: string | null
+          viewed?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          key_id?: string | null
+          message?: string | null
+          type?: string | null
+          user_id?: string | null
+          viewed?: boolean | null
         }
         Relationships: []
       }
       profiles: {
         Row: {
+          age: string | null
+          birth: string | null
+          city: string | null
+          cpf: string | null
           created_at: string
-          full_name: string | null
+          email: string | null
           id: string
-          updated_at: string
+          name: string | null
+          phone: string
+          photo_url: string | null
+          senha_hash: string | null
+          state: string | null
+          user_id: string | null
+        }
+        Insert: {
+          age?: string | null
+          birth?: string | null
+          city?: string | null
+          cpf?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          phone: string
+          photo_url?: string | null
+          senha_hash?: string | null
+          state?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          age?: string | null
+          birth?: string | null
+          city?: string | null
+          cpf?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          phone?: string
+          photo_url?: string | null
+          senha_hash?: string | null
+          state?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      proofs: {
+        Row: {
+          created_at: string
+          description: string | null
+          feedback: string | null
+          id: string
+          points: number | null
+          proof: string
+          status: string | null
+          type: string | null
+          update_at: string | null
           user_id: string
         }
         Insert: {
           created_at?: string
-          full_name?: string | null
+          description?: string | null
+          feedback?: string | null
           id?: string
-          updated_at?: string
+          points?: number | null
+          proof: string
+          status?: string | null
+          type?: string | null
+          update_at?: string | null
           user_id: string
         }
         Update: {
           created_at?: string
-          full_name?: string | null
+          description?: string | null
+          feedback?: string | null
           id?: string
-          updated_at?: string
+          points?: number | null
+          proof?: string
+          status?: string | null
+          type?: string | null
+          update_at?: string | null
           user_id?: string
         }
         Relationships: []
+      }
+      services: {
+        Row: {
+          created_at: string
+          credit_limit: string | null
+          id: string
+          interest_rate: string | null
+          service: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credit_limit?: string | null
+          id?: string
+          interest_rate?: string | null
+          service?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credit_limit?: string | null
+          id?: string
+          interest_rate?: string | null
+          service?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      videos: {
+        Row: {
+          course_id: number | null
+          created_at: string | null
+          id: string
+          thumbnail_url: string | null
+          title: string | null
+          video_url: string
+        }
+        Insert: {
+          course_id?: number | null
+          created_at?: string | null
+          id?: string
+          thumbnail_url?: string | null
+          title?: string | null
+          video_url: string
+        }
+        Update: {
+          course_id?: number | null
+          created_at?: string | null
+          id?: string
+          thumbnail_url?: string | null
+          title?: string | null
+          video_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "videos_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
