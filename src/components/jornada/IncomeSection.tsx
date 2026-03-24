@@ -15,7 +15,7 @@ const RECEIPT_LABELS: Record<string, string> = {
 };
 
 interface IncomeSectionProps {
-  incomes: Tables<"incomes">[];
+  incomes: Income[];
   onRefresh: () => void;
 }
 
