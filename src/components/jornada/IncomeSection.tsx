@@ -21,7 +21,7 @@ interface IncomeSectionProps {
 
 export default function IncomeSection({ incomes, onRefresh }: IncomeSectionProps) {
   const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<Tables<"incomes"> | null>(null);
+  const [editing, setEditing] = useState<Income | null>(null);
 
   const handleDelete = async (id: string) => {
     const { error } = await supabase.from("incomes").delete().eq("id", id);

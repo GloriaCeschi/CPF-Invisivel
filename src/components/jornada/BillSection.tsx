@@ -31,7 +31,7 @@ const STATUS_CONFIG = {
 
 export default function BillSection({ bills, onRefresh }: BillSectionProps) {
   const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<Tables<"bills"> | null>(null);
+  const [editing, setEditing] = useState<Bill | null>(null);
 
   const handleDelete = async (id: string) => {
     const { error } = await supabase.from("bills").delete().eq("id", id);

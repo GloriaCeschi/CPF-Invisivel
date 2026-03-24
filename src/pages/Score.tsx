@@ -22,8 +22,8 @@ import type { Bill, Income } from "@/types/jornada";
 const Score = () => {
 
  const { user, signOut } = useAuth();
-  const [incomes, setIncomes] = useState<Tables<"incomes">[]>([]);
-  const [bills, setBills] = useState<Tables<"bills">[]>([]);
+  const [incomes, setIncomes] = useState<Income[]>([]);
+  const [bills, setBills] = useState<Bill[]>([]);
   const [pendingModalOpen, setPendingModalOpen] = useState(false);
 
   const fetchData = useCallback(async () => {
