@@ -178,8 +178,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   <div key={index} className="mb-2">
                     <p
                       className={`inline-block px-3 py-2 rounded-lg ${msg.autor === "user"
-                        ? "bg-white text-black border border-gray-200"
-                        : "bg-pink-50 text-black"
+                          ? "bg-white text-black border border-gray-200"
+                          : "bg-pink-50 text-black"
                         }`}
                     >
                       {msg.texto}
