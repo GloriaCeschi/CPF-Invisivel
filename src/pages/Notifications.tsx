@@ -11,23 +11,24 @@ type notifications = {
     viewed?: boolean
     created_at: string
     id?: string
+    archived?: boolean
 };
 export default function Notifications() {
 
-    function handleArchive(index: number) {
+    async function handleArchive(index: number) {
+        console.log("arquivd")
         const item = notifications[index];
 
-        // remove da lista principal
-        const updated = notifications.filter((_, i) => i !== index);
+        const { error } = await supabase
+            .from('notifications')
+            .update({ archived: true })
+            .eq('id', item.id);
 
-        // adiciona nos arquivados
-        setArchived(prev => [item, ...prev]);
+        if (error) {
+            console.log(error.message);
+            return;
+        }
 
-        setNotifications(updated);
-        setOpenMenuIndex(null);
-    }
-
-    function handleDelete(index: number) {
         const updated = notifications.filter((_, i) => i !== index);
 
         setNotifications(updated);
@@ -35,25 +36,44 @@ export default function Notifications() {
     }
 
     async function handleMarkAsRead(index: number) {
-    const item = notifications[index];
+        const item = notifications[index];
 
-    if (item.viewed) return;
+        if (item.viewed) return;
 
-    const updated = [...notifications];
-    updated[index].viewed = true;
+        const updated = [...notifications];
+        updated[index].viewed = true;
 
-    const { error } = await supabase
-        .from('notifications')
-        .update({ viewed: true }) // boolean, não string!
-        .eq('id', item.id); // 🔥 aqui está a chave
+        const { error } = await supabase
+            .from('notifications')
+            .update({ viewed: true }) // boolean, não string!
+            .eq('id', item.id); // 🔥 aqui está a chave
 
-    if (error) {
-        console.log(error.message);
-        return;
+        if (error) {
+            console.log(error.message);
+            return;
+        }
+
+        setNotifications(updated);
+    }
+    async function handleDelete(index: number) {
+        const item = notifications[index];
+
+        const { error } = await supabase
+            .from('notifications')
+            .delete()
+            .eq('id', item.id);
+
+        if (error) {
+            console.log(error.message);
+            return;
+        }
+
+        const updated = notifications.filter((_, i) => i !== index);
+
+        setNotifications(updated);
+        setOpenMenuIndex(null);
     }
 
-    setNotifications(updated);
-}
 
 
 
@@ -61,7 +81,7 @@ export default function Notifications() {
 
     const { user, signOutUser } = useAuth();
     const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
-    const [archived, setArchived] = useState<notifications[]>([]);
+
     const [notifications, setNotifications] = useState<notifications[]>([]);
 
 
@@ -73,9 +93,10 @@ export default function Notifications() {
     async function loadNotifications(user_id: string): Promise<void> {
         console.log(user_id)
         const { data, error } = await supabase.from('notifications')
-            .select('*').eq("user_id", user_id)
+            .select('*')
+            .eq("user_id", user_id)
+            .eq("archived", false)
             .order('created_at', { ascending: false });
-
         console.log(data)
         if (error) {
             alert(error.message)
@@ -96,10 +117,10 @@ export default function Notifications() {
 
             <DashboardLayout>
                 {openMenuIndex !== null && (
-                    <div
-                        onClick={() => setOpenMenuIndex(null)}
-                        className="fixed inset-0 z-40"
-                    />
+                   <div
+    onClick={() => setOpenMenuIndex(null)}
+    className="fixed inset-0 z-40 pointer-events-auto"
+/>
                 )}
                 <div className="flex justify-center w-full p-6">
                     <div className="w-full max-w-md bg-white border border-zinc-200 rounded-xl shadow-md p-4 animate-fade-in">
@@ -147,7 +168,7 @@ export default function Notifications() {
 
                                             {/* Texto */}
                                             <div>
-                                                
+
                                                 <p className="text-xs text-zinc-500">
                                                     {item.message}
                                                 </p>
@@ -159,28 +180,27 @@ export default function Notifications() {
                                             <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    setOpenMenuIndex(openMenuIndex === index ? null : index);
+                                                    setOpenMenuIndex(openMenuIndex == index ? null : index);
                                                 }}
                                                 className="hover:bg-zinc-100 p-1 rounded-md transition"
                                             >
                                                 <MoreHorizontal className="w-5 h-5 text-black" />
                                             </button>
 
-                                            {openMenuIndex === index && (
-                                                <div className="absolute right-0 mt-2 w-36 bg-white border border-black/20 rounded-lg shadow-lg z-50 animate-fade-in">
+                                            {openMenuIndex == index && (
+                                                <div 
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        console.log("arv");
+                                                    }} 
+                                                    className="absolute right-0 mt-2 min-w-[140px] bg-white border border-black/20 rounded-lg shadow-lg z-50"
+                                                >
 
                                                     <button
-                                                        onClick={() => handleArchive(index)}
-                                                        className="w-full text-left px-3 py-2 text-sm text-black font-semibold hover:bg-zinc-100 flex items-center gap-2"
+                                                        
+                                                        className="w-full text-left px-3 py-2 text-sm text-black font-semibold flex items-center gap-2 hover:bg-zinc-100"
                                                     >
                                                         📥 Arquivar
-                                                    </button>
-                                                    <div className="border-t border-black/20 my-1"></div>
-                                                    <button
-                                                        onClick={() => handleDelete(index)}
-                                                        className="w-full text-left px-3 py-2 text-sm text-black font-semibold hover:bg-red-50 flex items-center gap-2"
-                                                    >
-                                                        🗑️ Deletar
                                                     </button>
 
                                                 </div>
