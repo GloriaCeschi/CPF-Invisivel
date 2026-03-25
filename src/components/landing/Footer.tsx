@@ -38,6 +38,21 @@ const Footer = () => (
           </nav>
         </div>
 
+        <div>
+          <h4 className="font-display font-semibold text-primary-foreground mb-4">Vídeos</h4>
+          <nav className="flex flex-col gap-2">
+            {[
+              { label: "Introdução Renda Visível", href: "#video" },
+              { label: "Como usar o app", href: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" },
+              { label: "Gestão Financeira ", href: "https://www.youtube.com/watch?v=2Vv-BfVoq4g" },
+            ].map((item) => (
+              <a key={item.label} href={item.href} target="_blank" rel="noreferrer" className="text-primary-foreground/50 text-sm hover:text-primary transition-colors">
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        </div>
+
         {/* Contact */}
         <div>
           <h4 className="font-display font-semibold text-primary-foreground mb-4">Contato</h4>

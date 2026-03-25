@@ -11,17 +11,17 @@ import { BookOpen, TrendingUp } from "lucide-react";
 import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 
 const coursesData: CourseData[] = [
-  { id: 1, title: "Como adicionar contas e boletos", description: "Aprenda a organizar e registrar suas contas e boletos de forma prática.", progress: 100, locked: false, category: "Básico" },
-  { id: 2, title: "Acompanhamento de renda", description: "Monitore suas fontes de renda e entenda seu fluxo financeiro mensal.", progress: 72, locked: false, category: "Básico" },
-  { id: 3, title: "Gestão Financeira", description: "Curso completo de gestão financeira pessoal e familiar.", progress: 45, locked: false, category: "Intermediário" },
-  { id: 4, title: "Empreendedorismo", description: "Inicie seu negócio com bases sólidas e planejamento estratégico.", progress: 20, locked: false, category: "Avançado" },
-  { id: 5, title: "Planejamento Familiar", description: "Renegociação de dívidas, redução de despesas e orçamento familiar.", progress: 0, locked: false, category: "Intermediário" },
-  { id: 6, title: "Uso Consciente de Crédito", description: "Entenda como usar crédito de forma inteligente e responsável.", progress: 30, locked: false, category: "Básico" },
-  { id: 7, title: "Valor da Sua Hora", description: "Calcule quanto vale a sua hora de trabalho e negocie melhor.", progress: 0, locked: false, category: "Básico" },
-  { id: 8, title: "Valor da Sua Mão de Obra", description: "Aprenda a precificar seus serviços e trabalho corretamente.", progress: 0, locked: false, category: "Intermediário" },
-  { id: 9, title: "Cálculos de Juros e Investimentos", description: "Capacitação básica para entender juros compostos e investimentos.", progress: 10, locked: false, category: "Intermediário" },
-  { id: 10, title: "Direitos do Consumidor", description: "Conheça seus direitos e saiba como se proteger nas relações de consumo.", progress: 60, locked: false, category: "Básico" },
-  { id: 11, title: "Como Entender o Mercado", description: "Bolsa de valores, produtos financeiros e como o mercado funciona.", progress: 15, locked: false, category: "Avançado" },
+  { id: 1, title: "Como adicionar contas e boletos", description: "Aprenda a organizar e registrar suas contas e boletos de forma prática.", progress: 100, locked: false, category: "Básico", videoUrl: "https://youtu.be/dQw4w9WgXcQ?si=QzmfJ4v62nAcxv6j" },
+  { id: 2, title: "Acompanhamento de renda", description: "Monitore suas fontes de renda e entenda seu fluxo financeiro mensal.", progress: 72, locked: false, category: "Básico", videoUrl: "https://youtu.be/3LNafnShdxE?si=yHpneS-xpMEFMso6" },
+  { id: 3, title: "Gestão Financeira", description: "Curso completo de gestão financeira pessoal e familiar.", progress: 45, locked: false, category: "Intermediário", videoUrl: "https://youtu.be/PfsO9apQy-w?si=8aww5rwLFwxXnKB2" },
+  { id: 4, title: "Empreendedorismo", description: "Inicie seu negócio com bases sólidas e planejamento estratégico.", progress: 20, locked: false, category: "Avançado", videoUrl: "https://youtu.be/kIFCyGkjEh4?si=NX8q3IUJj3nI9s1v" },
+  { id: 5, title: "Planejamento Familiar", description: "Renegociação de dívidas, redução de despesas e orçamento familiar.", progress: 0, locked: false, category: "Intermediário", videoUrl: "https://youtu.be/Wyi4sPBPiCQ?si=PgbO183C-3_PsQtq" },
+  { id: 6, title: "Uso Consciente de Crédito", description: "Entenda como usar crédito de forma inteligente e responsável.", progress: 30, locked: false, category: "Básico", videoUrl: "https://youtu.be/A4M9X1HIFoE?si=aPuEiyMUAxU1rbHm" },
+  { id: 7, title: "Valor da Sua Hora", description: "Calcule quanto vale a sua hora de trabalho e negocie melhor.", progress: 0, locked: false, category: "Básico", videoUrl: "https://youtu.be/zbHNXLaDXco?si=GwO1AGsYjyXQVi6e" },
+  { id: 8, title: "Valor da Sua Mão de Obra", description: "Aprenda a precificar seus serviços e trabalho corretamente.", progress: 0, locked: false, category: "Intermediário", videoUrl: "https://youtu.be/cxHmqMCn6bA?si=GxTOoxv6ONoWi_oi" },
+  { id: 9, title: "Cálculos de Juros e Investimentos", description: "Capacitação básica para entender juros compostos e investimentos.", progress: 10, locked: false, category: "Intermediário", videoUrl: "https://youtu.be/dGU6yREVWyM?si=7HdTSSOfcvd29QiA" },
+  { id: 10, title: "Direitos do Consumidor", description: "Conheça seus direitos e saiba como se proteger nas relações de consumo.", progress: 60, locked: false, category: "Básico", videoUrl:"https://youtu.be/pZBDVklQT-g?si=fY6M2J1nm2XwQmvu"},
+  { id: 11, title: "Como Entender o Mercado", description: "Bolsa de valores, produtos financeiros e como o mercado funciona.", progress: 15, locked: false, category: "Avançado", videoUrl: "https://youtu.be/zE3MhwFUpnA?si=ZNnysyqhTlMBfij0"},
   {
     id: 12,
     title: "Investimentos para Iniciantes",

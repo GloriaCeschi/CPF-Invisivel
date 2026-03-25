@@ -5,7 +5,7 @@ import { Plus, Pencil, Trash2, FileText } from "lucide-react";
 import  supabase  from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import IncomeModal from "./IncomeModal";
-import type { Tables } from "@/integrations/supabase/types";
+import type { Income } from "@/types/jornada";
 
 const RECEIPT_LABELS: Record<string, string> = {
   pix: "PIX",
@@ -15,13 +15,13 @@ const RECEIPT_LABELS: Record<string, string> = {
 };
 
 interface IncomeSectionProps {
-  incomes: Tables<"incomes">[];
+  incomes: Income[];
   onRefresh: () => void;
 }
 
 export default function IncomeSection({ incomes, onRefresh }: IncomeSectionProps) {
   const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<Tables<"incomes"> | null>(null);
+  const [editing, setEditing] = useState<Income | null>(null);
 
   const handleDelete = async (id: string) => {
     const { error } = await supabase.from("incomes").delete().eq("id", id);
