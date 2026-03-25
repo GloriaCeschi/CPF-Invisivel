@@ -19,7 +19,7 @@ export function VideoModal({ open, onOpenChange, videoUrl, title }: VideoModalPr
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl w-full" style={{ backgroundColor: '#FFFFFF' }}>
+      <DialogContent className="max-w-4xl w-full" style={{ backgroundColor: '#FFF1F2' }}>
         <DialogHeader>
           <DialogTitle className="text-black">{title}</DialogTitle>
         </DialogHeader>
