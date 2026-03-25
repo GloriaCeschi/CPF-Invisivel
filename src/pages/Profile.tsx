@@ -38,9 +38,10 @@ const Profile = () => {
   const [prof, setProf] = useState<Profile>({});
 
   useEffect(() => {
-    syncProfile(user.id);
-
-  }, []);
+    if (user?.id) {
+      syncProfile(user.id);
+    }
+  }, [user]);
 
   async function syncProfile(user_id: string): Promise<void> {
     const { data, error } = await supabase.from('profiles').select('*').eq("user_id", user_id).maybeSingle();
@@ -53,6 +54,7 @@ const Profile = () => {
 
     if (data) {
       setProf(data);
+      setPhotoUrl(data.photo_url);
     }
 
   }
@@ -75,50 +77,102 @@ const Profile = () => {
   };
 
   const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-   
   const file = e.target.files?.[0];
   if (!file) return;
+
+  if (!user?.id) {
+    console.log("USER INVALID:", user);
+    toast.error("Usuário não carregado");
+    return;
+  }
+
   try {
-    
-     const fileName = `${user.id}-${Date.now()}.${file.name.split(".").pop()}`;
+    const fileName = `${user.id}-${Date.now()}.${file.name.split(".").pop()}`;
 
-  
-      const { data, error } = await supabase.storage.from('avatars').upload(fileName , file)  
-       if (error) {
-      toast.error("Erro ao enviar foto: " + error.message);
+    console.log("UPLOAD START");
+
+    // Upload com upsert para evitar conflito de nome
+    const { data, error: uploadError } = await supabase
+      .storage
+      .from("avatars")
+      .upload(fileName, file, { upsert: true });
+
+    if (uploadError) {
+      console.error("UPLOAD ERROR:", uploadError);
+      toast.error("Erro no upload");
       return;
     }
-    console.log(data)
-  
-  const { data: publicData } = supabase.storage
-    .from("avatars")
-    .getPublicUrl(fileName);
 
-const publicUrl = publicData.publicUrl;
+    console.log("UPLOAD SUCCESS:", data);
 
+    // Usa o path retornado pelo upload
+    const { data: publicData } = supabase
+      .storage
+      .from("avatars")
+      .getPublicUrl(data.path);
 
-    console.log(publicUrl)
+    if (!publicData?.publicUrl) {
+      toast.error("Erro ao gerar URL");
+      return;
+    }
 
-    // Salvar no banco com upsert
-    const { error: updateError } = await supabase
+    const publicUrl = publicData.publicUrl;
+    console.log("PUBLIC URL:", publicUrl);
+
+    // Busca perfil existente
+    const { data: existingProfile, error: findError } = await supabase
       .from("profiles")
-      .upsert({user_id: user.id, photo_url: publicUrl });
+      .select("id")
+      .eq("user_id", user.id)
+      .maybeSingle();
 
-    if (updateError) {
-      toast.error("Erro ao salvar foto no perfil: " + updateError.message);
+    if (findError) {
+      console.error("PROFILE FIND ERROR:", findError);
+      toast.error(`Erro ao localizar perfil: ${findError.message}`);
       return;
     }
 
-    // Atualizar estado local
+    if (existingProfile?.id) {
+      // Atualiza perfil existente
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ photo_url: publicUrl })
+        .eq("id", existingProfile.id);
+
+      if (updateError) {
+        console.error("PROFILE UPDATE ERROR:", updateError);
+        toast.error(`Erro ao salvar no banco: ${updateError.message}`);
+        return;
+      }
+    } else {
+      // Cria novo perfil
+      const { error: insertError } = await supabase
+        .from("profiles")
+        .insert({
+          user_id: user.id,
+          photo_url: publicUrl,
+          phone: prof?.phone || "",
+        });
+
+      if (insertError) {
+        console.error("PROFILE INSERT ERROR:", insertError);
+        toast.error(`Erro ao criar perfil: ${insertError.message}`);
+        return;
+      }
+    }
+
+    // Atualiza estado local
     setProf((prev) => ({ ...prev, photo_url: publicUrl }));
     setPhotoUrl(publicUrl);
 
-    toast.success("Foto de perfil atualizada!");
+    toast.success("Foto atualizada!");
   } catch (err) {
-    console.error(err);
-    toast.error("Erro inesperado ao enviar foto.");
+    console.error("CATCH ERROR:", err);
+    toast.error("Erro inesperado");
   }
 };
+
+
 
 
 

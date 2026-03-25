@@ -8,13 +8,13 @@ import  supabase  from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import { Upload } from "lucide-react";
-import type { Tables } from "@/integrations/supabase/types";
+import type { Bill } from "@/types/jornada";
 
 interface BillModalProps {
   open: boolean;
   onClose: () => void;
   onSaved: () => void;
-  editingBill?: Tables<"bills"> | null;
+  editingBill?: Bill | null;
 }
 
 export default function BillModal({ open, onClose, onSaved, editingBill }: BillModalProps) {

@@ -2,6 +2,8 @@ import { Lock, Play, CheckCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useState } from "react";
+import { VideoModal } from "./VideoModal";
 
 export interface CourseData {
   id: number;
@@ -15,26 +17,24 @@ export interface CourseData {
 }
 
 export function CourseCard({ course }: { course: CourseData }) {
+  const [modalOpen, setModalOpen] = useState(false);
   const isComplete = course.progress === 100;
 
-  const getYouTubeEmbedUrl = (url?: string) => {
+  const getYouTubeVideoId = (url?: string) => {
     if (!url) return null;
     const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([A-Za-z0-9_-]{11})/);
-    return match ? `https://www.youtube.com/embed/${match[1]}` : null;
+    return match ? match[1] : null;
   };
 
-  const embedUrl = getYouTubeEmbedUrl(course.videoUrl);
+  const videoId = getYouTubeVideoId(course.videoUrl);
 
   const thumbnail = (
-    <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center overflow-hidden">
-      {embedUrl ? (
-        <iframe
-          className="absolute inset-0 h-full w-full"
-          src={`${embedUrl}?rel=0`}
-          title={`Vídeo de ${course.title}`}
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
+    <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center overflow-hidden cursor-pointer" onClick={() => course.videoUrl && setModalOpen(true)}>
+      {videoId ? (
+        <img
+          src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
+          alt={`Thumbnail de ${course.title}`}
+          className="absolute inset-0 h-full w-full object-cover"
         />
       ) : isComplete ? (
         <CheckCircle className="h-10 w-10 text-success" />
@@ -48,15 +48,12 @@ export function CourseCard({ course }: { course: CourseData }) {
           🎬 Vídeo
         </span>
       )}
+      {videoId && (
+        <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+          <Play className="h-12 w-12 text-white" />
+        </div>
+      )}
     </div>
-  );
-
-  const thumbnailWithLink = course.videoUrl && !embedUrl ? (
-    <a href={course.videoUrl} target="_blank" rel="noreferrer" className="block">
-      {thumbnail}
-    </a>
-  ) : (
-    thumbnail
   );
 
   return (
@@ -87,7 +84,7 @@ export function CourseCard({ course }: { course: CourseData }) {
       ) : (
         <Card className="group relative overflow-hidden border-border bg-card transition-shadow hover:shadow-lg cursor-pointer">
           <CardContent className="p-0">
-            {thumbnailWithLink}
+            {thumbnail}
             <div className="p-4">
               <div className="flex items-center gap-2">
                 <span className={`mb-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${
@@ -103,6 +100,14 @@ export function CourseCard({ course }: { course: CourseData }) {
             </div>
           </CardContent>
         </Card>
+      )}
+      {course.videoUrl && (
+        <VideoModal
+          open={modalOpen}
+          onOpenChange={setModalOpen}
+          videoUrl={course.videoUrl}
+          title={course.title}
+        />
       )}
     </div>
   );

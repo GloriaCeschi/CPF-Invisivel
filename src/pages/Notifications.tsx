@@ -10,6 +10,7 @@ type notifications = {
     message?: string
     viewed?: boolean
     created_at: string
+    id?: string
 };
 export default function Notifications() {
 
@@ -33,14 +34,27 @@ export default function Notifications() {
         setOpenMenuIndex(null);
     }
 
-    function handleMarkAsRead(index: number) {
-        if (notifications[index].viewed) return;
+    async function handleMarkAsRead(index: number) {
+    const item = notifications[index];
 
-        const updated = [...notifications];
-        updated[index].viewed = true;
+    if (item.viewed) return;
 
-        setNotifications(updated);
+    const updated = [...notifications];
+    updated[index].viewed = true;
+
+    const { error } = await supabase
+        .from('notifications')
+        .update({ viewed: true }) // boolean, não string!
+        .eq('id', item.id); // 🔥 aqui está a chave
+
+    if (error) {
+        console.log(error.message);
+        return;
     }
+
+    setNotifications(updated);
+}
+
 
 
 
@@ -48,62 +62,30 @@ export default function Notifications() {
     const { user, signOutUser } = useAuth();
     const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
     const [archived, setArchived] = useState<notifications[]>([]);
-    const [notifications, setNotifications] = useState<notifications[]>([
+    const [notifications, setNotifications] = useState<notifications[]>([]);
 
-
-        {
-            "user_id": "user_01",
-            "key_id": "1",
-            "message": "Sua conta foi atualizada com sucesso",
-            "viewed": false,
-            "created_at": "2026-03-18T10:30:00"
-        },
-        {
-            "user_id": "user_02",
-            "key_id": "2",
-            "message": "Você recebeu uma nova mensagem",
-            "viewed": false,
-            "created_at": "2026-03-18T09:15:00"
-        },
-        {
-            "user_id": "user_03",
-            "key_id": "3",
-            "message": "Pagamento confirmado",
-            "viewed": true,
-            "created_at": "2026-03-17T18:40:00"
-        },
-        {
-            "user_id": "user_04",
-            "key_id": "4",
-            "message": "Novo acesso detectado",
-            "viewed": false,
-            "created_at": "2026-03-17T14:20:00"
-        },
-        {
-            "user_id": "user_05",
-            "key_id": "5",
-            "message": "Atualização disponível no sistema",
-            "viewed": true,
-            "created_at": "2026-03-16T11:00:00"
-        }
-    ]);
 
 
     useEffect(() => {
-        // if (user) loadNotifications(user.id);
-    }, [user]);
+        if (user) loadNotifications(user.id);
+    }, []);
 
     async function loadNotifications(user_id: string): Promise<void> {
+        console.log(user_id)
         const { data, error } = await supabase.from('notifications')
             .select('*').eq("user_id", user_id)
             .order('created_at', { ascending: false });
 
+        console.log(data)
         if (error) {
             alert(error.message)
             return
         }
 
         setNotifications(data);
+
+
+
     }
 
 
@@ -165,9 +147,7 @@ export default function Notifications() {
 
                                             {/* Texto */}
                                             <div>
-                                                <p className="text-sm text-zinc-800 font-semibold">
-                                                    {item.user_id?.replace("user_", "Usuário ")}
-                                                </p>
+                                                
                                                 <p className="text-xs text-zinc-500">
                                                     {item.message}
                                                 </p>
