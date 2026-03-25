@@ -117,10 +117,10 @@ export default function Notifications() {
 
             <DashboardLayout>
                 {openMenuIndex !== null && (
-                   <div
-    onClick={() => setOpenMenuIndex(null)}
-    className="fixed inset-0 z-40 pointer-events-auto"
-/>
+                    <div
+                        onClick={() => setOpenMenuIndex(null)}
+                        className="fixed inset-0 z-40 pointer-events-auto"
+                    />
                 )}
                 <div className="flex justify-center w-full p-6">
                     <div className="w-full max-w-md bg-white border border-zinc-200 rounded-xl shadow-md p-4 animate-fade-in">
@@ -148,7 +148,7 @@ export default function Notifications() {
                                     <div
                                         key={index}
                                         onClick={() => handleMarkAsRead(index)}
-                                        className={`cursor-pointer flex items-center justify-between p-3 rounded-lg transition-all duration-200 hover:bg-zinc-100 hover:scale-[1.01] active:scale-[0.98] ${item.viewed ? "opacity-60" : ""}`}
+                                        className={`cursor-pointer flex items-center justify-between p-6 border-b border-zinc-200 last:border-none transition-all duration-200 hover:bg-zinc-100 ${item.viewed ? "opacity-60" : ""}`}
                                     >
                                         <div className="flex items-center gap-3">
 
@@ -188,16 +188,16 @@ export default function Notifications() {
                                             </button>
 
                                             {openMenuIndex == index && (
-                                                <div 
+                                                <div
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         console.log("arv");
-                                                    }} 
+                                                    }}
                                                     className="absolute right-0 mt-2 min-w-[140px] bg-white border border-black/20 rounded-lg shadow-lg z-50"
                                                 >
 
                                                     <button
-                                                        
+
                                                         className="w-full text-left px-3 py-2 text-sm text-black font-semibold flex items-center gap-2 hover:bg-zinc-100"
                                                     >
                                                         📥 Arquivar
