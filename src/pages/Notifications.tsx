@@ -200,7 +200,7 @@ export default function Notifications() {
 
                                                         className="w-full text-left px-3 py-2 text-sm text-black font-semibold flex items-center gap-2 hover:bg-zinc-100"
                                                     >
-                                                        📥 Arquivar
+                                                        📁   Arquivar
                                                     </button>
 
                                                 </div>
