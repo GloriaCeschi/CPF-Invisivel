@@ -95,7 +95,7 @@ const Profile = () => {
     const { data, error: uploadError } = await supabase
       .storage
       .from("avatars")
-      .upload(fileName, file, { upsert: true });
+      .upload(fileName, file, { upsert: true , contentType:file.type, });
 
     if (uploadError) {
       console.error("UPLOAD ERROR:", uploadError);
