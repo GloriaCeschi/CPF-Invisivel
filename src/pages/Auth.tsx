@@ -26,9 +26,15 @@ export default function Auth() {
   const [login, setLogin] = useState(true);
 
   const [user, setUser] = useState<User>({ name: "", email: "", pass: "" });
+  const [confirmPass, setConfirmPass] = useState("");
   const [users, setUsers] = useState<User[]>([]);
   const [pToast, sertPtoast] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  // Estados de erro
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmError, setConfirmError] = useState("");
 
   // Função para validar senha
   function validatePassword(pass: string) {
@@ -41,6 +47,12 @@ export default function Auth() {
   }
 
   const passwordChecks = validatePassword(user.pass || "");
+
+  // Função para validar email
+  function validateEmail(email: string) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  }
 
   function showToast(msg: string) {
     sertPtoast(msg);
@@ -85,10 +97,20 @@ export default function Auth() {
       return;
     }
 
+    if (!validateEmail(user.email)) {
+      showToast("Formato de e-mail inválido.");
+      return;
+    }
+
     if (!Object.values(passwordChecks).every(Boolean)) {
       showToast("A senha não atende aos requisitos.");
       return;
     }
+
+    /*if (user.pass !== confirmPass) {
+      showToast("As senhas não coincidem.");
+      return;
+    }*/
 
     setUsers([...users, user]);
     const { error } = await supabase.auth.signUp({
@@ -163,8 +185,18 @@ export default function Auth() {
                 onChange={(e) =>
                   setUser({ ...user, email: e.target.value })
                 }
+                onBlur={() =>
+                  setEmailError(
+                    validateEmail(user.email || "")
+                      ? ""
+                      : "Formato de e-mail inválido."
+                  )
+                }
                 required
               />
+              {emailError && (
+                <p className="text-red-500 text-sm">{emailError}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -177,6 +209,13 @@ export default function Auth() {
                   value={user?.pass || ""}
                   onChange={(e) =>
                     setUser({ ...user, pass: e.target.value })
+                  }
+                  onBlur={() =>
+                    setPasswordError(
+                      Object.values(passwordChecks).every(Boolean)
+                        ? ""
+                        : "A senha não atende aos requisitos."
+                    )
                   }
                   required
                 />
@@ -192,8 +231,10 @@ export default function Auth() {
                   )}
                 </button>
               </div>
+              {passwordError && (
+                <p className="text-red-500 text-sm">{passwordError}</p>
+              )}
 
-              {/* Requisitos da senha */}
               {!login && (
                 <ul className="mt-2 text-sm space-y-1">
                   <li
@@ -227,6 +268,30 @@ export default function Auth() {
                 </ul>
               )}
             </div>
+
+            {!login && (
+              <div className="space-y-2">
+                <Label htmlFor="confirmPass">Confirmar Senha</Label>
+                <Input
+                  id="confirmPass"
+                  type="password"
+                  placeholder="••••••••"
+                  value={confirmPass}
+                  onChange={(e) => setConfirmPass(e.target.value)}
+                  onBlur={() =>
+                    setConfirmError(
+                      user.pass === confirmPass
+                        ? ""
+                        : "As senhas não coincidem."
+                    )
+                  }
+                  required
+                />
+                {confirmError && (
+                  <p className="text-red-500 text-sm">{confirmError}</p>
+                )}
+              </div>
+            )}
           </CardContent>
 
           <CardFooter className="flex-col gap-3">

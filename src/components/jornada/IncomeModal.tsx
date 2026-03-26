@@ -6,10 +6,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import supabase from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/context/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { Upload } from "lucide-react";
 import type { Income } from "@/types/jornada";
+import { Console } from "console";
 
 interface IncomeModalProps {
   open: boolean;
@@ -53,7 +54,8 @@ export default function IncomeModal({ open, onClose, onSaved, editingIncome }: I
     if (!user) return null;
     const ext = file.name.split(".").pop();
     const path = `${user.id}/${Date.now()}.${ext}`;
-    const { error } = await supabase.storage.from("receipts").upload(path, file);
+    const { error } = await supabase.storage.from("receipts").upload(path, file, {upsert:true,contentType:file.type,});
+    console.log("aqui")
     if (error) {
       toast({ title: "Erro no upload", description: error.message, variant: "destructive" });
       return null;
@@ -64,38 +66,47 @@ export default function IncomeModal({ open, onClose, onSaved, editingIncome }: I
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log (user)
     if (!user) return;
     setLoading(true);
+      
+    try {
+      let receiptUrl = editingIncome?.receipt_url || null;
+      if (file) {
+        
+        receiptUrl = await uploadFile(file);
+      }
 
-    let receiptUrl = editingIncome?.receipt_url || null;
-    if (file) {
-      receiptUrl = await uploadFile(file);
+      const parsedAmount = parseFloat(amount.replace(",", "."));
+
+      const data = {
+        title: title.trim(),
+        description: description.trim() || null,
+        amount: parsedAmount,
+        receipt_type: receiptType,
+        receipt_url: receiptUrl,
+        user_id: user.id,
+      };
+
+      let error;
+      if (editingIncome) {
+        ({ error } = await supabase.from("incomes").update(data).eq("id", editingIncome.id));
+      } else {
+        ({ error } = await supabase.from("incomes").insert(data));
+      }
+
+      if (error) {
+        toast({ title: "Erro", description: error.message, variant: "destructive" });
+      } else {
+        toast({ title: editingIncome ? "Renda atualizada!" : "Renda adicionada!" });
+        onSaved();
+        onClose();
+      }
+    } catch (err) {
+      toast({ title: "Erro", description: String(err), variant: "destructive" });
+    } finally {
+      setLoading(false);
     }
-
-    const data = {
-      title: title.trim(),
-      description: description.trim() || null,
-      amount: parseFloat(amount),
-      receipt_type: receiptType,
-      receipt_url: receiptUrl,
-      user_id: user.id,
-    };
-
-    let error;
-    if (editingIncome) {
-      ({ error } = await supabase.from("incomes").update(data).eq("id", editingIncome.id));
-    } else {
-      ({ error } = await supabase.from("incomes").insert(data));
-    }
-
-    if (error) {
-      toast({ title: "Erro", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: editingIncome ? "Renda atualizada!" : "Renda adicionada!" });
-      onSaved();
-      onClose();
-    }
-    setLoading(false);
   };
 
   return (
