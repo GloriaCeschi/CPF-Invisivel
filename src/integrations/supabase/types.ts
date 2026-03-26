@@ -196,6 +196,7 @@ export type Database = {
       }
       notifications: {
         Row: {
+          archived: boolean | null
           created_at: string
           id: string
           key_id: string | null
@@ -205,6 +206,7 @@ export type Database = {
           viewed: boolean | null
         }
         Insert: {
+          archived?: boolean | null
           created_at?: string
           id?: string
           key_id?: string | null
@@ -214,6 +216,7 @@ export type Database = {
           viewed?: boolean | null
         }
         Update: {
+          archived?: boolean | null
           created_at?: string
           id?: string
           key_id?: string | null
@@ -236,6 +239,7 @@ export type Database = {
           name: string | null
           phone: string
           photo_url: string | null
+          roles: string
           senha_hash: string | null
           state: string | null
           user_id: string | null
@@ -251,6 +255,7 @@ export type Database = {
           name?: string | null
           phone: string
           photo_url?: string | null
+          roles?: string
           senha_hash?: string | null
           state?: string | null
           user_id?: string | null
@@ -266,6 +271,7 @@ export type Database = {
           name?: string | null
           phone?: string
           photo_url?: string | null
+          roles?: string
           senha_hash?: string | null
           state?: string | null
           user_id?: string | null
@@ -378,7 +384,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never

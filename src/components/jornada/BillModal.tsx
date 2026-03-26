@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import  supabase  from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/context/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { Upload } from "lucide-react";
 import type { Bill } from "@/types/jornada";
@@ -45,7 +45,7 @@ export default function BillModal({ open, onClose, onSaved, editingBill }: BillM
     if (!user) return null;
     const ext = file.name.split(".").pop();
     const path = `${user.id}/${Date.now()}.${ext}`;
-    const { error } = await supabase.storage.from("receipts").upload(path, file);
+    const { error } = await supabase.storage.from("receipts").upload(path, file, {upsert:true,contentType:file.type,});
     if (error) { toast({ title: "Erro no upload", description: error.message, variant: "destructive" }); return null; }
     const { data } = supabase.storage.from("receipts").getPublicUrl(path);
     return data.publicUrl;
@@ -94,9 +94,9 @@ export default function BillModal({ open, onClose, onSaved, editingBill }: BillM
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-display">{editingBill ? "Editar Conta" : "Adicionar Conta Paga"}</DialogTitle>
+          <DialogTitle className="font-display text-[hsl(218,26%,29%)]">{editingBill ? "Editar Conta" : "Adicionar Conta Paga"}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 text-[hsl(218,26%,29%)]">
           <div className="space-y-2">
             <Label>Título</Label>
             <Input placeholder="Ex: Conta de luz" value={title} onChange={(e) => setTitle(e.target.value)} required maxLength={100} />

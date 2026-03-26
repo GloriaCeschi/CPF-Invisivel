@@ -36,7 +36,7 @@ export const LevelProgress = () => {
       </div>
 
       <div className="text-center">
-        <Badge className="mb-2 bg-gold text-gold-foreground text-sm px-3 py-1 hover:bg-gold/90">
+        <Badge className="mb-2 bg-gold text-customBlue text-sm px-3 py-1 hover:bg-gold/90">
           Nível {current.level} — {current.name}
         </Badge>
         <p className="text-3xl font-extrabold text-foreground">{USER_MOCK.totalPoints} <span className="text-base font-medium text-muted-foreground">pts</span></p>

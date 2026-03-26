@@ -77,93 +77,103 @@ const Profile = () => {
   };
 
   const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const file = e.target.files?.[0];
+  if (!file) return;
 
-    if (!user?.id) {
-      console.log("USER INVALID:", user);
-      toast.error("Usuário não carregado");
+  if (!user?.id) {
+    console.log("USER INVALID:", user);
+    toast.error("Usuário não carregado");
+    return;
+  }
+
+  try {
+    const fileName = `${user.id}-${Date.now()}.${file.name.split(".").pop()}`;
+
+    console.log("UPLOAD START");
+
+    // Upload com upsert para evitar conflito de nome
+    const { data, error: uploadError } = await supabase
+      .storage
+      .from("avatars")
+      .upload(fileName, file, { upsert: true , contentType:file.type, });
+
+    if (uploadError) {
+      console.error("UPLOAD ERROR:", uploadError);
+      toast.error("Erro no upload");
       return;
     }
 
-    try {
-      const fileName = `${user.id}-${Date.now()}.${file.name.split(".").pop()}`;
+    console.log("UPLOAD SUCCESS:", data);
 
-      console.log("UPLOAD START");
+    // Usa o path retornado pelo upload
+    const { data: publicData } = supabase
+      .storage
+      .from("avatars")
+      .getPublicUrl(data.path);
 
-      const { data, error } = await supabase.storage.from('avatars').upload(fileName, file, { upsert: true });
-
-      console.log("UPLOAD RESULT:", { data, error });
-
-      if (error || !data) {
-        console.error("UPLOAD ERROR:", error);
-        toast.error("Erro no upload");
-        return;
-      }
-
-      const filePath = data.path;
-
-      const { data: publicData } = supabase.storage
-        .from("avatars")
-        .getPublicUrl(filePath);
-
-      console.log("PUBLIC URL:", publicData);
-
-      if (!publicData?.publicUrl) {
-        toast.error("Erro ao gerar URL");
-        return;
-      }
-
-      const publicUrl = publicData.publicUrl;
-
-      const { data: existingProfile, error: findError } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("user_id", user.id)
-        .maybeSingle();
-
-      if (findError) {
-        console.error(findError);
-        toast.error(`Erro ao localizar perfil: ${findError.message}`);
-        return;
-      }
-
-      if (existingProfile?.id) {
-        const { error: updateError } = await supabase
-          .from("profiles")
-          .update({ photo_url: publicUrl })
-          .eq("id", existingProfile.id);
-
-        if (updateError) {
-          console.error(updateError);
-          toast.error(`Erro ao salvar no banco: ${updateError.message}`);
-          return;
-        }
-      } else {
-        const { error: insertError } = await supabase
-          .from("profiles")
-          .insert({
-            user_id: user.id,
-            photo_url: publicUrl,
-            phone: prof.phone || "",
-          });
-
-        if (insertError) {
-          console.error(insertError);
-          toast.error(`Erro ao criar perfil: ${insertError.message}`);
-          return;
-        }
-      }
-
-      setProf((prev) => ({ ...prev, photo_url: publicUrl }));
-      setPhotoUrl(publicUrl);
-
-      toast.success("Foto atualizada!");
-    } catch (err) {
-      console.error("CATCH ERROR:", err);
-      toast.error("Erro inesperado");
+    if (!publicData?.publicUrl) {
+      toast.error("Erro ao gerar URL");
+      return;
     }
-  };
+
+    const publicUrl = publicData.publicUrl;
+    console.log("PUBLIC URL:", publicUrl);
+
+    // Busca perfil existente
+    const { data: existingProfile, error: findError } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (findError) {
+      console.error("PROFILE FIND ERROR:", findError);
+      toast.error(`Erro ao localizar perfil: ${findError.message}`);
+      return;
+    }
+
+    if (existingProfile?.id) {
+      // Atualiza perfil existente
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ photo_url: publicUrl })
+        .eq("id", existingProfile.id);
+
+      if (updateError) {
+        console.error("PROFILE UPDATE ERROR:", updateError);
+        toast.error(`Erro ao salvar no banco: ${updateError.message}`);
+        return;
+      }
+    } else {
+      // Cria novo perfil
+      const { error: insertError } = await supabase
+        .from("profiles")
+        .insert({
+          user_id: user.id,
+          photo_url: publicUrl,
+          phone: prof?.phone || "",
+        });
+
+      if (insertError) {
+        console.error("PROFILE INSERT ERROR:", insertError);
+        toast.error(`Erro ao criar perfil: ${insertError.message}`);
+        return;
+      }
+    }
+
+    // Atualiza estado local
+    setProf((prev) => ({ ...prev, photo_url: publicUrl }));
+    setPhotoUrl(publicUrl);
+
+    toast.success("Foto atualizada!");
+  } catch (err) {
+    console.error("CATCH ERROR:", err);
+    toast.error("Erro inesperado");
+  }
+};
+
+
+
 
 
 

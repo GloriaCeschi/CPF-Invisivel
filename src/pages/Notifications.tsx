@@ -10,100 +10,103 @@ type notifications = {
     message?: string
     viewed?: boolean
     created_at: string
+    id?: string
+    archived?: boolean
 };
 export default function Notifications() {
 
-    function handleArchive(index: number) {
+    async function handleArchive(index: number) {
+        console.log("arquivd")
         const item = notifications[index];
 
-        // remove da lista principal
-        const updated = notifications.filter((_, i) => i !== index);
+        const { error } = await supabase
+            .from('notifications')
+            .update({ archived: true })
+            .eq('id', item.id);
 
-        // adiciona nos arquivados
-        setArchived(prev => [item, ...prev]);
+        if (error) {
+            console.log(error.message);
+            return;
+        }
+
+        const updated = notifications.filter((_, i) => i !== index);
 
         setNotifications(updated);
         setOpenMenuIndex(null);
     }
 
-    function handleDelete(index: number) {
-        const updated = notifications.filter((_, i) => i !== index);
+    async function handleMarkAsRead(index: number) {
+        const item = notifications[index];
 
-        setNotifications(updated);
-        setOpenMenuIndex(null);
-    }
-
-    function handleMarkAsRead(index: number) {
-        if (notifications[index].viewed) return;
+        if (item.viewed) return;
 
         const updated = [...notifications];
         updated[index].viewed = true;
 
+        const { error } = await supabase
+            .from('notifications')
+            .update({ viewed: true }) // boolean, não string!
+            .eq('id', item.id); // 🔥 aqui está a chave
+
+        if (error) {
+            console.log(error.message);
+            return;
+        }
+
         setNotifications(updated);
     }
+    async function handleDelete(index: number) {
+        const item = notifications[index];
+
+        const { error } = await supabase
+            .from('notifications')
+            .delete()
+            .eq('id', item.id);
+
+        if (error) {
+            console.log(error.message);
+            return;
+        }
+
+        const updated = notifications.filter((_, i) => i !== index);
+
+        setNotifications(updated);
+        setOpenMenuIndex(null);
+    }
+
+
 
 
 
 
     const { user, signOutUser } = useAuth();
     const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
-    const [archived, setArchived] = useState<notifications[]>([]);
-    const [notifications, setNotifications] = useState<notifications[]>([
 
+    const [notifications, setNotifications] = useState<notifications[]>([]);
 
-        {
-            "user_id": "user_01",
-            "key_id": "1",
-            "message": "Sua conta foi atualizada com sucesso",
-            "viewed": false,
-            "created_at": "2026-03-18T10:30:00"
-        },
-        {
-            "user_id": "user_02",
-            "key_id": "2",
-            "message": "Você recebeu uma nova mensagem",
-            "viewed": false,
-            "created_at": "2026-03-18T09:15:00"
-        },
-        {
-            "user_id": "user_03",
-            "key_id": "3",
-            "message": "Pagamento confirmado",
-            "viewed": true,
-            "created_at": "2026-03-17T18:40:00"
-        },
-        {
-            "user_id": "user_04",
-            "key_id": "4",
-            "message": "Novo acesso detectado",
-            "viewed": false,
-            "created_at": "2026-03-17T14:20:00"
-        },
-        {
-            "user_id": "user_05",
-            "key_id": "5",
-            "message": "Atualização disponível no sistema",
-            "viewed": true,
-            "created_at": "2026-03-16T11:00:00"
-        }
-    ]);
 
 
     useEffect(() => {
-        // if (user) loadNotifications(user.id);
-    }, [user]);
+        if (user) loadNotifications(user.id);
+    }, []);
 
     async function loadNotifications(user_id: string): Promise<void> {
+        console.log(user_id)
         const { data, error } = await supabase.from('notifications')
-            .select('*').eq("user_id", user_id)
+            .select('*')
+            .eq("user_id", user_id)
+            .eq("archived", false)
             .order('created_at', { ascending: false });
-
+        console.log(data)
         if (error) {
             alert(error.message)
             return
         }
 
         setNotifications(data);
+
+
+
     }
 
 
@@ -116,7 +119,7 @@ export default function Notifications() {
                 {openMenuIndex !== null && (
                     <div
                         onClick={() => setOpenMenuIndex(null)}
-                        className="fixed inset-0 z-40"
+                        className="fixed inset-0 z-40 pointer-events-auto"
                     />
                 )}
                 <div className="flex justify-center w-full p-6">
@@ -145,7 +148,7 @@ export default function Notifications() {
                                     <div
                                         key={index}
                                         onClick={() => handleMarkAsRead(index)}
-                                        className={`cursor-pointer flex items-center justify-between p-3 rounded-lg transition-all duration-200 hover:bg-zinc-100 hover:scale-[1.01] active:scale-[0.98] ${item.viewed ? "opacity-60" : ""}`}
+                                        className={`cursor-pointer flex items-center justify-between p-6 border-b border-zinc-200 last:border-none transition-all duration-200 hover:bg-zinc-100 ${item.viewed ? "opacity-60" : ""}`}
                                     >
                                         <div className="flex items-center gap-3">
 
@@ -165,9 +168,7 @@ export default function Notifications() {
 
                                             {/* Texto */}
                                             <div>
-                                                <p className="text-sm text-zinc-800 font-semibold">
-                                                    {item.user_id?.replace("user_", "Usuário ")}
-                                                </p>
+
                                                 <p className="text-xs text-zinc-500">
                                                     {item.message}
                                                 </p>
@@ -179,28 +180,27 @@ export default function Notifications() {
                                             <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    setOpenMenuIndex(openMenuIndex === index ? null : index);
+                                                    setOpenMenuIndex(openMenuIndex == index ? null : index);
                                                 }}
                                                 className="hover:bg-zinc-100 p-1 rounded-md transition"
                                             >
                                                 <MoreHorizontal className="w-5 h-5 text-black" />
                                             </button>
 
-                                            {openMenuIndex === index && (
-                                                <div className="absolute right-0 mt-2 w-36 bg-white border border-black/20 rounded-lg shadow-lg z-50 animate-fade-in">
+                                            {openMenuIndex == index && (
+                                                <div
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        console.log("arv");
+                                                    }}
+                                                    className="absolute right-0 mt-2 min-w-[140px] bg-white border border-black/20 rounded-lg shadow-lg z-50"
+                                                >
 
                                                     <button
-                                                        onClick={() => handleArchive(index)}
-                                                        className="w-full text-left px-3 py-2 text-sm text-black font-semibold hover:bg-zinc-100 flex items-center gap-2"
+
+                                                        className="w-full text-left px-3 py-2 text-sm text-black font-semibold flex items-center gap-2 hover:bg-zinc-100"
                                                     >
                                                         📥 Arquivar
-                                                    </button>
-                                                    <div className="border-t border-black/20 my-1"></div>
-                                                    <button
-                                                        onClick={() => handleDelete(index)}
-                                                        className="w-full text-left px-3 py-2 text-sm text-black font-semibold hover:bg-red-50 flex items-center gap-2"
-                                                    >
-                                                        🗑️ Deletar
                                                     </button>
 
                                                 </div>
