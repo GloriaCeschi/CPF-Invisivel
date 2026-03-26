@@ -146,11 +146,11 @@ export default function AdminProofs() {
   function getStatusBadge(status: string | null) {
     switch (status) {
       case "aprovado":
-        return <Badge className="bg-green-600 text-white"><CheckCircle className="w-3 h-3 mr-1" />Aprovado</Badge>;
+        return <Badge className="bg-primary text-primary-foreground"><CheckCircle className="w-3 h-3 mr-1" />Aprovado</Badge>;
       case "rejeitado":
         return <Badge variant="destructive"><XCircle className="w-3 h-3 mr-1" />Rejeitado</Badge>;
       default:
-        return <Badge className="bg-amber-500 text-white"><Clock className="w-3 h-3 mr-1" />Pendente</Badge>;
+        return <Badge variant="secondary"><Clock className="w-3 h-3 mr-1" />Pendente</Badge>;
     }
   }
 
