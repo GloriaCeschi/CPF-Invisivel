@@ -14,6 +14,7 @@ import Score from "./pages/Score";
 import EducacaoFinanceira from "./pages/EducacaoFinanceira";
 import Cursos from "./pages/Cursos";
 import Credit from "./pages/Credit";
+import AdminProofs from "./pages/AdminProofs";
 import { AuthProvider } from "./context/AuthContext";
 import AuthRoute from "./components/AuthRoute";
 import ProtectedRoute from "./components/ProtectedRoute";
