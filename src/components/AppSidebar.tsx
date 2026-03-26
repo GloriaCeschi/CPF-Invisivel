@@ -56,14 +56,14 @@ export function AppSidebar() {
     navigate("/auth");
   };
 
-  const [prof, setProf] = useState<{ name?: string }>({});
+  const [prof, setProf] = useState<{ name?: string; roles?: string }>({});
 
   useEffect(() => {
     async function loadProfile() {
       if (!user) return;
       const { data } = await supabase
         .from("profiles")
-        .select("name")
+        .select("name, roles")
         .eq("user_id", user.id)
         .maybeSingle();
       if (data) setProf(data);
