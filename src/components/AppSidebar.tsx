@@ -28,6 +28,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
 import supabase from "@/utils/supabase";
+import { ShieldCheck } from "lucide-react";
 
 const menuItems = [
   { title: "Início", url: "/home", icon: Home },
@@ -37,7 +38,10 @@ const menuItems = [
   { title: "Notificações", url: "/notifications", icon: Bell },
   { title: "Cursos", url: "/cursos", icon: GraduationCap },
   { title: "Perfil", url: "/profile", icon: User },
+];
 
+const adminItems = [
+  { title: "Painel Admin", url: "/admin/proofs", icon: ShieldCheck },
 ];
 
 export function AppSidebar() {
