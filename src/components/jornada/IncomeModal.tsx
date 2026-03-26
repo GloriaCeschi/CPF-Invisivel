@@ -54,7 +54,7 @@ export default function IncomeModal({ open, onClose, onSaved, editingIncome }: I
     if (!user) return null;
     const ext = file.name.split(".").pop();
     const path = `${user.id}/${Date.now()}.${ext}`;
-    const { error } = await supabase.storage.from("receipts").upload(path, file, {upsert:true,contentType:ext});
+    const { error } = await supabase.storage.from("receipts").upload(path, file, {upsert:true,contentType:file.type,});
     console.log("aqui")
     if (error) {
       toast({ title: "Erro no upload", description: error.message, variant: "destructive" });
