@@ -104,7 +104,7 @@ export default function BancosParceiros() {
       : valorNum / prazoNum;
 
 
-
+  const melhorBanco = [...banks].sort((a, b) => a.interest - b.interest)[0];
 
 
 
@@ -133,7 +133,11 @@ export default function BancosParceiros() {
           {listaBancos.map((banco: any, index) => (
             <div
               key={banco.id || index}
-              className="bg-card p-6 rounded-2xl w-[280px] shadow-md border border-pink-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+              className={`p-6 rounded-2xl w-[280px] transition-all duration-300
+  ${banco.id === melhorBanco?.id
+                  ? "bg-white border-2 border-primary shadow-xl"
+                  : "bg-card border border-pink-100 shadow-md hover:shadow-lg hover:-translate-y-1"
+                }`}
             >
               <div className="flex items-center gap-2 mb-4">
                 <span className="text-xl text-primary">
@@ -145,19 +149,18 @@ export default function BancosParceiros() {
                         ? "🟣"
                         : "🏦"}
                 </span>
-              <div className="flex items-center gap-2">
-  <h3 className="text-base font-semibold text-card-foreground flex items-center gap-2">
-  {banco.name}
-
-  {banco.name?.includes("Caixa") && (
-    <span className="bg-primary text-white text-sm px-3 py-1 rounded-full font-medium">
-      Melhor opção
-    </span>
-  )}
-</h3>
-</div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base font-semibold text-card-foreground flex items-center gap-2">
+                    {banco.name}
+                    {banco.id === melhorBanco?.id && (
+                      <span className="bg-primary/10 text-primary text-xs px-3 py-1 rounded-full font-semibold whitespace-nowrap">
+                        MELHOR OPÇÃO
+                      </span>
+                    )}
+                  </h3>
+                </div>
               </div>
-              
+
 
               <div className="space-y-1 mb-4">
                 <DataRow
@@ -202,7 +205,7 @@ export default function BancosParceiros() {
 
               <button
                 onClick={() => solicitar(banco.name || banco.nome)}
-               className="w-full mt-4 bg-primary text-white py-2.5 rounded-xl font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition"
+                className="w-full mt-4 bg-primary text-white py-2.5 rounded-xl font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition"
               >
                 Solicitar Empréstimo
               </button>
@@ -211,7 +214,7 @@ export default function BancosParceiros() {
         </div>
         {/* SIMULADOR */}
         <div className="max-w-2xl mx-auto px-6 pb-12">
-          <div className="bg-card p-6 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] border border-card-border">
+          <div className="bg-white p-6 rounded-2xl shadow-md border border-pink-100">
             <div className="text-center mb-4">
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
                 Simulação
@@ -272,8 +275,11 @@ export default function BancosParceiros() {
                 <span className="text-sm text-muted-foreground">
                   Parcela estimada
                 </span>
-                <p className="text-2xl font-bold text-foreground">
-                  R$ {parcela.toFixed(0)}{" "}
+                <p className="text-3xl font-bold text-foreground">
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(parcela)}{" "}
                   <span className="text-base font-normal text-muted-foreground">
                     / mês
                   </span>
