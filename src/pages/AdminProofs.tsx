@@ -190,7 +190,7 @@ export default function AdminProofs() {
             { value: "rejeitado", label: "Rejeitados" },
             { value: "todos", label: "Todos" },
           ].map((f) => (
-            <Button
+            <Button className="bg-primary"
               key={f.value}
               variant={filter === f.value ? "default" : "outline"}
               size="sm"
