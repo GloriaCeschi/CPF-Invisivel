@@ -55,24 +55,7 @@ export default function Notifications() {
 
         setNotifications(updated);
     }
-    async function handleDelete(index: number) {
-        const item = notifications[index];
-
-        const { error } = await supabase
-            .from('notifications')
-            .delete()
-            .eq('id', item.id);
-
-        if (error) {
-            console.log(error.message);
-            return;
-        }
-
-        const updated = notifications.filter((_, i) => i !== index);
-
-        setNotifications(updated);
-        setOpenMenuIndex(null);
-    }
+   
 
 
 
@@ -191,7 +174,7 @@ export default function Notifications() {
                                                 <div
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        console.log("arv");
+                                                        handleArchive(index);
                                                     }}
                                                     className="absolute right-0 mt-2 min-w-[140px] bg-white border border-black/20 rounded-lg shadow-lg z-50"
                                                 >
