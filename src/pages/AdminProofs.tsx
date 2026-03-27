@@ -134,6 +134,8 @@ export default function AdminProofs() {
     if (error) {
       toast({ title: "Erro ao atualizar", description: error.message, variant: "destructive" });
     } else {
+        ///ADICIONAR AQUI
+
       toast({ title: `Documento ${status} com sucesso!` });
       setSelectedProof(null);
       setFeedback("");

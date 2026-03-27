@@ -7,7 +7,7 @@ import { currentScore } from "@/data/mockData";
 import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 import { useCallback, useEffect, useState, useRef } from "react";
 import  supabase  from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/context/AuthContext";
 import MonthlySummary from "@/components/jornada/MonthlySummary";
 import IncomeSection from "@/components/jornada/IncomeSection";
 import BillSection from "@/components/jornada/BillSection";
