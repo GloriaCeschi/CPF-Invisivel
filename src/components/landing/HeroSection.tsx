@@ -1,8 +1,11 @@
 import { motion } from "framer-motion";
 import { ArrowDown, Shield, TrendingUp, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+
 
 const HeroSection = () => (
+
   <section
     id="hero"
     className="relative pt-28 pb-20 md:pt-40 md:pb-32 overflow-hidden"
@@ -15,11 +18,11 @@ const HeroSection = () => (
 
     <div className="container mx-auto px-4 relative z-10">
       <div className="max-w-3xl mx-auto text-center">
-        
+
         {/* Badge */}
         <div className="inline-flex items-center gap-2 bg-primary text-white rounded-full px-4 py-1.5 text-sm font-medium mb-6">
-          <Users size={16} />
-          Para trabalhadores informais de 18 a 55 anos
+
+          Tornamos visível o valor do trabalho informal, criando inclusão e crédito justo.
         </div>
 
         {/* Título */}
@@ -42,9 +45,9 @@ const HeroSection = () => (
             className="text-base px-8 py-6 font-semibold bg-primary hover:bg-primary text-white shadow-lg shadow-primary"
             asChild
           >
-            <a href="#cta-final">
+            <a href="#cta">
               <TrendingUp size={20} />
-             Quero Participar
+              Quero Participar
             </a>
           </Button>
 

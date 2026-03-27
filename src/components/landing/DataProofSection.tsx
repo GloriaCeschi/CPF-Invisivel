@@ -96,8 +96,8 @@ const DataProofSection = () => {
               Acesso a crédito na informalidade
             </h3>
             <ResponsiveContainer width="100%" height={250}>
-              <PieChart>
-                <Pie data={pieData} cx="50%" cy="50%" innerRadius={60} outerRadius={100} dataKey="value" label={({ name, value }) => `${name}: ${value}%`}>
+              <PieChart margin={{ top: 42, bottom: 30 }}>
+                <Pie data={pieData} cx="50%" cy="50%" innerRadius={60} outerRadius={100} dataKey="value" label={({ name, value }) => `${name}: ${value}%`} >
                   {pieData.map((_, i) => (
                     <Cell key={i} fill={COLORS[i]} />
                   ))}
