@@ -14,6 +14,7 @@ import Score from "./pages/Score";
 import EducacaoFinanceira from "./pages/EducacaoFinanceira";
 import Cursos from "./pages/Cursos";
 import Credit from "./pages/Credit";
+import AdminProofs from "./pages/AdminProofs";
 import { AuthProvider } from "./context/AuthContext";
 import AuthRoute from "./components/AuthRoute";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -43,6 +44,7 @@ const App = () => (
           <Route path="/cursos" element={<ProtectedRoute> <Cursos /> </ProtectedRoute>} />
           <Route path="/credit" element={<ProtectedRoute> <Credit /> </ProtectedRoute>} />
           <Route path="/notifications" element={<ProtectedRoute> <Notifications /> </ProtectedRoute>} />
+          <Route path="/admin/proofs" element={<ProtectedRoute> <AdminProofs /> </ProtectedRoute>} />
 
         </Routes>
         </AuthProvider>

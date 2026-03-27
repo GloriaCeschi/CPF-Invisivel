@@ -6,6 +6,19 @@ import { useEffect, useState } from "react";
 import supabase from "@/utils/supabase";
 import { useNavigate } from "react-router-dom";
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
@@ -46,6 +59,31 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
     loadProfile();
   }, [user]);
+
+  const [unreadCount, setUnreadCount] = useState(0);
+  
+    useEffect(() => {
+        if (user) loadNotificationsCount();
+    }, []);
+
+async function loadNotificationsCount() {
+  if (!user) return;
+
+  const { data, error } = await supabase
+    .from("notifications")
+    .select("*")
+    .eq("user_id", user.id)
+    .or("archived.is.null,archived.eq.false");
+
+  if (error) {
+    console.log(error.message);
+    return;
+  }
+
+  const count = data.filter(n => !n.viewed).length;
+
+  setUnreadCount(count);
+}
 
   function getHoraAtual() {
     const now = new Date();
@@ -139,7 +177,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             >
               <Bell className="h-5 w-5" />
               <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center font-bold">
-                3
+                {unreadCount}
               </span>
             </button>
           </header>
