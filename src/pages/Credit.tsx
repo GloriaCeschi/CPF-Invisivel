@@ -271,33 +271,37 @@ export default function BancosParceiros() {
             </div>
 
             <div className="flex items-center justify-between flex-wrap gap-4">
-              <div>
-                <span className="text-sm text-muted-foreground">
+
+              <div className="bg-gray-50 p-4 rounded-xl">
+                <span className="text-xs text-muted-foreground">
                   Parcela estimada
                 </span>
+
                 <p className="text-3xl font-bold text-foreground">
                   {new Intl.NumberFormat("pt-BR", {
                     style: "currency",
                     currency: "BRL",
-                  }).format(parcela)}{" "}
-                  <span className="text-base font-normal text-muted-foreground">
+                  }).format(parcela)}
+                  <span className="text-sm font-normal text-muted-foreground ml-1">
                     / mês
                   </span>
                 </p>
-                <div className="mt-2">
-                  <p className="text-xs text-gray-500">
-                    Total a pagar
-                  </p>
-                  <p className="text-sm font-bold text-foreground ">
-                    R$ {(parcela * prazoNum).toFixed(2)}
-                  </p>
-                </div>
+
+                <p className="text-xs text-gray-500 mt-1">
+                  Total:{" "}
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(parcela * prazoNum)}
+                </p>
               </div>
+
               <div className="mt-3 bg-green-50 p-3 rounded-lg text-center">
                 <p className="text-sm text-green-600 font-medium">
                   ✔ Pré-aprovado
                 </p>
               </div>
+
               <button
                 onClick={() => {
                   toast({
@@ -306,11 +310,13 @@ export default function BancosParceiros() {
                       "Sua simulação foi registrada. Entraremos em contato.",
                   });
                 }}
-                className="bg-primary text-primary-foreground border-none py-2.5 px-6 rounded-lg cursor-pointer font-medium text-sm hover:opacity-90 transition-opacity"
+                className="bg-primary text-white border-none py-2.5 px-6 rounded-lg cursor-pointer font-medium text-sm transition-all duration-200 hover:brightness-95 active:scale-95 active:brightness-90"
               >
                 Confirmar Solicitação
               </button>
+
             </div>
+
           </div>
         </div>
       </div>
@@ -321,6 +327,6 @@ export default function BancosParceiros() {
 
 
 
-    </DashboardLayout>
+    </DashboardLayout >
   );
 }

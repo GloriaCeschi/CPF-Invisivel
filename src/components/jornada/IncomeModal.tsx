@@ -10,6 +10,7 @@ import { useAuth } from "@/context/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { Upload } from "lucide-react";
 import type { Proof } from "@/types/jornada";
+import { Console } from "console";
 
 interface IncomeModalProps {
   open: boolean;
@@ -21,7 +22,7 @@ interface IncomeModalProps {
 const RECEIPT_TYPES = [
   { value: "pix", label: "PIX" },
   { value: "cartao_credito", label: "Cartão de Crédito" },
-  { value: "cartao_debito", label: "Cartão Débito" },
+  { value: "cartao_debito", label: "Cartão de Débito" },
   { value: "deposito", label: "Depósito" },
 ];
 
@@ -39,7 +40,7 @@ export default function IncomeModal({ open, onClose, onSaved, editingIncome }: I
       setTitle(editingIncome.title);
       setDescription(editingIncome.description || "");
       setAmount(String(editingIncome.amount));
-      setReceiptType(editingIncome.receipt_type || "pix");
+      setReceiptType(editingIncome.receipt_type);
     } else {
       setTitle("");
       setDescription("");
@@ -52,11 +53,9 @@ export default function IncomeModal({ open, onClose, onSaved, editingIncome }: I
   const uploadFile = async (file: File): Promise<string | null> => {
     if (!user) return null;
     const ext = file.name.split(".").pop();
-    const path = `${user.id}/incomes/${Date.now()}.${ext}`;
-    const { error } = await supabase.storage.from("receipts").upload(path, file, {
-      upsert: true,
-      contentType: file.type,
-    });
+    const path = `${user.id}/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("receipts").upload(path, file, {upsert:true,contentType:file.type,});
+    console.log("aqui")
     if (error) {
       toast({ title: "Erro no upload", description: error.message, variant: "destructive" });
       return null;
@@ -67,34 +66,33 @@ export default function IncomeModal({ open, onClose, onSaved, editingIncome }: I
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log (user)
     if (!user) return;
     setLoading(true);
-
+      
     try {
-      let proofUrl = editingIncome?.proof || null;
+      let receiptUrl = editingIncome?.proof || null;
       if (file) {
-        proofUrl = await uploadFile(file);
+        
+        receiptUrl = await uploadFile(file);
       }
 
       const parsedAmount = parseFloat(amount.replace(",", "."));
 
-      const data: Partial<Proof> = {
+      const data = {
         title: title.trim(),
         description: description.trim() || null,
         amount: parsedAmount,
         receipt_type: receiptType,
-        proof: proofUrl,
+        receipt_url: receiptUrl,
         user_id: user.id,
-        type: "income",
-        status: editingIncome?.status || "pendente",
-        created_at: editingIncome?.created_at || new Date().toISOString(),
       };
 
       let error;
       if (editingIncome) {
-        ({ error } = await supabase.from("proofs").update(data).eq("id", editingIncome.id));
+        ({ error } = await supabase.from("incomes").update(data).eq("id", editingIncome.id));
       } else {
-        ({ error } = await supabase.from("proofs").insert(data));
+        ({ error } = await supabase.from("incomes").insert(data));
       }
 
       if (error) {
@@ -121,10 +119,87 @@ export default function IncomeModal({ open, onClose, onSaved, editingIncome }: I
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Campos de formulário iguais */}
-          {/* ... */}
+
+          <div className="space-y-2">
+            <Label className="text-[hsl(218,26%,29%)]">Título</Label>
+            <Input
+              className="bg-muted text-[hsl(218,26%,29%)] placeholder:text-[hsl(218,26%,29%)] border-border focus:ring-2 focus:ring-primary"
+              placeholder="Ex: Venda de frutas na feira"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              maxLength={100}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-[hsl(218,26%,29%)]">Descrição</Label>
+            <Textarea
+              className="bg-muted text-[hsl(218,26%,29%)] placeholder:text-[hsl(218,26%,29%)] border-border focus:ring-2 focus:ring-primary"
+              placeholder="Detalhes da renda..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              maxLength={500}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+
+            <div className="space-y-2">
+              <Label className="text-[hsl(218,26%,29%)]">Valor (R$)</Label>
+              <Input
+                className="bg-muted text-[hsl(218,26%,29%)] border-border focus:ring-2 focus:ring-primary"
+                type="number"
+                step="0.01"
+                min="0.01"
+                placeholder="0,00"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-[hsl(218,26%,29%)]">Tipo de Comprovante</Label>
+              <Select value={receiptType} onValueChange={setReceiptType}>
+                <SelectTrigger className="bg-muted text-[hsl(218,26%,29%)] border-border focus:ring-2 focus:ring-primary">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="text-[hsl(218,26%,29%)]">
+                  {RECEIPT_TYPES.map((t) => (
+                    <SelectItem key={t.value} value={t.value}>
+                      {t.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-[hsl(218,26%,29%)]">Comprovante (PDF ou imagem)</Label>
+            <div className="flex items-center gap-2">
+              <label className="flex-1 flex items-center gap-2 rounded-md border border-border bg-muted px-3 py-2 text-sm cursor-pointer hover:bg-muted/80 transition-colors text-[hsl(218,26%,29%)]">
+                <Upload className="h-4 w-4 flex-shrink-0 text-[hsl(218,26%,29%)]" />
+                <span className="text-[hsl(218,26%,29%)] ">
+                  {file ? file.name : "Selecionar arquivo"}
+                </span>
+                <input
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png,.webp"
+                  className="hidden"
+                  onChange={(e) => setFile(e.target.files?.[0] || null)}
+                />
+              </label>
+            </div>
+          </div>
+
+          <p className="text-xs text-[hsl(218,26%,29%)]">
+            Data e horário registrados automaticamente pelo sistema.
+          </p>
+
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button type="button" variant="outline" onClick={onClose} className="text-[hsl(218,26%,29%)]">
               Cancelar
             </Button>
             <Button type="submit" disabled={loading}>
