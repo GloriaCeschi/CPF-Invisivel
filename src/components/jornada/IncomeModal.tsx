@@ -84,15 +84,17 @@ export default function IncomeModal({ open, onClose, onSaved, editingIncome }: I
         description: description.trim() || null,
         amount: parsedAmount,
         receipt_type: receiptType,
-        receipt_url: receiptUrl,
+        proof: receiptUrl,
+        type: "income",
+        status: "pendente",
         user_id: user.id,
       };
 
       let error;
       if (editingIncome) {
-        ({ error } = await supabase.from("incomes").update(data).eq("id", editingIncome.id));
+        ({ error } = await supabase.from("proofs").update(data).eq("id", editingIncome.id));
       } else {
-        ({ error } = await supabase.from("incomes").insert(data));
+        ({ error } = await supabase.from("proofs").insert(data));
       }
 
       if (error) {
