@@ -71,93 +71,84 @@ export default function Notifications() {
             <div className="flex justify-center w-full p-6">
                 <div className="w-full max-w-md bg-white border border-zinc-200 rounded-xl shadow-md p-4 animate-fade-in">
 
-                    {/* Header - Estilo Original */}
-                    <div className="flex items-center justify-between mb-4">
+                    {/* Header - Alinhado com o badge na direita */}
+                    <div className="flex items-center justify-between mb-4 min-h-[40px]">
                         <div className="flex items-center gap-2">
-                            {viewMode === 'archived' && (
-                                <ArrowLeft className="w-4 h-4 cursor-pointer" onClick={() => setViewMode('recent')} />
+                            {viewMode === 'archived' ? (
+                                <h2 className="text-sm text-zinc-600 font-medium">Arquivados</h2>
+                            ) : (
+                                <h2 className="text-sm text-zinc-600 font-medium">Notificações</h2>
                             )}
-                            <h2 className="w-full text-sm text-zinc-600 font-medium flex items-center justify-between">
-                                <span>
-                                    {viewMode === 'recent' ? 'Notificações' : 'Arquivados'}
-                                </span>
-
-                                {viewMode === 'archived' && (
-                                    <button
-                                        onClick={() => setViewMode('recent')}
-                                        className="ml-auto flex items-center gap-2 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-all border border-blue-100">
-                                        <ArrowLeft className="w-3.5 h-3.5" />
-                                        Voltar
-                                    </button>
-                                )}
-                            </h2>
-
                         </div>
-                        {viewMode === 'recent' && (
-                            <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full font-semibold">
-                                {notifications.filter(n => !n.viewed).length} não lidas
-                            </span>
-                        )}
-                    </div>
 
+                        {/* Lado Direito do Header */}
+                        <div>
+                            {viewMode === 'recent' ? (
+                                <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full font-semibold">
+                                    {notifications.filter(n => !n.viewed).length} não lidas
+                                </span>
+                            ) : (
+                                <button
+                                    onClick={() => setViewMode('recent')}
+                                    className="flex items-center gap-2 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-all border border-blue-100"
+                                >
+                                    <ArrowLeft className="w-3.5 h-3.5" />
+                                    Voltar
+                                </button>
+                            )}
+                        </div>
+                    </div>
                     {/* Lista - Design igual ao seu print */}
                     <div className="space-y-3">
-                        {notifications.length === 0 && (
-                            <p className="text-center text-zinc-400 text-sm">Vazio</p>
-                        )}
-
-
-
                         {notifications.map((item, index) => {
                             const initials = item.message?.slice(0, 2).toUpperCase() || "NA";
                             return (
                                 <div
                                     key={item.id}
-                                    onClick={() => handleMarkAsRead(index)}
+                                    // MUDANÇA AQUI: Só dispara o clique se NÃO estiver visualizado
+                                    onClick={() => !item.viewed && handleMarkAsRead(index)}
                                     className={`cursor-pointer flex items-center justify-between p-6 border-b border-zinc-200 last:border-none transition-all duration-200 hover:bg-zinc-100 ${item.viewed ? "opacity-60" : ""}`}
                                 >
                                     <div className="flex items-center gap-3">
-                                        {/* Avatar Blue - Estilo Original */}
                                         <div className="relative">
-                                            <div className="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-semibold">
+                                            <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center text-sm font-semibold">
                                                 {initials}
                                             </div>
                                             {!item.viewed && viewMode === 'recent' && (
                                                 <>
-                                                    <span className="absolute top-0 right-0 w-2 h-2 bg-blue-500 rounded-full animate-ping"></span>
-                                                    <span className="absolute top-0 right-0 w-2 h-2 bg-blue-500 rounded-full"></span>
+                                                    <span className="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full animate-ping"></span>
+                                                    <span className="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
                                                 </>
                                             )}
                                         </div>
 
-                                        {/* Texto - Estilo Original */}
                                         <div>
                                             <p className="text-xs text-zinc-500">{item.message}</p>
                                         </div>
                                     </div>
 
-                                    {/* Botão de Opções */}
-                                    <div className="relative">
+                                    {/* Container do Botão de Opções */}
+                                    <div className="relative" onClick={(e) => e.stopPropagation()}>
                                         <button
                                             onClick={(e) => {
-                                                e.stopPropagation();
+                                                e.stopPropagation(); // Evita marcar como lida ao abrir o menu
                                                 setOpenMenuIndex(openMenuIndex === index ? null : index);
                                             }}
-                                            className="hover:bg-zinc-100 p-1 rounded-md transition"
+                                            className="hover:bg-zinc-200 p-2 rounded-md transition relative z-10"
                                         >
                                             <MoreHorizontal className="w-5 h-5 text-black" />
                                         </button>
 
                                         {openMenuIndex === index && (
-                                            <div className="absolute right-0 mt-2 min-w-[140px] bg-white border border-black/20 rounded-lg shadow-lg z-50">
+                                            <div className="absolute right-0 mt-2 min-w-[140px] bg-white border border-black/20 rounded-lg shadow-xl z-[100]">
                                                 <button
                                                     onClick={(e) => {
-                                                        e.stopPropagation();
+                                                        e.stopPropagation(); // CRÍTICO: Evita que o card receba o clique
                                                         viewMode === 'recent' ? handleArchive(item.id) : handleUnarchive(item.id);
                                                     }}
-                                                    className="w-full text-left px-3 py-2 text-sm text-black font-semibold flex items-center gap-2 hover:bg-zinc-100"
+                                                    className="w-full text-left px-3 py-3 text-sm text-black font-semibold flex items-center gap-2 hover:bg-zinc-100 rounded-lg"
                                                 >
-                                                    {viewMode === 'recent' ? '📁 Arquivar' : '↩  Desarquivar'}
+                                                    {viewMode === 'recent' ? '📁 Arquivar' : '↩ Desarquivar'}
                                                 </button>
                                             </div>
                                         )}
