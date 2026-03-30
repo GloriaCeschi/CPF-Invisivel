@@ -1,10 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Star } from "lucide-react";
-import type { Bill } from "@/types/jornada";
+import type { Proof } from "@/types/jornada";
 
 interface PendingSectionProps {
-  bills: Bill[];
+  bills: Proof[];
   onAddBill: () => void;
 }
 

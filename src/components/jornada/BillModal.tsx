@@ -4,17 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import  supabase  from "@/integrations/supabase/client";
+import supabase from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { Upload } from "lucide-react";
-import type { Bill } from "@/types/jornada";
+import type { Proof } from "@/types/jornada";
 
 interface BillModalProps {
   open: boolean;
   onClose: () => void;
   onSaved: () => void;
-  editingBill?: Bill | null;
+  editingBill?: Proof | null;
 }
 
 export default function BillModal({ open, onClose, onSaved, editingBill }: BillModalProps) {
@@ -37,16 +37,29 @@ export default function BillModal({ open, onClose, onSaved, editingBill }: BillM
       setCurrentInstallment(String(editingBill.current_installment));
       setNextDueDate(editingBill.next_due_date || "");
     } else {
-      setTitle(""); setDescription(""); setAmount(""); setTotalInstallments("1"); setCurrentInstallment("1"); setNextDueDate(""); setFile(null);
+      setTitle("");
+      setDescription("");
+      setAmount("");
+      setTotalInstallments("1");
+      setCurrentInstallment("1");
+      setNextDueDate("");
+      setFile(null);
     }
   }, [editingBill, open]);
 
   const uploadFile = async (file: File): Promise<string | null> => {
     if (!user) return null;
     const ext = file.name.split(".").pop();
-    const path = `${user.id}/${Date.now()}.${ext}`;
-    const { error } = await supabase.storage.from("receipts").upload(path, file, {upsert:true,contentType:file.type,});
-    if (error) { toast({ title: "Erro no upload", description: error.message, variant: "destructive" }); return null; }
+    const path = `${user.id}/bills/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage
+      .from("receipts")
+      .upload(path, file, { upsert: true, contentType: file.type });
+
+    if (error) {
+      toast({ title: "Erro no upload", description: error.message, variant: "destructive" });
+      return null;
+    }
+
     const { data } = supabase.storage.from("receipts").getPublicUrl(path);
     return data.publicUrl;
   };
@@ -56,7 +69,7 @@ export default function BillModal({ open, onClose, onSaved, editingBill }: BillM
     if (!user) return;
     setLoading(true);
 
-    let receiptUrl = editingBill?.receipt_url || null;
+    let receiptUrl = editingBill?.proof || null;
     if (file) {
       receiptUrl = await uploadFile(file);
     }
@@ -68,16 +81,18 @@ export default function BillModal({ open, onClose, onSaved, editingBill }: BillM
       total_installments: parseInt(totalInstallments),
       current_installment: parseInt(currentInstallment),
       next_due_date: nextDueDate || null,
-      status: "pago" as const,
-      receipt_url: receiptUrl,
+      type: "bill",
+      status: editingBill?.status || "pendente",
+      proof: receiptUrl,
       user_id: user.id,
+      update_at: new Date().toISOString(),
     };
 
     let error;
     if (editingBill) {
-      ({ error } = await supabase.from("bills").update(data).eq("id", editingBill.id));
+      ({ error } = await supabase.from("proofs").update(data).eq("id", editingBill.id));
     } else {
-      ({ error } = await supabase.from("bills").insert(data));
+      ({ error } = await supabase.from("proofs").insert(data));
     }
 
     if (error) {
@@ -94,7 +109,9 @@ export default function BillModal({ open, onClose, onSaved, editingBill }: BillM
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-display text-[hsl(218,26%,29%)]">{editingBill ? "Editar Conta" : "Adicionar Conta Paga"}</DialogTitle>
+          <DialogTitle className="font-display text-[hsl(218,26%,29%)]">
+            {editingBill ? "Editar Conta" : "Adicionar Conta Paga"}
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 text-[hsl(218,26%,29%)]">
           <div className="space-y-2">
