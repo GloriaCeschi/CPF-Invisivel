@@ -9,14 +9,14 @@ import supabase from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { Upload } from "lucide-react";
-import type { Income } from "@/types/jornada";
+import type { Proof } from "@/types/jornada";
 import { Console } from "console";
 
 interface IncomeModalProps {
   open: boolean;
   onClose: () => void;
   onSaved: () => void;
-  editingIncome?: Income | null;
+  editingIncome?: Proof | null;
 }
 
 const RECEIPT_TYPES = [
@@ -71,7 +71,7 @@ export default function IncomeModal({ open, onClose, onSaved, editingIncome }: I
     setLoading(true);
       
     try {
-      let receiptUrl = editingIncome?.receipt_url || null;
+      let receiptUrl = editingIncome?.proof || null;
       if (file) {
         
         receiptUrl = await uploadFile(file);

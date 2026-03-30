@@ -1,6 +1,5 @@
 import { Lock, Play, CheckCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState } from "react";
 import { VideoModal } from "./VideoModal";
@@ -90,13 +89,13 @@ export function CourseCard({ course }: { course: CourseData }) {
                 <span className={`mb-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${
                   isComplete ? "bg-success/20 text-success" : "bg-info/20 text-info"
                 }`}>
-                  {isComplete ? "✅ Concluído" : `${course.progress}% completo`}
+                  {isComplete ? "✅ Concluído" : "Disponível"}
                 </span>
+                
                 <span className="mb-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-medium bg-secondary/20 text-secondary">{course.category}</span>
               </div>
               <h3 className="text-sm font-semibold text-foreground line-clamp-2">{course.title}</h3>
               <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{course.description}</p>
-              <Progress value={course.progress} className="mt-3 h-1.5" />
             </div>
           </CardContent>
         </Card>
