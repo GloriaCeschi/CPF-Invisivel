@@ -8,13 +8,13 @@ import supabase from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { Upload } from "lucide-react";
-import type { Bill } from "@/types/jornada";
+import type { Proof } from "@/types/jornada";
 
 interface BillModalProps {
   open: boolean;
   onClose: () => void;
   onSaved: () => void;
-  editingBill?: Bill | null;
+  editingBill?: Proof | null;
 }
 
 export default function BillModal({ open, onClose, onSaved, editingBill }: BillModalProps) {
@@ -69,7 +69,7 @@ export default function BillModal({ open, onClose, onSaved, editingBill }: BillM
     if (!user) return;
     setLoading(true);
 
-    let receiptUrl = editingBill?.receipt_url || null;
+    let receiptUrl = editingBill?.proof || null;
     if (file) {
       receiptUrl = await uploadFile(file);
     }
@@ -81,18 +81,18 @@ export default function BillModal({ open, onClose, onSaved, editingBill }: BillM
       total_installments: parseInt(totalInstallments),
       current_installment: parseInt(currentInstallment),
       next_due_date: nextDueDate || null,
-      status: "pago" as const,
-      receipt_url: receiptUrl,
+      type: "bill",
+      status: editingBill?.status || "pendente",
+      proof: receiptUrl,
       user_id: user.id,
-      proof_status: editingBill?.proof_status || "pending", // novo campo
-      submitted_at: editingBill?.submitted_at || new Date().toISOString(), // novo campo
+      update_at: new Date().toISOString(),
     };
 
     let error;
     if (editingBill) {
-      ({ error } = await supabase.from("bills").update(data).eq("id", editingBill.id));
+      ({ error } = await supabase.from("proofs").update(data).eq("id", editingBill.id));
     } else {
-      ({ error } = await supabase.from("bills").insert(data));
+      ({ error } = await supabase.from("proofs").insert(data));
     }
 
     if (error) {
