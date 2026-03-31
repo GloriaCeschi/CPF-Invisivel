@@ -95,3 +95,54 @@ $$;
 -- Grant execute permissions to authenticated users
 GRANT EXECUTE ON FUNCTION add_income_points(UUID) TO authenticated;
 GRANT EXECUTE ON FUNCTION add_bill_points(UUID) TO authenticated;
+
+-- Create courses_progress table to track course completion por usuário
+CREATE TABLE IF NOT EXISTS public.courses_progress (
+  id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL,
+  course_id INTEGER NOT NULL,
+  progress INTEGER NOT NULL DEFAULT 0,
+  completed_at TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  UNIQUE (user_id, course_id)
+);
+
+ALTER TABLE public.courses_progress ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can manage own course progress" ON public.courses_progress
+  FOR ALL TO authenticated
+  USING (user_id = auth.uid())
+  WITH CHECK (user_id = auth.uid());
+
+-- Funcção para finalizar curso + adicionar pontos uma única vez
+CREATE OR REPLACE FUNCTION complete_course(uid UUID, p_course_id INTEGER, pts INTEGER)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  progress_record RECORD;
+BEGIN
+  SELECT * INTO progress_record
+  FROM public.courses_progress
+  WHERE user_id = uid AND course_id = p_course_id
+  FOR UPDATE;
+
+  IF NOT FOUND THEN
+    INSERT INTO public.courses_progress (user_id, course_id, progress, completed_at, updated_at)
+    VALUES (uid, p_course_id, 100, now(), now());
+    UPDATE public.profiles SET points = COALESCE(points, 0) + pts WHERE user_id = uid;
+  ELSIF progress_record.progress < 100 THEN
+    UPDATE public.courses_progress
+    SET progress = 100,
+        completed_at = now(),
+        updated_at = now()
+    WHERE user_id = uid AND course_id = p_course_id;
+
+    UPDATE public.profiles SET points = COALESCE(points, 0) + pts WHERE user_id = uid;
+  END IF;
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION complete_course(UUID, INTEGER, INTEGER) TO authenticated;
