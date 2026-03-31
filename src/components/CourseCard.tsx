@@ -1,7 +1,7 @@
 import { Lock, Play, CheckCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { VideoModal } from "./VideoModal";
 
 export interface CourseData {
@@ -17,19 +17,13 @@ export interface CourseData {
 
 interface CourseCardProps {
   course: CourseData;
-  onComplete?: () => void; // 🔑 nova prop opcional
+  onComplete?: () => void;
+  onProgressSave?: (course: CourseData) => void;
 }
 
-export function CourseCard({ course, onComplete }: CourseCardProps) {
+export function CourseCard({ course, onComplete, onProgressSave }: CourseCardProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const isComplete = course.progress === 100;
-
-  // 🔑 dispara onComplete quando curso for concluído
-  useEffect(() => {
-    if (isComplete && onComplete) {
-      onComplete();
-    }
-  }, [isComplete, onComplete]);
 
   const getYouTubeVideoId = (url?: string) => {
     if (!url) return null;
@@ -123,7 +117,11 @@ export function CourseCard({ course, onComplete }: CourseCardProps) {
           onOpenChange={setModalOpen}
           videoUrl={course.videoUrl}
           title={course.title}
-          courseId={course.id} // 🔑 aqui
+          courseId={course.id}
+          onCourseCompleted={() => {
+            onProgressSave?.(course);
+            onComplete?.();
+          }}
         />
       )}
 
