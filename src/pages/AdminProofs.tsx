@@ -139,14 +139,6 @@ export default function AdminProofs() {
         variant: "destructive",
       });
     } else {
-      if (status === "aprovado") {
-        if (selectedProof.type === "income") {
-          await supabase.rpc("add_income_points", { income_id: selectedProof.id });
-        } else if (selectedProof.type === "bill") {
-          await supabase.rpc("add_bill_points", { bill_id: selectedProof.id });
-        }
-      }
-
       toast({ title: `Documento ${status} com sucesso!` });
       setSelectedProof(null);
       setFeedback("");
