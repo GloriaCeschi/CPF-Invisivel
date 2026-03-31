@@ -12,7 +12,7 @@ import { toast } from "@/hooks/use-toast";
 
 
 
-const coursesData: CourseData[] = [
+const initialCoursesData: CourseData[] = [
   { id: 1, title: "Como adicionar contas e boletos", description: "Aprenda a organizar e registrar suas contas e boletos de forma prática.", progress: 0, locked: false, category: "Básico", videoUrl: "https://youtu.be/dQw4w9WgXcQ?si=QzmfJ4v62nAcxv6j" },
   { id: 2, title: "Acompanhamento de renda", description: "Monitore suas fontes de renda e entenda seu fluxo financeiro mensal.", progress: 0, locked: false, category: "Básico", videoUrl: "https://youtu.be/3LNafnShdxE?si=yHpneS-xpMEFMso6" },
   { id: 3, title: "Gestão Financeira", description: "Curso completo de gestão financeira pessoal e familiar.", progress: 0, locked: false, category: "Intermediário", videoUrl: "https://youtu.be/PfsO9apQy-w?si=8aww5rwLFwxXnKB2" },
@@ -37,10 +37,12 @@ const coursesData: CourseData[] = [
 
 export default function Cursos() {
   const { user } = useAuth();
+  const [courses, setCourses] = useState<CourseData[]>(initialCoursesData);
   const [overallProgress, setOverallProgress] = useState(0);
+
   const totalProgress = Math.round(
-    coursesData.filter((c) => !c.locked).reduce((sum, c) => sum + c.progress, 0) /
-    coursesData.filter((c) => !c.locked).length
+    courses.filter((c) => !c.locked).reduce((sum, c) => sum + c.progress, 0) /
+    courses.filter((c) => !c.locked).length
   );
 
   useEffect(() => {
@@ -48,19 +50,51 @@ export default function Cursos() {
     return () => clearTimeout(timer);
   }, [totalProgress]);
 
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchProgress = async () => {
+      const { data, error } = await supabase
+        .from("courses_progress")
+        .select("course_id, progress")
+        .eq("user_id", user.id);
+
+      if (error) {
+        console.error("Erro ao carregar progresso de cursos", error);
+        return;
+      }
+
+      if (data?.length) {
+        setCourses((prevCourses) =>
+          prevCourses.map((course) => {
+            const row = data.find((item: any) => item.course_id === course.id);
+            return row ? { ...course, progress: row.progress } : course;
+          })
+        );
+      }
+    };
+
+    fetchProgress();
+  }, [user]);
+
   const handleCourseCompletion = async (course: CourseData) => {
     if (!user) return;
     if (course.progress < 100) return; // só pontua se concluído
 
     try {
-      const { error } = await supabase.rpc("add_course_points", {
+      const { error } = await supabase.rpc("complete_course", {
         uid: user.id,
-        pts: 25, // cada curso concluído dá 25 pontos
+        course_id: course.id,
+        pts: 25,
       });
 
       if (error) {
         toast({ title: "Erro", description: error.message, variant: "destructive" });
       } else {
+        setCourses((prevCourses) =>
+          prevCourses.map((c) => (c.id === course.id ? { ...c, progress: 100 } : c))
+        );
+
         toast({
           title: "Parabéns!",
           description: `Você ganhou 25 pontos por concluir "${course.title}" 🎉`,
@@ -114,10 +148,17 @@ export default function Cursos() {
                 <div className="mx-auto px-6 md:px-12 lg:px-20 courses-container">
                   <h2 className="mb-6 text-lg font-bold text-foreground">Cursos Disponíveis</h2>
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 ">
-                    {coursesData.map((course) => (
+                    {courses.map((course) => (
                       <CourseCard
                         key={course.id}
                         course={course}
+                        onProgressSave={(updatedCourse) => {
+                          setCourses((prevCourses) =>
+                            prevCourses.map((c) =>
+                              c.id === updatedCourse.id ? { ...c, progress: 100 } : c
+                            )
+                          );
+                        }}
                         onComplete={() => handleCourseCompletion(course)}
                       />
 

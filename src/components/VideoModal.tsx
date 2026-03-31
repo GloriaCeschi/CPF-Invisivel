@@ -7,10 +7,11 @@ interface VideoModalProps {
   onOpenChange: (open: boolean) => void;
   videoUrl: string;
   title: string;
-  courseId: number; // novo campo
+  courseId: number;
+  onCourseCompleted?: () => void;
 }
 
-export function VideoModal({ open, onOpenChange, videoUrl, title, courseId }: VideoModalProps) {
+export function VideoModal({ open, onOpenChange, videoUrl, title, courseId, onCourseCompleted }: VideoModalProps) {
   const { user } = useAuth();
 
   const getYouTubeEmbedUrl = (url: string) => {
@@ -31,11 +32,11 @@ export function VideoModal({ open, onOpenChange, videoUrl, title, courseId }: Vi
       });
   };
 
-  const handleClose = (open: boolean) => {
+  const handleClose = async (open: boolean) => {
     onOpenChange(open);
     if (!open) {
-      // 🔑 aqui marcamos como concluído
-      saveProgress(100);
+      await saveProgress(100);
+      onCourseCompleted?.();
     }
   };
 

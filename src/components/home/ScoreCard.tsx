@@ -32,7 +32,9 @@ export function ScoreCard() {
       console.log("ERROR:", error);
 
       if (data) {
-        setScore(data.points || 0);
+        // Cada 10 pontos da gamificação geram 2 pontos no score
+        const calculatedScore = Math.floor((data.points || 0) / 5);
+        setScore(calculatedScore);
       }
 
       channel = supabase
@@ -47,7 +49,9 @@ export function ScoreCard() {
           },
           (payload) => {
             console.log("Realtime UPDATE recebido:", payload);
-            setScore(payload.new.points || 0);
+            // Cada 10 pontos da gamificação geram 2 pontos no score
+            const calculatedScore = Math.floor((payload.new.points || 0) / 5);
+            setScore(calculatedScore);
           }
         )
         .subscribe((status) => {
