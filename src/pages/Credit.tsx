@@ -63,6 +63,7 @@ export default function BancosParceiros() {
 
   const [banks, setBanks] = useState<banks[]>([]);
   const listaBancos = banks;
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (user?.id) {
@@ -91,6 +92,7 @@ export default function BancosParceiros() {
         return ordem.indexOf(a.name) - ordem.indexOf(b.name);
       })
     );
+    setLoading(false);
   }
 
 
@@ -104,7 +106,9 @@ export default function BancosParceiros() {
       : valorNum / prazoNum;
 
 
-  const melhorBanco = [...banks].sort((a, b) => a.interest - b.interest)[0];
+  const melhorBanco = [...banks].sort(
+    (a, b) => (a.interest ?? 999) - (b.interest ?? 999)
+  )[0];
 
 
 
@@ -129,6 +133,7 @@ export default function BancosParceiros() {
         </p>
 
         {/* CARDS */}
+
         <div className="flex justify-center gap-6 flex-wrap px-6 pb-8">
           {listaBancos.map((banco: any, index) => (
             <div
@@ -176,7 +181,11 @@ export default function BancosParceiros() {
                   label="Limite"
                   value={
                     banco.max_amount
-                      ? "R$ " + banco.max_amount
+
+                      ? new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(banco.max_amount)
                       : banco.limite
                   }
                 />
