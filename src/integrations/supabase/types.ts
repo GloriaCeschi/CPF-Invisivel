@@ -239,6 +239,7 @@ export type Database = {
           name: string | null
           phone: string
           photo_url: string | null
+          points: number | null
           roles: string
           senha_hash: string | null
           state: string | null
@@ -255,6 +256,7 @@ export type Database = {
           name?: string | null
           phone: string
           photo_url?: string | null
+          points?: number | null
           roles?: string
           senha_hash?: string | null
           state?: string | null
@@ -271,6 +273,7 @@ export type Database = {
           name?: string | null
           phone?: string
           photo_url?: string | null
+          points?: number | null
           roles?: string
           senha_hash?: string | null
           state?: string | null
