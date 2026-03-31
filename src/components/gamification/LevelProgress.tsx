@@ -1,11 +1,33 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { LEVELS, USER_MOCK } from "@/data/gamificationData";
+import { LEVELS } from "@/data/gamificationData";
+import { useProfile } from "@/hooks/useProfile";
 
 export const LevelProgress = () => {
-  const current = LEVELS[USER_MOCK.currentLevel - 1];
-  const next = LEVELS[USER_MOCK.currentLevel] || current;
-  const progressInLevel = USER_MOCK.totalPoints - current.minPoints;
+  const { profile, loading } = useProfile();
+
+  if (loading || !profile) {
+    return (
+      <div className="flex flex-col items-center gap-4 rounded-2xl bg-card p-6 shadow-lg border border-border">
+        <div className="animate-pulse">
+          <div className="w-32 h-32 bg-muted rounded-full"></div>
+          <div className="mt-4 space-y-2">
+            <div className="h-4 bg-muted rounded w-24"></div>
+            <div className="h-6 bg-muted rounded w-16"></div>
+            <div className="h-3 bg-muted rounded w-32"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const totalPoints = profile.points || 0;
+  const currentLevelIndex = LEVELS.findIndex(level => totalPoints < level.minPoints) - 1;
+  const currentLevelIndexSafe = Math.max(0, currentLevelIndex);
+  const current = LEVELS[currentLevelIndexSafe];
+  const next = LEVELS[currentLevelIndexSafe + 1] || current;
+
+  const progressInLevel = totalPoints - current.minPoints;
   const pointsForNext = next.minPoints - current.minPoints;
   const percentage = pointsForNext > 0 ? Math.min((progressInLevel / pointsForNext) * 100, 100) : 100;
   const circumference = 2 * Math.PI * 52;
@@ -39,9 +61,9 @@ export const LevelProgress = () => {
         <Badge className="mb-2 bg-gold text-customBlue text-sm px-3 py-1 hover:bg-gold/90">
           Nível {current.level} — {current.name}
         </Badge>
-        <p className="text-3xl font-extrabold text-foreground">{USER_MOCK.totalPoints} <span className="text-base font-medium text-muted-foreground">pts</span></p>
+        <p className="text-3xl font-extrabold text-foreground">{totalPoints} <span className="text-base font-medium text-muted-foreground">pts</span></p>
         <p className="text-sm text-muted-foreground mt-1">
-          {pointsForNext > 0 ? `${next.minPoints - USER_MOCK.totalPoints} pts para Nível ${next.level}` : "Nível máximo!"}
+          {pointsForNext > 0 ? `${next.minPoints - totalPoints} pts para Nível ${next.level}` : "Nível máximo!"}
         </p>
       </div>
     </div>

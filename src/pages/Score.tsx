@@ -2,7 +2,6 @@ import { ScoreGauge } from "@/components/ScoreGauge";
 import { ScoreEvolutionChart } from "@/components/ScoreEvolutionChart";
 import { ScoreFactors } from "@/components/ScoreFactors";
 import { ActionButtons } from "@/components/ActionButtons";
-import { currentScore } from "@/data/mockData";
 import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 import { useCallback, useEffect, useState, useRef } from "react";
 import  supabase  from "@/integrations/supabase/client";
@@ -18,12 +17,26 @@ const Score = () => {
   const { user } = useAuth();
   const [proofs, setProofs] = useState<Proof[]>([]);
   const [pendingModalOpen, setPendingModalOpen] = useState(false);
+  const [calculatedScore, setCalculatedScore] = useState(0);
 
   const fetchData = useCallback(async () => {
     if (!user) return;
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
+
+    // Busca pontos do perfil para calcular o score
+    const { data: profileData, error: profileError } = await supabase
+      .from("profiles")
+      .select("points")
+      .eq("user_id", user.id)
+      .single();
+
+    if (!profileError && profileData) {
+      // Cada 10 pontos da gamificação geram 2 pontos no score
+      const score = Math.floor((profileData.points || 0) / 5);
+      setCalculatedScore(score);
+    }
 
     // Busca todos os comprovantes do usuário no mês
     const { data, error } = await supabase
@@ -80,7 +93,7 @@ const Score = () => {
         {/* Score gauge + actions */}
         <div className="grid gap-8 lg:grid-cols-[1fr_1.5fr]">
           <div className="flex justify-center rounded-xl border border-border bg-card p-6">
-            <ScoreGauge score={currentScore} />
+            <ScoreGauge score={calculatedScore} />
           </div>
           <div className="space-y-6">
             <ActionButtons />
