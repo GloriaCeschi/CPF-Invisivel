@@ -103,8 +103,8 @@ export default function BillModal({ open, onClose, onSaved, editingBill }: BillM
       await supabase.from('notifications').insert({
         user_id: user.id,
         message: editingBill
-          ? '✅ Comprovante de conta atualizado e enviado para análise.'
-          : '✅ Novo comprovante de conta enviado para análise. Aguarde validação.',
+          ? '📄 Comprovante de conta foi atualizado e está sob análise.'
+          : '📄 Comprovante de conta foi recebido com sucesso e está sob análise.',
         type: 'proof',
         viewed: false,
         archived: false,

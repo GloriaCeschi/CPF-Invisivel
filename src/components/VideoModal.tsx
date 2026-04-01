@@ -71,18 +71,26 @@ export function VideoModal({ open, onOpenChange, videoUrl, title, courseId, onCo
 
   const onPlayerStateChange = (event: any) => {
     if (event.data === (window as any).YT.PlayerState.ENDED) {
-      setCurrentProgress(100);
-      setIsCompleted(true);
-      saveProgress(100);
-      onCourseCompleted?.();
+      if (!isCompleted) {
+        setCurrentProgress(100);
+        setIsCompleted(true);
+        saveProgress(100);
+        onCourseCompleted?.();
+      }
     }
   };
 
   const saveProgress = async (progressValue: number) => {
     if (!user) return;
-    
+
+    // Evita chamadas duplicadas na mesma sessão
+    if (progressValue === 100 && isCompleted) {
+      return;
+    }
+
     // Se o progresso é 100%, marca como concluído e soma pontos usando RPC
     if (progressValue === 100) {
+      setIsCompleted(true);
       const { error } = await supabase.rpc("complete_course", {
         uid: user.id,
         p_course_id: courseId,
@@ -92,6 +100,7 @@ export function VideoModal({ open, onOpenChange, videoUrl, title, courseId, onCo
       if (error) {
         console.error("Erro ao completar curso:", error);
       }
+      // A notificação já é criada pela função RPC complete_course no Supabase
     } else {
       // Se não é 100%, apenas atualiza o progresso
       await supabase
@@ -111,11 +120,15 @@ export function VideoModal({ open, onOpenChange, videoUrl, title, courseId, onCo
       const duration = playerRef.current.getDuration();
       const progress = duration > 0 ? Math.round((currentTime / duration) * 100) : 0;
       setCurrentProgress(progress);
-      await saveProgress(progress);
-      // Only mark as completed if progress is 100%
-      if (progress === 100 && !isCompleted) {
-        setIsCompleted(true);
-        onCourseCompleted?.();
+
+      if (progress === 100) {
+        if (!isCompleted) {
+          setIsCompleted(true);
+          await saveProgress(100);
+          onCourseCompleted?.();
+        }
+      } else {
+        await saveProgress(progress);
       }
     }
     onOpenChange(open);

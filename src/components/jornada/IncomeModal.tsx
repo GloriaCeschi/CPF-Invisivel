@@ -105,8 +105,8 @@ export default function IncomeModal({ open, onClose, onSaved, editingIncome }: I
         await supabase.from('notifications').insert({
           user_id: user.id,
           message: editingIncome
-            ? '✅ Comprovante de renda atualizado e enviado para análise.'
-            : '✅ Novo comprovante de renda enviado para análise. Aguarde validação.',
+            ? '📄 Comprovante de renda atualizado e está sob análise.'
+            : '📄 Comprovante de renda foi enviado com sucesso e está sob análise.',
           type: 'proof',
           viewed: false,
           archived: false,
