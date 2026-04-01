@@ -99,6 +99,18 @@ export default function BillModal({ open, onClose, onSaved, editingBill }: BillM
       toast({ title: "Erro", description: error.message, variant: "destructive" });
     } else {
       toast({ title: editingBill ? "Conta atualizada!" : "Conta adicionada!" });
+
+      await supabase.from('notifications').insert({
+        user_id: user.id,
+        message: editingBill
+          ? '✅ Comprovante de conta atualizado e enviado para análise.'
+          : '✅ Novo comprovante de conta enviado para análise. Aguarde validação.',
+        type: 'proof',
+        viewed: false,
+        archived: false,
+        key_id: editingBill ? editingBill.id : null,
+      });
+
       onSaved();
       onClose();
     }

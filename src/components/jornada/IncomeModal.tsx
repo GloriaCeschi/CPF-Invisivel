@@ -101,6 +101,18 @@ export default function IncomeModal({ open, onClose, onSaved, editingIncome }: I
         toast({ title: "Erro", description: error.message, variant: "destructive" });
       } else {
         toast({ title: editingIncome ? "Renda atualizada!" : "Renda adicionada!" });
+
+        await supabase.from('notifications').insert({
+          user_id: user.id,
+          message: editingIncome
+            ? '✅ Comprovante de renda atualizado e enviado para análise.'
+            : '✅ Novo comprovante de renda enviado para análise. Aguarde validação.',
+          type: 'proof',
+          viewed: false,
+          archived: false,
+          key_id: editingIncome ? editingIncome.id : null,
+        });
+
         onSaved();
         onClose();
       }
