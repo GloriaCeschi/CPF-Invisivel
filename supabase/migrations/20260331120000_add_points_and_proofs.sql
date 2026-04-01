@@ -1,6 +1,41 @@
 -- Add points column to profiles table
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS points INTEGER DEFAULT 0;
 
+-- Create notifications table (integração de curso/comprovante)
+CREATE TABLE IF NOT EXISTS public.notifications (
+  id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  message TEXT NOT NULL,
+  "type" TEXT NOT NULL DEFAULT 'system',
+  viewed BOOLEAN NOT NULL DEFAULT FALSE,
+  archived BOOLEAN NOT NULL DEFAULT FALSE,
+  key_id TEXT,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+);
+
+ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can read own notifications"
+  ON public.notifications
+  FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own notifications"
+  ON public.notifications
+  FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own notifications"
+  ON public.notifications
+  FOR UPDATE
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own notifications"
+  ON public.notifications
+  FOR DELETE
+  USING (auth.uid() = user_id);
+
 -- Create proofs table (unified table for incomes and bills)
 CREATE TABLE IF NOT EXISTS public.proofs (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -123,7 +158,10 @@ SECURITY DEFINER
 AS $$
 DECLARE
   progress_record RECORD;
+  course_title TEXT;
 BEGIN
+  SELECT title INTO course_title FROM public.courses WHERE id = p_course_id;
+
   SELECT * INTO progress_record
   FROM public.courses_progress
   WHERE user_id = uid AND course_id = p_course_id
@@ -142,7 +180,52 @@ BEGIN
 
     UPDATE public.profiles SET points = COALESCE(points, 0) + pts WHERE user_id = uid;
   END IF;
+
+  INSERT INTO public.notifications (user_id, message, "type", viewed, archived, key_id, created_at)
+  VALUES (
+    uid,
+    COALESCE(format('🎉 Curso concluído: %s — +%s pontos', course_title, pts),
+             format('🎉 Curso #%s concluído — +%s pontos', p_course_id, pts)),
+    'course',
+    FALSE,
+    FALSE,
+    p_course_id::text,
+    now()
+  );
 END;
 $$;
 
 GRANT EXECUTE ON FUNCTION complete_course(UUID, INTEGER, INTEGER) TO authenticated;
+
+-- Função para enviar notificação quando comprovante é analisado (aprovado/rejeitado)
+CREATE OR REPLACE FUNCTION notify_proof_status(proof_id UUID, new_status TEXT, p_points INTEGER)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  pf RECORD;
+  msg TEXT;
+BEGIN
+  SELECT * INTO pf FROM public.proofs WHERE id = proof_id;
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Proof not found';
+  END IF;
+
+  IF new_status = 'aprovado' THEN
+    UPDATE public.profiles
+      SET points = COALESCE(points, 0) + p_points,
+          updated_at = now()
+      WHERE user_id = pf.user_id;
+
+    msg := format('✅ Comprovante "%s" aprovado +%s pontos. O dinheiro entrará em sua pontuação em breve.', pf.title, p_points);
+  ELSE
+    msg := format('⚠️ Comprovante "%s" rejeitado. Favor revisar e reenviar com as informações corretas.', pf.title);
+  END IF;
+
+  INSERT INTO public.notifications (user_id, message, "type", viewed, archived, key_id, created_at)
+  VALUES (pf.user_id, msg, 'proof', FALSE, FALSE, proof_id::text, now());
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION notify_proof_status(UUID, TEXT, INTEGER) TO authenticated;
