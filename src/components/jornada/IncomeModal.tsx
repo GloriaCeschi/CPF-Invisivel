@@ -78,6 +78,7 @@ export default function IncomeModal({ open, onClose, onSaved, editingIncome }: I
       }
 
       const parsedAmount = parseFloat(amount.replace(",", "."));
+      const calculatedPoints = Math.floor(parsedAmount / 10);
 
       const data = {
         title: title.trim(),
@@ -86,8 +87,9 @@ export default function IncomeModal({ open, onClose, onSaved, editingIncome }: I
         receipt_type: receiptType,
         proof: receiptUrl,
         type: "income",
-        status: "pendente",
+        status: editingIncome?.status || "pendente",
         user_id: user.id,
+        points: calculatedPoints,
       };
 
       let error;
@@ -101,6 +103,18 @@ export default function IncomeModal({ open, onClose, onSaved, editingIncome }: I
         toast({ title: "Erro", description: error.message, variant: "destructive" });
       } else {
         toast({ title: editingIncome ? "Renda atualizada!" : "Renda adicionada!" });
+
+        await supabase.from('notifications').insert({
+          user_id: user.id,
+          message: editingIncome
+            ? '📄 Comprovante de renda atualizado e está sob análise.'
+            : '📄 Comprovante de renda foi enviado com sucesso e está sob análise.',
+          type: 'proof',
+          viewed: false,
+          archived: false,
+          key_id: editingIncome ? editingIncome.id : null,
+        });
+
         onSaved();
         onClose();
       }

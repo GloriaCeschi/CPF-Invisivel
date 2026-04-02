@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { COURSES, LEVELS } from "@/data/gamificationData";
+import { COURSES } from "@/data/coursesData";
+import { LEVELS } from "@/data/gamificationData";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Lock, CheckCircle2, BookOpen } from "lucide-react";
@@ -61,7 +62,8 @@ export const CourseList = () => {
       </div>
       <div className="space-y-3">
         {COURSES.map((course) => {
-          const progressData = courseProgress.find(cp => cp.course_id === parseInt(course.id));
+          const courseId = typeof course.id === 'number' ? course.id : Number(course.id);
+          const progressData = courseProgress.find(cp => cp.course_id === courseId);
           const isCompleted = progressData?.progress === 100;
           const locked = course.requiredLevel > currentLevel + 1;
           const reqLevel = LEVELS[course.requiredLevel - 1];

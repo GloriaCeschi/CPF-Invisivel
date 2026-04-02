@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { BookOpen, FileText, HelpCircle, Target } from "lucide-react";
 import supabase from "@/utils/supabase";
 import { useAuth } from "@/context/AuthContext";
-import { COURSES } from "@/data/gamificationData";
+import { COURSES } from "@/data/coursesData";
 
 const typeConfig = {
   aula: {

@@ -74,10 +74,13 @@ export default function BillModal({ open, onClose, onSaved, editingBill }: BillM
       receiptUrl = await uploadFile(file);
     }
 
+    const parsedAmount = parseFloat(amount);
+    const calculatedPoints = Math.floor(parsedAmount / 10) * 2;
+
     const data = {
       title: title.trim(),
       description: description.trim() || null,
-      amount: parseFloat(amount),
+      amount: parsedAmount,
       total_installments: parseInt(totalInstallments),
       current_installment: parseInt(currentInstallment),
       next_due_date: nextDueDate || null,
@@ -85,6 +88,7 @@ export default function BillModal({ open, onClose, onSaved, editingBill }: BillM
       status: editingBill?.status || "pendente",
       proof: receiptUrl,
       user_id: user.id,
+      points: calculatedPoints,
       update_at: new Date().toISOString(),
     };
 
@@ -99,6 +103,18 @@ export default function BillModal({ open, onClose, onSaved, editingBill }: BillM
       toast({ title: "Erro", description: error.message, variant: "destructive" });
     } else {
       toast({ title: editingBill ? "Conta atualizada!" : "Conta adicionada!" });
+
+      await supabase.from('notifications').insert({
+        user_id: user.id,
+        message: editingBill
+          ? '📄 Comprovante de conta foi atualizado e está sob análise.'
+          : '📄 Comprovante de conta foi recebido com sucesso e está sob análise.',
+        type: 'proof',
+        viewed: false,
+        archived: false,
+        key_id: editingBill ? editingBill.id : null,
+      });
+
       onSaved();
       onClose();
     }

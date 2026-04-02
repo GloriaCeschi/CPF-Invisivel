@@ -75,6 +75,9 @@ export default function Auth() {
       return;
     }
 
+    // Limpa erros de validação de senha no login
+    setPasswordError("");
+
     const { error } = await supabase.auth.signInWithPassword({
       email: user.email,
       password: user.pass,
@@ -210,13 +213,21 @@ export default function Auth() {
                   onChange={(e) =>
                     setUser({ ...user, pass: e.target.value })
                   }
-                  onBlur={() =>
-                    setPasswordError(
-                      Object.values(passwordChecks).every(Boolean)
-                        ? ""
-                        : "A senha não atende aos requisitos."
-                    )
-                  }
+                  onBlur={() => {
+                    if (!login) {
+                      // Só valida requisitos de senha no cadastro
+                      setPasswordError(
+                        Object.values(passwordChecks).every(Boolean)
+                          ? ""
+                          : "A senha não atende aos requisitos."
+                      );
+                    } else {
+                      // No login, só valida se não está vazia
+                      setPasswordError(
+                        user.pass ? "" : "Senha é obrigatória"
+                      );
+                    }
+                  }}
                   required
                 />
                 <button
