@@ -57,20 +57,30 @@ export default function BancosParceiros() {
 
   const { user } = useAuth();
 
-  const [valor, setValor] = useState("");
+  const [valor, setValor] = useState("0");
   const [prazo, setPrazo] = useState("12");
   const [taxa, setTaxa] = useState("3.1");
 
   const [banks, setBanks] = useState<banks[]>([]);
   const [historico, setHistorico] = useState<any[]>([]);
-  const listaBancos = banks;
+  const listaBancos = [...banks].sort((a, b) => {
+    const jurosA = a.interest ?? 999;
+    const jurosB = b.interest ?? 999;
+
+    if (jurosA !== jurosB) {
+      return jurosA - jurosB;
+    }
+
+    return (a.max_term ?? 999) - (b.max_term ?? 999);
+  });
   const [loading, setLoading] = useState(true);
+  const [loadingBtn, setLoadingBtn] = useState(false);
 
 
   useEffect(() => {
     if (user?.id) {
       syncCredit(user.id);
-      buscarHistorico();
+
     }
   }, [user]);
 
@@ -115,19 +125,26 @@ export default function BancosParceiros() {
   }
 
 
-  const valorNum = parseFloat(valor) || 0;
+  const melhorBanco = [...banks].sort(
+    (a, b) => (a.interest ?? 999) - (b.interest ?? 999)
+  )[0];
+
+  const valorNum = (parseFloat(valor) || 0) / 100;
+
   const taxaNum = parseFloat(taxa) / 100;
   const prazoNum = parseInt(prazo) || 1;
+
   const parcela =
     taxaNum > 0
       ? (valorNum * taxaNum * Math.pow(1 + taxaNum, prazoNum)) /
       (Math.pow(1 + taxaNum, prazoNum) - 1)
       : valorNum / prazoNum;
 
-
-  const melhorBanco = [...banks].sort(
+  const bancosOrdenados = [...banks].sort(
     (a, b) => (a.interest ?? 999) - (b.interest ?? 999)
-  )[0];
+  );
+
+
 
 
 
@@ -232,6 +249,7 @@ export default function BancosParceiros() {
               </div>
 
               <button
+
                 onClick={() => solicitar(banco.name || banco.nome)}
                 className="w-full mt-4 bg-primary text-white py-2.5 rounded-xl font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition"
               >
@@ -252,7 +270,7 @@ export default function BancosParceiros() {
               </h2>
             </div>
             <p className="text-sm text-gray-500 mt-1 mb-4">
-              Descubra o valor aproximado da sua parcela.
+              Taxa baseada nas melhores condições disponíveis
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
@@ -261,9 +279,15 @@ export default function BancosParceiros() {
                   Valor desejado
                 </label>
                 <input
-                  type="number"
-                  value={valor}
-                  onChange={(e) => setValor(e.target.value)}
+                  type="text"
+                  value={new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(Number(valor) / 100)}
+                  onChange={(e) => {
+                    const numbers = e.target.value.replace(/\D/g, "");
+                    setValor(numbers);
+                  }}
                   className="w-full border border-input rounded-lg px-3 py-2 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
@@ -273,7 +297,15 @@ export default function BancosParceiros() {
                 </label>
                 <select
                   value={prazo}
-                  onChange={(e) => setPrazo((e.target.value))}
+                  onChange={(e) => {
+                    const novoPrazo = parseInt(e.target.value);
+
+                    setPrazo(e.target.value);
+
+                    if (novoPrazo === 6) setTaxa("2.5");
+                    else if (novoPrazo === 12) setTaxa("2.8");
+                    else setTaxa("3.1");
+                  }}
                   className="w-full border border-input rounded-lg px-3 py-2 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="6">6 meses</option>
@@ -284,11 +316,11 @@ export default function BancosParceiros() {
               </div>
               <div>
                 <label className="text-sm text-muted-foreground mb-1 block">
-                  Taxa
+                  Taxa (automatica)
                 </label>
                 <select
                   value={taxa}
-                  onChange={(e) => setTaxa((e.target.value))}
+
                   className="w-full border border-input rounded-lg px-3 py-2 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="2.5">2.5%</option>
@@ -297,8 +329,7 @@ export default function BancosParceiros() {
                 </select>
               </div>
             </div>
-
-            <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center justify-between gap-4">
 
               <div className="bg-gray-50 p-4 rounded-xl">
                 <span className="text-xs text-muted-foreground">
@@ -324,23 +355,26 @@ export default function BancosParceiros() {
                 </p>
               </div>
 
-              <div className="mt-3 bg-green-50 p-3 rounded-lg text-center">
+              <div className="flex items-center gap-3">
                 <p className="text-sm text-green-600 font-medium">
                   ✔ Pré-aprovado
                 </p>
               </div>
 
               <button
+                disabled={loadingBtn}
                 onClick={async () => {
-                  console.log("clicou botão");
-                  console.log("user:", user);
-
                   if (!user) return;
+
+                  setLoadingBtn(true);
 
                   const { error } = await supabase.from("simulations").insert([
                     {
                       user_id: user.id,
-                      user_name: user.email?.split("@")[0],
+                      user_name:
+                        user.email?.split("@")[0]
+                          ?.charAt(0).toUpperCase() +
+                        user.email?.split("@")[0]?.slice(1),
                       valor: valorNum,
                       prazo: prazoNum,
                       parcela: parcela,
@@ -348,9 +382,8 @@ export default function BancosParceiros() {
                     },
                   ]);
 
-                  console.log("erro:", error);
-
                   if (error) {
+                    setLoadingBtn(false);
                     toast({
                       title: "Erro ao salvar",
                       description: error.message,
@@ -358,17 +391,28 @@ export default function BancosParceiros() {
                     return;
                   }
                   await buscarHistorico();
+
+                  // tempo mínimo de loading (1 segundo)
+                  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+                  setValor("0");
+                  setLoadingBtn(false);
+
                   toast({
                     title: "Solicitação enviada!",
                     description: "Sua simulação foi registrada e está em análise.",
                   });
                 }}
+
                 className="bg-primary text-white border-none py-2.5 px-6 rounded-lg cursor-pointer font-medium text-sm transition-all duration-200 hover:brightness-95 active:scale-95 active:brightness-90"
               >
-                Confirmar Solicitação
+                {loadingBtn ? "Enviando..." : "Confirmar Solicitação"}
               </button>
 
             </div>
+            <p className="text-xs text-gray-500 mt-2">
+              Ao confirmar, sua solicitação será enviada para análise do banco.
+            </p>
 
           </div>
         </div>
@@ -383,7 +427,7 @@ export default function BancosParceiros() {
 
         {historico.length === 0 ? (
           <p className="text-sm text-gray-500">
-            Nenhuma solicitação ainda.
+            Você ainda não fez nenhuma solicitação.
           </p>
         ) : (
           historico.slice(0, 1).map((item) => (
@@ -396,7 +440,11 @@ export default function BancosParceiros() {
               </p>
 
               <p className="text-card-foreground text-sm">
-                <strong>Valor:</strong> R$ {item.valor}
+                <strong>Valor:</strong>{" "}
+                {new Intl.NumberFormat("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                }).format(item.valor)}
               </p>
 
               <p className="text-card-foreground text-sm">
