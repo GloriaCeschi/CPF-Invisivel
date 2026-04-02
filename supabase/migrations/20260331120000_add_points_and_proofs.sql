@@ -171,6 +171,20 @@ BEGIN
     INSERT INTO public.courses_progress (user_id, course_id, progress, completed_at, updated_at)
     VALUES (uid, p_course_id, 100, now(), now());
     UPDATE public.profiles SET points = COALESCE(points, 0) + pts WHERE user_id = uid;
+
+    INSERT INTO public.notifications (user_id, message, "type", viewed, archived, key_id, created_at)
+    SELECT uid,
+      COALESCE(format('🎉 Curso concluído: %s — +%s pontos', course_title, pts),
+               format('🎉 Curso #%s concluído — +%s pontos', p_course_id, pts)),
+      'course',
+      FALSE,
+      FALSE,
+      p_course_id::text,
+      now()
+    WHERE NOT EXISTS (
+      SELECT 1 FROM public.notifications
+      WHERE user_id = uid AND key_id = p_course_id::text AND "type" = 'course'
+    );
   ELSIF progress_record.progress < 100 THEN
     UPDATE public.courses_progress
     SET progress = 100,
@@ -179,19 +193,21 @@ BEGIN
     WHERE user_id = uid AND course_id = p_course_id;
 
     UPDATE public.profiles SET points = COALESCE(points, 0) + pts WHERE user_id = uid;
-  END IF;
 
-  INSERT INTO public.notifications (user_id, message, "type", viewed, archived, key_id, created_at)
-  VALUES (
-    uid,
-    COALESCE(format('🎉 Curso concluído: %s — +%s pontos', course_title, pts),
-             format('🎉 Curso #%s concluído — +%s pontos', p_course_id, pts)),
-    'course',
-    FALSE,
-    FALSE,
-    p_course_id::text,
-    now()
-  );
+    INSERT INTO public.notifications (user_id, message, "type", viewed, archived, key_id, created_at)
+    SELECT uid,
+      COALESCE(format('🎉 Curso concluído: %s — +%s pontos', course_title, pts),
+               format('🎉 Curso #%s concluído — +%s pontos', p_course_id, pts)),
+      'course',
+      FALSE,
+      FALSE,
+      p_course_id::text,
+      now()
+    WHERE NOT EXISTS (
+      SELECT 1 FROM public.notifications
+      WHERE user_id = uid AND key_id = p_course_id::text AND "type" = 'course'
+    );
+  END IF;
 END;
 $$;
 
@@ -218,13 +234,29 @@ BEGIN
           updated_at = now()
       WHERE user_id = pf.user_id;
 
-    msg := format('✅ Comprovante "%s" aprovado +%s pontos. O dinheiro entrará em sua pontuação em breve.', pf.title, p_points);
-  ELSE
-    msg := format('⚠️ Comprovante "%s" rejeitado. Favor revisar e reenviar com as informações corretas.', pf.title);
+    IF pf.type = 'income' THEN
+      msg := format('✅ Comprovante de renda "%s" foi aprovado! Parabéns! , +%s pontos adicionados à sua gamificação.', pf.title, p_points);
+    ELSIF pf.type = 'bill' THEN
+      msg := format('✅ Comprovante de conta "%s" foi aprovado! Parabéns! , +%s pontos adicionados à sua gamificação.', pf.title, p_points);
+    ELSE
+      msg := format('✅ Comprovante "%s" foi aprovado! +%s pontos adicionados.', pf.title, p_points);
+    END IF;
+  ELSIF new_status = 'rejeitado' THEN
+    IF pf.type = 'income' THEN
+      msg := format('❌ Comprovante de renda "%s" não foi aceito. Por favor, revise as informações e reenvie.', pf.title);
+    ELSIF pf.type = 'bill' THEN
+      msg := format('❌ Comprovante de conta "%s" não foi aceito. Por favor, revise as informações e reenvie.', pf.title);
+    ELSE
+      msg := format('❌ Comprovante "%s" não foi aceito. Por favor, revise as informações e reenvie.', pf.title);
+    END IF;
   END IF;
 
   INSERT INTO public.notifications (user_id, message, "type", viewed, archived, key_id, created_at)
-  VALUES (pf.user_id, msg, 'proof', FALSE, FALSE, proof_id::text, now());
+  SELECT pf.user_id, msg, 'proof', FALSE, FALSE, proof_id::text, now()
+  WHERE NOT EXISTS (
+    SELECT 1 FROM public.notifications
+    WHERE user_id = pf.user_id AND key_id = proof_id::text AND "type" = 'proof' AND message = msg
+  );
 END;
 $$;
 
