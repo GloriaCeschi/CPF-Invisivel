@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Bell, LogOut, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import supabase from "@/integrations/supabase/client";
@@ -19,6 +19,7 @@ export function AppHeader() {
   const [isDark, setIsDark] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState<HeaderNotification[]>([]);
+  const [profile, setProfile] = useState<{ name?: string; photo_url?: string }>({});
 
   useEffect(() => {
     if (!user) return;
@@ -36,6 +37,22 @@ export function AppHeader() {
     };
 
     fetch();
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchProfile = async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("name, photo_url")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (data) setProfile(data);
+    };
+
+    fetchProfile();
   }, [user]);
 
   const toggleTheme = () => {
@@ -72,9 +89,12 @@ export function AppHeader() {
           </Button>
           {showNotifications && (
             <div className="absolute right-0 top-10 w-80 rounded-lg border border-border bg-card p-3 shadow-lg animate-scale-in z-50">
-              <p className="mb-2 text-xs font-semibold text-muted-foreground">Notificações</p>
-              {notifications.length === 0 ? (
-                <div className="p-2 text-xs text-zinc-500">Nenhuma notificação recente</div>
+            {profile?.photo_url && <AvatarImage src={profile.photo_url} alt={profile?.name || "Usuário"} />}
+            <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+              {profile?.name ? profile.name.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase() : "US"}
+            </AvatarFallback>
+          </Avatar>
+          <span className="text-sm font-medium">{profile?.name || "Usuário"}0">Nenhuma notificação recente</div>
               ) : (
                 notifications.map((n) => (
                   <div key={n.id} className="mb-2 rounded-md bg-muted p-2 text-xs last:mb-0">
