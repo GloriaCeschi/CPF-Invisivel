@@ -101,10 +101,14 @@ export default function AdminProofs() {
     }
 
     const userIds = [...new Set((data || []).map((p) => p.user_id))];
-    const { data: profiles } = await supabase
+    const { data: profiles, error: profileError } = await supabase
       .from("profiles")
-      .select("user_id, name, email")
+      .select("*")
       .in("user_id", userIds);
+
+    if (profileError) {
+      console.error("Erro ao buscar perfis:", profileError.message);
+    }
 
     const profileMap = new Map((profiles || []).map((p) => [p.user_id, p]));
 
@@ -312,71 +316,75 @@ export default function AdminProofs() {
 
     {/* Detail Dialog */}
     <Dialog open={!!selectedProof} onOpenChange={() => setSelectedProof(null)}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg bg-white text-customBlue border border-gray-200">
         <DialogHeader>
-          <DialogTitle>Detalhes do Documento</DialogTitle>
+          <DialogTitle className="text-customBlue text-xl">Detalhes do Documento</DialogTitle>
         </DialogHeader>
 
         {selectedProof && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
-                <p className="text-muted-foreground">Usuário</p>
-                <p className="font-medium">{selectedProof.user_name}</p>
+                <p className="text-slate-600 font-medium">Usuário</p>
+                <p className="font-semibold text-customBlue">{selectedProof.user_name}</p>
+                {selectedProof.user_email && (
+                  <p className="text-xs text-slate-500">{selectedProof.user_email}</p>
+                )}
               </div>
               <div>
-                <p className="text-muted-foreground">Tipo</p>
-                <p className="font-medium">{selectedProof.type || "—"}</p>
+                <p className="text-slate-600 font-medium">Tipo</p>
+                <p className="font-semibold text-customBlue">{selectedProof.type || "—"}</p>
               </div>
               <div>
-                <p className="text-muted-foreground">Data de envio</p>
-                <p className="font-medium">
+                <p className="text-slate-600 font-medium">Data de envio</p>
+                <p className="font-semibold text-customBlue">
                   {new Date(selectedProof.created_at).toLocaleDateString("pt-BR")}
                 </p>
               </div>
               <div>
-                <p className="text-muted-foreground">Status</p>
+                <p className="text-slate-600 font-medium mb-1">Status</p>
                 {getStatusBadge(selectedProof.status)}
               </div>
             </div>
 
             {selectedProof.description && (
               <div>
-                <p className="text-sm text-muted-foreground mb-1">Descrição</p>
-                <p className="text-sm bg-muted p-3 rounded-lg">
+                <p className="text-sm text-slate-600 font-medium mb-1">Descrição</p>
+                <p className="text-sm bg-gray-50 border border-gray-100 p-3 rounded-lg text-customBlue">
                   {selectedProof.description}
                 </p>
               </div>
             )}
 
             <div>
-              <p className="text-sm text-muted-foreground mb-1">Documento</p>
+              <p className="text-sm text-slate-600 font-medium mb-1">Documento</p>
               <a
                 href={selectedProof.proof}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-primary underline hover:text-primary/80"
+                className="text-sm text-blue-600 underline hover:text-blue-800"
               >
                 Visualizar documento ↗
               </a>
             </div>
 
             <div>
-              <p className="text-sm text-muted-foreground mb-1">Feedback</p>
+              <p className="text-sm text-slate-600 font-medium mb-1">Feedback</p>
               <Textarea
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
                 placeholder="Escreva um feedback para o usuário..."
+                className="bg-white border-gray-300 text-customBlue placeholder:text-gray-400"
               />
             </div>
 
             <div>
-              <p className="text-sm text-muted-foreground mb-1">Pontos</p>
+              <p className="text-sm text-slate-600 font-medium mb-1">Pontos a Conceder</p>
               <input
                 type="number"
                 value={points}
                 onChange={(e) => setPoints(e.target.value)}
-                className="w-full border rounded-lg px-3 py-2 text-sm bg-background text-foreground border-input"
+                className="w-full border rounded-lg px-3 py-2 text-sm bg-white text-customBlue border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="Pontos a conceder"
               />
             </div>

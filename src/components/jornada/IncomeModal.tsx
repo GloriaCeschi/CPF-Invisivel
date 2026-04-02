@@ -78,6 +78,7 @@ export default function IncomeModal({ open, onClose, onSaved, editingIncome }: I
       }
 
       const parsedAmount = parseFloat(amount.replace(",", "."));
+      const calculatedPoints = Math.floor(parsedAmount / 10);
 
       const data = {
         title: title.trim(),
@@ -86,8 +87,9 @@ export default function IncomeModal({ open, onClose, onSaved, editingIncome }: I
         receipt_type: receiptType,
         proof: receiptUrl,
         type: "income",
-        status: "pendente",
+        status: editingIncome?.status || "pendente",
         user_id: user.id,
+        points: calculatedPoints,
       };
 
       let error;
