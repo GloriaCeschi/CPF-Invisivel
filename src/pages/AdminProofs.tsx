@@ -101,10 +101,14 @@ export default function AdminProofs() {
     }
 
     const userIds = [...new Set((data || []).map((p) => p.user_id))];
-    const { data: profiles } = await supabase
+    const { data: profiles, error: profileError } = await supabase
       .from("profiles")
-      .select("user_id, name, email")
+      .select("*")
       .in("user_id", userIds);
+
+    if (profileError) {
+      console.error("Erro ao buscar perfis:", profileError.message);
+    }
 
     const profileMap = new Map((profiles || []).map((p) => [p.user_id, p]));
 
@@ -323,6 +327,9 @@ export default function AdminProofs() {
               <div>
                 <p className="text-slate-600 font-medium">Usuário</p>
                 <p className="font-semibold text-customBlue">{selectedProof.user_name}</p>
+                {selectedProof.user_email && (
+                  <p className="text-xs text-slate-500">{selectedProof.user_email}</p>
+                )}
               </div>
               <div>
                 <p className="text-slate-600 font-medium">Tipo</p>
