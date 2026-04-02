@@ -35,7 +35,6 @@ const menuItems = [
   { title: "Jornada Financeira", url: "/score", icon: Route },
   { title: "Gamificação", url: "/gamificacao", icon: Gamepad2 },
   { title: "Crédito", url: "/credit", icon: CreditCard },
-  { title: "Notificações", url: "/notifications", icon: Bell },
   { title: "Cursos", url: "/cursos", icon: GraduationCap },
   { title: "Perfil", url: "/profile", icon: User },
 ];
