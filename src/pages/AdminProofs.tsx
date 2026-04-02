@@ -122,12 +122,14 @@ export default function AdminProofs() {
     if (!selectedProof) return;
     setActionLoading(true);
 
+    const pointsValue = status === "aprovado" ? parseInt(points) || 0 : 0;
+
     const { error } = await supabase
       .from("proofs")
       .update({
         status,
         feedback,
-        points: status === "aprovado" ? parseInt(points) || 0 : 0,
+        points: pointsValue,
         update_at: new Date().toISOString(),
       })
       .eq("id", selectedProof.id);
@@ -139,12 +141,15 @@ export default function AdminProofs() {
         variant: "destructive",
       });
     } else {
-      if (status === "aprovado") {
-        if (selectedProof.type === "income") {
-          await supabase.rpc("add_income_points", { income_id: selectedProof.id });
-        } else if (selectedProof.type === "bill") {
-          await supabase.rpc("add_bill_points", { bill_id: selectedProof.id });
-        }
+      // Chamar RPC para enviar notificação customizada
+      const { error: rpcError } = await supabase.rpc("notify_proof_status", {
+        proof_id: selectedProof.id,
+        new_status: status,
+        p_points: pointsValue,
+      });
+
+      if (rpcError) {
+        console.error("Erro ao enviar notificação:", rpcError);
       }
 
       toast({ title: `Documento ${status} com sucesso!` });

@@ -15,7 +15,13 @@ export interface CourseData {
   videoUrl?: string;
 }
 
-export function CourseCard({ course }: { course: CourseData }) {
+interface CourseCardProps {
+  course: CourseData;
+  onComplete?: () => void;
+  onProgressSave?: (course: CourseData) => void;
+}
+
+export function CourseCard({ course, onComplete, onProgressSave }: CourseCardProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const isComplete = course.progress === 100;
 
@@ -28,7 +34,10 @@ export function CourseCard({ course }: { course: CourseData }) {
   const videoId = getYouTubeVideoId(course.videoUrl);
 
   const thumbnail = (
-    <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center overflow-hidden cursor-pointer" onClick={() => course.videoUrl && setModalOpen(true)}>
+    <div
+      className="relative aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center overflow-hidden cursor-pointer"
+      onClick={() => course.videoUrl && setModalOpen(true)}
+    >
       {videoId ? (
         <img
           src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
@@ -56,7 +65,7 @@ export function CourseCard({ course }: { course: CourseData }) {
   );
 
   return (
-    <div className=" animate-fade-in" style={{ animationDelay: `${course.id * 80}ms` }}>
+    <div className="animate-fade-in" style={{ animationDelay: `${course.id * 80}ms` }}>
       {course.locked ? (
         <Tooltip>
           <TooltipTrigger asChild>
@@ -86,13 +95,15 @@ export function CourseCard({ course }: { course: CourseData }) {
             {thumbnail}
             <div className="p-4">
               <div className="flex items-center gap-2">
-                <span className={`mb-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                  isComplete ? "bg-success/20 text-success" : "bg-info/20 text-info"
-                }`}>
+                <span
+                  className={`mb-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${isComplete ? "bg-success/20 text-success" : "bg-info/20 text-info"
+                    }`}
+                >
                   {isComplete ? "✅ Concluído" : "Disponível"}
                 </span>
-                
-                <span className="mb-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-medium bg-secondary/20 text-secondary">{course.category}</span>
+                <span className="mb-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-medium bg-secondary/20 text-secondary">
+                  {course.category}
+                </span>
               </div>
               <h3 className="text-sm font-semibold text-foreground line-clamp-2">{course.title}</h3>
               <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{course.description}</p>
@@ -106,8 +117,14 @@ export function CourseCard({ course }: { course: CourseData }) {
           onOpenChange={setModalOpen}
           videoUrl={course.videoUrl}
           title={course.title}
+          courseId={course.id}
+          onCourseCompleted={() => {
+            onProgressSave?.(course);
+            onComplete?.();
+          }}
         />
       )}
+
     </div>
   );
 }

@@ -84,21 +84,35 @@ export default function IncomeModal({ open, onClose, onSaved, editingIncome }: I
         description: description.trim() || null,
         amount: parsedAmount,
         receipt_type: receiptType,
-        receipt_url: receiptUrl,
+        proof: receiptUrl,
+        type: "income",
+        status: "pendente",
         user_id: user.id,
       };
 
       let error;
       if (editingIncome) {
-        ({ error } = await supabase.from("incomes").update(data).eq("id", editingIncome.id));
+        ({ error } = await supabase.from("proofs").update(data).eq("id", editingIncome.id));
       } else {
-        ({ error } = await supabase.from("incomes").insert(data));
+        ({ error } = await supabase.from("proofs").insert(data));
       }
 
       if (error) {
         toast({ title: "Erro", description: error.message, variant: "destructive" });
       } else {
         toast({ title: editingIncome ? "Renda atualizada!" : "Renda adicionada!" });
+
+        await supabase.from('notifications').insert({
+          user_id: user.id,
+          message: editingIncome
+            ? '📄 Comprovante de renda atualizado e está sob análise.'
+            : '📄 Comprovante de renda foi enviado com sucesso e está sob análise.',
+          type: 'proof',
+          viewed: false,
+          archived: false,
+          key_id: editingIncome ? editingIncome.id : null,
+        });
+
         onSaved();
         onClose();
       }
