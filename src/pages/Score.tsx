@@ -3,8 +3,8 @@ import { ScoreEvolutionChart } from "@/components/ScoreEvolutionChart";
 import { ScoreFactors } from "@/components/ScoreFactors";
 import { ActionButtons } from "@/components/ActionButtons";
 import { DashboardLayout } from "@/components/layouts/DashboardLayout";
-import { useCallback, useEffect, useState, useRef } from "react";
-import  supabase  from "@/integrations/supabase/client";
+import { useCallback, useEffect, useState } from "react";
+import supabase from "@/utils/supabase";
 import { useAuth } from "@/context/AuthContext";
 import MonthlySummary from "@/components/jornada/MonthlySummary";
 import IncomeSection from "@/components/jornada/IncomeSection";
@@ -16,11 +16,13 @@ import type { Proof } from "@/types/jornada";
 const Score = () => {
   const { user } = useAuth();
   const [proofs, setProofs] = useState<Proof[]>([]);
+  const [score, setScore] = useState(0);
   const [pendingModalOpen, setPendingModalOpen] = useState(false);
   const [calculatedScore, setCalculatedScore] = useState(0);
 
   const fetchData = useCallback(async () => {
     if (!user) return;
+
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
@@ -48,11 +50,25 @@ const Score = () => {
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error(error);
-      return;
+      console.error("Erro ao buscar proofs:", error);
+    } else {
+      setProofs(data || []);
     }
 
-    setProofs(data || []);
+    // Busca os pontos do usuário em profiles
+    const { data: profilesData, error: profilesError } = await supabase
+      .from("profiles")
+      .select("points")
+      .eq("user_id", user.id);
+
+    if (profilesError) {
+      console.error("Erro ao buscar points em profiles:", profilesError);
+    } else {
+      const totalScore =
+        profilesData?.reduce((sum, profile) => sum + Number(profile.points || 0), 0) || 0;
+
+      setScore(totalScore);
+    }
   }, [user]);
 
   useEffect(() => {
@@ -75,7 +91,10 @@ const Score = () => {
   const totalIncome = incomes.reduce((sum, i) => sum + Number(i.amount), 0);
   const totalExpenses = monthlyBills.reduce((sum, b) => sum + Number(b.amount), 0);
 
-  const monthName = now.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
+  const monthName = now.toLocaleDateString("pt-BR", {
+    month: "long",
+    year: "numeric",
+  });
 
   return (
     <DashboardLayout>
