@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
 import supabase from "@/utils/supabase";
 import { useNavigate } from "react-router-dom";
+import { NotificationsPopover } from "@/components/NotificationsPopover";
 
 
 
@@ -60,30 +61,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     loadProfile();
   }, [user]);
 
-  const [unreadCount, setUnreadCount] = useState(0);
-  
-    useEffect(() => {
-        if (user) loadNotificationsCount();
-    }, []);
 
-async function loadNotificationsCount() {
-  if (!user) return;
-
-  const { data, error } = await supabase
-    .from("notifications")
-    .select("*")
-    .eq("user_id", user.id)
-    .or("archived.is.null,archived.eq.false");
-
-  if (error) {
-    console.log(error.message);
-    return;
-  }
-
-  const count = data.filter(n => !n.viewed).length;
-
-  setUnreadCount(count);
-}
 
   function getHoraAtual() {
     const now = new Date();
@@ -171,15 +149,7 @@ async function loadNotificationsCount() {
               </span>
             </div>
 
-            <button
-              onClick={() => navigate("/notifications")}
-              className="relative text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <Bell className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center font-bold">
-                {unreadCount}
-              </span>
-            </button>
+            <NotificationsPopover />
           </header>
 
           {/* CONTEÚDO */}
