@@ -91,7 +91,7 @@ export default function Cursos() {
               <div className="mx-auto">
                 <div className="flex items-center gap-3 mb-2">
                   <BookOpen className="h-6 w-6 text-primary" />
-                  <h1 className="text-2xl font-bold text-foreground md:text-3xl">Educação Financeira</h1>
+                  <h1 className="text-2xl font-bold text-foreground md:text-3xl">Gestão Financeira</h1>
                 </div>
                 <p className="mb-6 text-sm text-muted-foreground max-w-2xl">
                   Cada curso concluído é um passo a mais rumo à sua independência financeira. Você está no caminho certo! 💪
