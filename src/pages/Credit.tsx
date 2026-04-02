@@ -57,17 +57,20 @@ export default function BancosParceiros() {
 
   const { user } = useAuth();
 
-  const [valor, setValor] = useState("3000");
+  const [valor, setValor] = useState("");
   const [prazo, setPrazo] = useState("12");
   const [taxa, setTaxa] = useState("3.1");
 
   const [banks, setBanks] = useState<banks[]>([]);
+  const [historico, setHistorico] = useState<any[]>([]);
   const listaBancos = banks;
   const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     if (user?.id) {
       syncCredit(user.id);
+      buscarHistorico();
     }
   }, [user]);
 
@@ -93,6 +96,22 @@ export default function BancosParceiros() {
       })
     );
     setLoading(false);
+  }
+  async function buscarHistorico() {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from("simulations")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.log("erro historico:", error);
+      return;
+    }
+
+    setHistorico(data || []);
   }
 
 
@@ -312,11 +331,36 @@ export default function BancosParceiros() {
               </div>
 
               <button
-                onClick={() => {
+                onClick={async () => {
+                  console.log("clicou botão");
+                  console.log("user:", user);
+
+                  if (!user) return;
+
+                  const { error } = await supabase.from("simulations").insert([
+                    {
+                      user_id: user.id,
+                      user_name: user.email?.split("@")[0],
+                      valor: valorNum,
+                      prazo: prazoNum,
+                      parcela: parcela,
+                      status: "Em análise",
+                    },
+                  ]);
+
+                  console.log("erro:", error);
+
+                  if (error) {
+                    toast({
+                      title: "Erro ao salvar",
+                      description: error.message,
+                    });
+                    return;
+                  }
+                  await buscarHistorico();
                   toast({
                     title: "Solicitação enviada!",
-                    description:
-                      "Sua simulação foi registrada. Entraremos em contato.",
+                    description: "Sua simulação foi registrada e está em análise.",
                   });
                 }}
                 className="bg-primary text-white border-none py-2.5 px-6 rounded-lg cursor-pointer font-medium text-sm transition-all duration-200 hover:brightness-95 active:scale-95 active:brightness-90"
@@ -328,11 +372,54 @@ export default function BancosParceiros() {
 
           </div>
         </div>
+
       </div>
 
+      {/* HISTÓRICO */}
+      <div className="max-w-2xl mx-auto px-6 pb-12">
+        <h3 className="text-lg font-semibold mb-4 text-foreground">
+          Histórico de Solicitações
+        </h3>
 
+        {historico.length === 0 ? (
+          <p className="text-sm text-gray-500">
+            Nenhuma solicitação ainda.
+          </p>
+        ) : (
+          historico.slice(0, 1).map((item) => (
+            <div
+              key={item.id}
+              className="bg-zinc-50 p-4 rounded-xl shadow-md mb-3 border border-zinc-200"
+            >
+              <p className="text-card-foreground text-sm">
+                <strong>Nome:</strong> {item.user_name}
+              </p>
 
+              <p className="text-card-foreground text-sm">
+                <strong>Valor:</strong> R$ {item.valor}
+              </p>
 
+              <p className="text-card-foreground text-sm">
+                <strong>Prazo:</strong> {item.prazo} meses
+              </p>
+
+              <p className="text-card-foreground text-sm">
+                <strong>Status:</strong> {item.status}
+              </p>
+
+              <p className="text-xs text-muted-foreground">
+                {new Date(item.created_at).toLocaleString("pt-BR", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+            </div>
+          ))
+        )}
+      </div>
 
 
 
