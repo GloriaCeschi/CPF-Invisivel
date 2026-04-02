@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useRef } from "react";
 import type { ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import supabase from "../utils/supabase";
@@ -16,6 +16,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const welcomeCheckedRef = useRef(false);
 
   useEffect(() => {
     async function loadSession() {
@@ -43,6 +44,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       subscription.unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    if (user && !welcomeCheckedRef.current) {
+      welcomeCheckedRef.current = true;
+      sendWelcomeNotification(user.id);
+    }
+  }, [user]);
+
+  async function sendWelcomeNotification(userId: string) {
+    try {
+      // Verificar se já existe uma notificação de boas-vindas para este usuário
+      const { data: existingNotification, error: selectError } = await supabase
+        .from('notifications')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('type', 'welcome')
+        .limit(1);
+
+      if (selectError) {
+        if (selectError.message?.includes('AbortError')) return;
+        return;
+      }
+
+      // Se não existe, criar a notificação de boas-vindas
+      if (!existingNotification || existingNotification.length === 0) {
+        const { error } = await supabase
+          .from('notifications')
+          .insert({
+            user_id: userId,
+            message: '🎉 Bem-vindo ao Renda Visível! Comece sua jornada financeira explorando os cursos disponíveis e registrando suas rendas e contas.',
+            type: 'welcome',
+            viewed: false,
+            archived: false,
+          });
+
+        if (error) {
+          if (error.message?.includes('AbortError')) return;
+        } else {
+          console.log('✅ Notificação de boas-vindas enviada com sucesso!');
+        }
+      }
+    } catch (error: any) {
+      if (error.message?.includes('AbortError')) return;
+    }
+  }
 
   async function signOutUser() {
     await supabase.auth.signOut();
