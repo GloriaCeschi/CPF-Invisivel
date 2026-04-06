@@ -267,9 +267,9 @@ export default function BancosParceiros() {
             </div>
           ))}
         </div>
-        
+
         {/* SIMULADOR */}
-        
+
         <div className="max-w-2xl mx-auto px-6 pb-12">
           <div className="bg-white p-6 rounded-2xl shadow-md border border-pink-100">
             <div className="text-center mb-4">
@@ -277,18 +277,18 @@ export default function BancosParceiros() {
                 Simulação
               </h3>
               <h2 className="text-lg font-semibold text-gray-800 mt-1">
-               Simulação personalizada
+                Simulação personalizada
               </h2>
             </div>
             <p className="text-sm text-gray-500 mt-1 mb-4">
               Taxa automática baseada no prazo selecionado
             </p>
-          <div className="bg-primary/10 border border-primary/20 p-3 rounded-lg mb-3 text-center">
-  <p className="text-xs text-primary">Banco selecionado</p>
-  <p className="text-sm font-semibold text-foreground">
-    {bancoSelecionado?.name || "Banco parceiro"}
-  </p>
-</div>
+            <div className="bg-primary/10 border border-primary/20 p-3 rounded-lg mb-3 text-center">
+              <p className="text-xs text-primary">Banco selecionado</p>
+              <p className="text-sm font-semibold text-foreground">
+                {bancoSelecionado?.name || "Banco parceiro"}
+              </p>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
               <div>
                 <label className="text-sm text-muted-foreground mb-1 block">
@@ -447,43 +447,43 @@ export default function BancosParceiros() {
           </p>
         ) : (
           historico.slice(0, 3).map((item) => (
-            
+
             <div
               key={item.id}
-             className="p-4 mb-2 rounded-xl border border-border bg-card/50 backdrop-blur-sm hover:bg-card transition-all duration-200"
+              className="p-4 mb-2 rounded-xl border border-border bg-card/50 backdrop-blur-sm hover:bg-card transition-all duration-200"
             >
               <div className="flex items-center justify-between mb-2">
-  <div>
-    <p className="text-sm font-semibold text-foreground">
-      {item.bank_name || "Banco parceiro"}
-    </p>
-    <p className="text-xs text-muted-foreground">
-      {new Date(item.created_at).toLocaleDateString("pt-BR")}
-    </p>
-  </div>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">
+                    {item.bank_name || "Banco parceiro"}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {new Date(item.created_at).toLocaleDateString("pt-BR")}
+                  </p>
+                </div>
 
-  <span className={`
+                <span className={`
     text-xs font-medium px-2 py-1 rounded-full
     ${item.status === "Em análise"
-      ? "bg-yellow-100 text-yellow-700"
-      : "bg-green-100 text-green-700"}
+                    ? "bg-yellow-100 text-yellow-700"
+                    : "bg-green-100 text-green-700"}
   `}>
-    {item.status}
-  </span>
-</div>
+                  {item.status}
+                </span>
+              </div>
 
-<div className="flex justify-between items-center">
-  <p className="text-sm text-muted-foreground">
-    {item.prazo} meses
-  </p>
+              <div className="flex justify-between items-center">
+                <p className="text-sm text-muted-foreground">
+                  {item.prazo} meses
+                </p>
 
-  <p className="text-base font-semibold text-foreground">
-    {new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(item.valor)}
-  </p>
-</div>
+                <p className="text-base font-semibold text-foreground">
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(item.valor)}
+                </p>
+              </div>
             </div>
           ))
         )}

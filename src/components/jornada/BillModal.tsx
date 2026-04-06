@@ -123,20 +123,20 @@ export default function BillModal({ open, onClose, onSaved, editingBill }: BillM
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md w-[95vw] max-w-full overflow-hidden px-4 sm:px-6">
         <DialogHeader>
           <DialogTitle className="font-display text-[hsl(218,26%,29%)]">
             {editingBill ? "Editar Conta" : "Adicionar Conta Paga"}
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 text-[hsl(218,26%,29%)]">
-          <div className="space-y-2">
+        <form onSubmit={handleSubmit} className="space-y-4 text-[hsl(218,26%,29%)] w-full max-w-full overflow-x-hidden">
+          <div className="space-y-2 w-full max-w-full overflow-hidden">
             <Label>Título</Label>
-            <Input placeholder="Ex: Conta de luz" value={title} onChange={(e) => setTitle(e.target.value)} required maxLength={100} />
+            <Input className="w-full" placeholder="Ex: Conta de luz" value={title} onChange={(e) => setTitle(e.target.value)} required maxLength={100} />
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2 w-full max-w-full overflow-hidden">
             <Label>Descrição</Label>
-            <Textarea placeholder="Detalhes da conta..." value={description} onChange={(e) => setDescription(e.target.value)} maxLength={500} />
+            <Textarea className="w-full" placeholder="Detalhes da conta..." value={description} onChange={(e) => setDescription(e.target.value)} maxLength={500} />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -158,11 +158,11 @@ export default function BillModal({ open, onClose, onSaved, editingBill }: BillM
               <Input type="number" min="1" value={totalInstallments} onChange={(e) => setTotalInstallments(e.target.value)} required />
             </div>
           </div>
-          <div className="space-y-2">
-            <Label>Comprovante (PDF ou imagem)</Label>
-            <label className="flex items-center gap-2 rounded-md border border-input bg-background px-3 py-2 text-sm cursor-pointer hover:bg-muted transition-colors">
-              <Upload className="h-4 w-4 text-muted-foreground" />
-              <span className="text-muted-foreground truncate">{file ? file.name : "Selecionar arquivo"}</span>
+          <div className="space-y-2 w-full min-w-0">
+            <Label className="block">Comprovante (PDF ou imagem)</Label>
+            <label className="flex items-center w-full gap-2 rounded-md border border-input bg-background px-3 py-2 text-sm cursor-pointer hover:bg-muted transition-colors min-w-0">
+              <Upload className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              <span className="text-muted-foreground truncate flex-1 min-w-0">{file ? file.name : "Selecionar arquivo"}</span>
               <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" className="hidden" onChange={(e) => setFile(e.target.files?.[0] || null)} />
             </label>
           </div>

@@ -62,18 +62,38 @@ const Profile = () => {
 
 
   async function handleProfile() {
+    if (!user) return;
+    
     const data = { ...prof, user_id: user.id };
-
-    console.log(data)
 
     const { error } = await supabase.from('profiles').upsert(data, { onConflict: "user_id" });
 
     if (error) {
-      alert(error.message);
+      toast.error(error.message);
       return;
     }
 
-    alert("Perfil atualizado com sucesso")
+    // Verificar se já existe a notificação de perfil completado para validar se é a primeira vez
+    const { data: existingNotification } = await supabase
+      .from('notifications')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('type', 'profile_completed')
+      .limit(1);
+
+    if (!existingNotification || existingNotification.length === 0) {
+      // É a primeira vez completando o perfil, cria a notificação
+      await supabase.from('notifications').insert({
+        user_id: user.id,
+        type: 'profile_completed',
+        message: 'Seu perfil foi criado com sucesso! Você desbloqueou todas as vantagens do app. Explore todas as funcionalidades e comece sua jornada!',
+        viewed: false,
+        archived: false,
+      });
+    }
+
+    setIsEditing(false);
+    toast.success("Perfil atualizado com sucesso!");
   };
 
   const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {

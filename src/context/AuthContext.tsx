@@ -73,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           .from('notifications')
           .insert({
             user_id: userId,
-            message: '🎉 Bem-vindo ao Renda Visível! Comece sua jornada financeira explorando os cursos disponíveis e registrando suas rendas e contas.',
+            message: '👋 Bem-vindo(a) ao Renda Visível! Para começar sua jornada com clareza financeira, por favor, complete seu cadastro. Assim, você libera o acesso total a todos os benefícios e conteúdos disponíveis em nossa plataforma. Tenha uma excelente experiência!',
             type: 'welcome',
             viewed: false,
             archived: false,
@@ -82,7 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (error) {
           if (error.message?.includes('AbortError')) return;
         } else {
-          console.log('✅ Notificação de boas-vindas enviada com sucesso!');
+         // console.log('✅ Notificação de boas-vindas enviada com sucesso!');
         }
       }
     } catch (error: any) {
