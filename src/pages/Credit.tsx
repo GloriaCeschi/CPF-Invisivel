@@ -7,12 +7,7 @@ import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 
 
 
-function solicitar(nomeBanco: string) {
-  toast({
-    title: "Solicitação enviada com sucesso!",
-    description: "O Banco " + nomeBanco + " irá analisar seu pedido.",
-  });
-}
+
 
 
 
@@ -124,6 +119,63 @@ export default function BancosParceiros() {
     }
 
     setHistorico(data || []);
+  }
+
+  async function handleSolicitarBanco(banco: any) {
+    if (!user) return;
+    
+    const valorNum = banco.max_amount || 0;
+    const taxaNum = (banco.interest || 0) / 100;
+    const prazoNum = banco.max_term || 1;
+
+    const parcela =
+      taxaNum > 0
+        ? (valorNum * taxaNum * Math.pow(1 + taxaNum, prazoNum)) /
+        (Math.pow(1 + taxaNum, prazoNum) - 1)
+        : valorNum / prazoNum;
+
+    const { error } = await supabase.from("simulations").insert([
+      {
+        user_id: user.id,
+        user_name:
+          user.email?.split("@")[0]
+            ?.charAt(0).toUpperCase() +
+          user.email?.split("@")[0]?.slice(1),
+        valor: valorNum,
+        prazo: prazoNum,
+        parcela: parcela,
+        status: "Em análise",
+        bank_name: banco.name || banco.nome,
+      },
+    ]);
+
+    if (error) {
+      toast({
+        title: "Erro ao salvar",
+        description: error.message,
+      });
+      return;
+    }
+
+    await supabase.from("notifications").insert([
+      {
+        user_id: user.id,
+        type: "simulacao",
+        message: `A sua solicitação de empréstimo no banco ${banco.name || banco.nome} no valor de ${new Intl.NumberFormat("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        }).format(valorNum)} foi enviada com sucesso e passará por análise. Em breve você receberá atualizações.`,
+        viewed: false,
+        archived: false,
+      },
+    ]);
+
+    await buscarHistorico();
+
+    toast({
+      title: "Solicitação enviada com sucesso!",
+      description: "O Banco " + (banco.name || banco.nome) + " irá analisar seu pedido.",
+    });
   }
 
 
@@ -258,8 +310,7 @@ export default function BancosParceiros() {
               </div>
 
               <button
-
-                onClick={() => solicitar(banco.name || banco.nome)}
+                onClick={() => handleSolicitarBanco(banco)}
                 className="w-full mt-4 bg-primary text-white py-2.5 rounded-xl font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition"
               >
                 Solicitar Empréstimo
@@ -406,6 +457,21 @@ export default function BancosParceiros() {
                     });
                     return;
                   }
+
+                  // Notifica o usuário na plataforma sobre o recebimento da solicitação
+                  await supabase.from("notifications").insert([
+                    {
+                      user_id: user.id,
+                      type: "simulacao",
+                      message: `A sua solicitação de empréstimo no valor de ${new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(valorNum)} foi enviada com sucesso e passará por análise. Em breve você receberá atualizações.`,
+                      viewed: false,
+                      archived: false,
+                    },
+                  ]);
+
                   await buscarHistorico();
 
                   // tempo mínimo de loading (1 segundo)
