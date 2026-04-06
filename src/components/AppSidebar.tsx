@@ -25,7 +25,7 @@ import {
   SidebarHeader,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
 import supabase from "@/utils/supabase";
 import { ShieldCheck } from "lucide-react";
@@ -55,14 +55,14 @@ export function AppSidebar() {
     navigate("/auth");
   };
 
-  const [prof, setProf] = useState<{ name?: string; roles?: string }>({});
+  const [prof, setProf] = useState<{ name?: string; roles?: string; photo_url?: string }>({});
 
   useEffect(() => {
     async function loadProfile() {
       if (!user) return;
       const { data } = await supabase
         .from("profiles")
-        .select("name, roles")
+        .select("name, roles, photo_url")
         .eq("user_id", user.id)
         .maybeSingle();
       if (data) setProf(data);
@@ -137,6 +137,7 @@ export function AppSidebar() {
       <SidebarFooter className="p-4 border-t border-sidebar-border">
         <div className="flex items-center gap-3">
           <Avatar className="h-9 w-9 flex-shrink-0">
+            {prof?.photo_url && <AvatarImage src={prof.photo_url} alt={prof?.name || "Usuário"} />}
             <AvatarFallback className="bg-primary text-secondary-foreground font-semibold text-sm">
               {getInitials(prof?.name)}
             </AvatarFallback>
