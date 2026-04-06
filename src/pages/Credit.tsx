@@ -267,7 +267,9 @@ export default function BancosParceiros() {
             </div>
           ))}
         </div>
+        
         {/* SIMULADOR */}
+        
         <div className="max-w-2xl mx-auto px-6 pb-12">
           <div className="bg-white p-6 rounded-2xl shadow-md border border-pink-100">
             <div className="text-center mb-4">
