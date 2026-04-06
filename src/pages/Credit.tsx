@@ -58,6 +58,7 @@ export default function BancosParceiros() {
 
   const [banks, setBanks] = useState<banks[]>([]);
   const [historico, setHistorico] = useState<any[]>([]);
+  const [userName, setUserName] = useState<string>("");
   const listaBancos = [...banks].sort((a, b) => {
     const jurosA = a.interest ?? 999;
     const jurosB = b.interest ?? 999;
@@ -74,12 +75,22 @@ export default function BancosParceiros() {
 
   useEffect(() => {
     if (user?.id) {
+      buscarNomeUsuario();
       syncCredit(user.id);
-
       buscarHistorico();
-
     }
   }, [user]);
+
+  async function buscarNomeUsuario() {
+    if (!user) return;
+    const { data } = await supabase.from('profiles').select('name').eq('user_id', user.id).maybeSingle();
+    if (data?.name) {
+      setUserName(data.name);
+    } else {
+      const emailName = user.email?.split("@")[0] || "Usuário";
+      setUserName(emailName.charAt(0).toUpperCase() + emailName.slice(1));
+    }
+  }
 
 
 
@@ -137,10 +148,10 @@ export default function BancosParceiros() {
     const { error } = await supabase.from("simulations").insert([
       {
         user_id: user.id,
-        user_name:
-          user.email?.split("@")[0]
-            ?.charAt(0).toUpperCase() +
-          user.email?.split("@")[0]?.slice(1),
+        user_name: userName || (
+          user.email?.split("@")[0]?.charAt(0).toUpperCase() +
+          user.email?.split("@")[0]?.slice(1)
+        ),
         valor: valorNum,
         prazo: prazoNum,
         parcela: parcela,
@@ -437,10 +448,10 @@ export default function BancosParceiros() {
                   const { error } = await supabase.from("simulations").insert([
                     {
                       user_id: user.id,
-                      user_name:
-                        user.email?.split("@")[0]
-                          ?.charAt(0).toUpperCase() +
-                        user.email?.split("@")[0]?.slice(1),
+                      user_name: userName || (
+                        user.email?.split("@")[0]?.charAt(0).toUpperCase() +
+                        user.email?.split("@")[0]?.slice(1)
+                      ),
                       valor: valorNum,
                       prazo: prazoNum,
                       parcela: parcela,
@@ -518,7 +529,7 @@ export default function BancosParceiros() {
               className="bg-zinc-50 p-4 rounded-xl shadow-md mb-3 border border-zinc-200"
             >
               <p className="text-card-foreground text-sm">
-                <strong>Nome:</strong> {item.user_name}
+                <strong>Nome:</strong> {userName || item.user_name}
               </p>
 
               <p className="text-card-foreground text-sm">
