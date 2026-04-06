@@ -447,44 +447,43 @@ export default function BancosParceiros() {
           </p>
         ) : (
           historico.slice(0, 3).map((item) => (
+            
             <div
               key={item.id}
-              className="bg-zinc-50 p-4 rounded-xl shadow-md mb-3 border border-zinc-200"
+             className="p-4 mb-2 rounded-xl border border-border bg-card/50 backdrop-blur-sm hover:bg-card transition-all duration-200"
             >
-              <p className="text-card-foreground text-sm">
-                <strong>Nome:</strong> {item.user_name}
-              </p>
+              <div className="flex items-center justify-between mb-2">
+  <div>
+    <p className="text-sm font-semibold text-foreground">
+      {item.bank_name || "Banco parceiro"}
+    </p>
+    <p className="text-xs text-muted-foreground">
+      {new Date(item.created_at).toLocaleDateString("pt-BR")}
+    </p>
+  </div>
 
-              <p className="text-card-foreground text-sm">
-                <strong>Valor:</strong>{" "}
-                {new Intl.NumberFormat("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                }).format(item.valor)}
-              </p>
+  <span className={`
+    text-xs font-medium px-2 py-1 rounded-full
+    ${item.status === "Em análise"
+      ? "bg-yellow-100 text-yellow-700"
+      : "bg-green-100 text-green-700"}
+  `}>
+    {item.status}
+  </span>
+</div>
 
-              <p className="text-card-foreground text-sm">
-                <strong>Prazo:</strong> {item.prazo} meses
-              </p>
+<div className="flex justify-between items-center">
+  <p className="text-sm text-muted-foreground">
+    {item.prazo} meses
+  </p>
 
-              <p className="text-card-foreground text-sm">
-                <strong>Status:</strong> {item.status}
-              </p>
-              {item.valor > 0 && item.bank_name && (
-                <p className="text-card-foreground text-sm">
-                  <strong>Banco:</strong> {item.bank_name}
-                </p>
-              )}
-
-              <p className="text-xs text-muted-foreground">
-                {new Date(item.created_at).toLocaleString("pt-BR", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </p>
+  <p className="text-base font-semibold text-foreground">
+    {new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(item.valor)}
+  </p>
+</div>
             </div>
           ))
         )}
