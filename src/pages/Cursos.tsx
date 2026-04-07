@@ -60,7 +60,7 @@ export default function Cursos() {
       const { error } = await supabase.rpc("complete_course", {
         uid: user.id,
         course_id: course.id,
-        pts: 25,
+        pts: 45,
       });
 
       if (error) {
@@ -72,7 +72,7 @@ export default function Cursos() {
 
         toast({
           title: "Parabéns!",
-          description: `Você ganhou 25 pontos por concluir "${course.title}" 🎉`,
+          description: `Você ganhou 45 pontos por concluir "${course.title}" 🎉`,
         });
       }
     } catch (err) {

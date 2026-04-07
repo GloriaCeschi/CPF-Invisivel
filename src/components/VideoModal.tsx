@@ -129,7 +129,7 @@ export function VideoModal({ open, onOpenChange, videoUrl, title, courseId, onCo
       const { error } = await supabase.rpc("complete_course", {
         uid: user.id,
         p_course_id: courseId,
-        pts: 25,
+        pts: 45,
       });
       
       if (error) {
