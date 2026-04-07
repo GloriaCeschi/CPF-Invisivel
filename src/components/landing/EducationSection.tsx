@@ -12,7 +12,7 @@ const courses = [
 
 const gamification = [
   { icon: Trophy, label: "Envie comprovantes", points: "+10 pts" },
-  { icon: Trophy, label: "Complete cursos", points: "+25 pts" },
+  { icon: Trophy, label: "Complete cursos", points: "+45 pts" },
   { icon: Trophy, label: "Convide amigos", points: "+15 pts" },
   { icon: Trophy, label: "Mantenha streak", points: "+5 pts/dia" },
 ];
