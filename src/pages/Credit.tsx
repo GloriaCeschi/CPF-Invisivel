@@ -302,7 +302,10 @@ export default function BancosParceiros() {
                   }).format(Number(valor) / 100)}
                   onChange={(e) => {
                     const numbers = e.target.value.replace(/\D/g, "");
-                    setValor(numbers);
+                    // Limita a 6 dígitos inteiros (999.999) + 2 decimais = 8 dígitos no total
+                    if (numbers.length <= 8) {
+                      setValor(numbers);
+                    }
                   }}
                   className="w-full border border-input rounded-lg px-3 py-2 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
