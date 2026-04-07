@@ -7,7 +7,12 @@ import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 
 
 
-
+function solicitar(nomeBanco: string) {
+  toast({
+    title: "Solicitação enviada com sucesso!",
+    description: "O Banco " + nomeBanco + " irá analisar seu pedido.",
+  });
+}
 
 
 
@@ -58,7 +63,6 @@ export default function BancosParceiros() {
 
   const [banks, setBanks] = useState<banks[]>([]);
   const [historico, setHistorico] = useState<any[]>([]);
-  const [userName, setUserName] = useState<string>("");
   const listaBancos = [...banks].sort((a, b) => {
     const jurosA = a.interest ?? 999;
     const jurosB = b.interest ?? 999;
@@ -75,22 +79,12 @@ export default function BancosParceiros() {
 
   useEffect(() => {
     if (user?.id) {
-      buscarNomeUsuario();
       syncCredit(user.id);
+
       buscarHistorico();
+
     }
   }, [user]);
-
-  async function buscarNomeUsuario() {
-    if (!user) return;
-    const { data } = await supabase.from('profiles').select('name').eq('user_id', user.id).maybeSingle();
-    if (data?.name) {
-      setUserName(data.name);
-    } else {
-      const emailName = user.email?.split("@")[0] || "Usuário";
-      setUserName(emailName.charAt(0).toUpperCase() + emailName.slice(1));
-    }
-  }
 
 
 
@@ -130,63 +124,6 @@ export default function BancosParceiros() {
     }
 
     setHistorico(data || []);
-  }
-
-  async function handleSolicitarBanco(banco: any) {
-    if (!user) return;
-    
-    const valorNum = banco.max_amount || 0;
-    const taxaNum = (banco.interest || 0) / 100;
-    const prazoNum = banco.max_term || 1;
-
-    const parcela =
-      taxaNum > 0
-        ? (valorNum * taxaNum * Math.pow(1 + taxaNum, prazoNum)) /
-        (Math.pow(1 + taxaNum, prazoNum) - 1)
-        : valorNum / prazoNum;
-
-    const { error } = await supabase.from("simulations").insert([
-      {
-        user_id: user.id,
-        user_name: userName || (
-          user.email?.split("@")[0]?.charAt(0).toUpperCase() +
-          user.email?.split("@")[0]?.slice(1)
-        ),
-        valor: valorNum,
-        prazo: prazoNum,
-        parcela: parcela,
-        status: "Em análise",
-        bank_name: banco.name || banco.nome,
-      },
-    ]);
-
-    if (error) {
-      toast({
-        title: "Erro ao salvar",
-        description: error.message,
-      });
-      return;
-    }
-
-    await supabase.from("notifications").insert([
-      {
-        user_id: user.id,
-        type: "simulacao",
-        message: `A sua solicitação de empréstimo no banco ${banco.name || banco.nome} no valor de ${new Intl.NumberFormat("pt-BR", {
-          style: "currency",
-          currency: "BRL",
-        }).format(valorNum)} foi enviada com sucesso e passará por análise. Em breve você receberá atualizações.`,
-        viewed: false,
-        archived: false,
-      },
-    ]);
-
-    await buscarHistorico();
-
-    toast({
-      title: "Solicitação enviada com sucesso!",
-      description: "O Banco " + (banco.name || banco.nome) + " irá analisar seu pedido.",
-    });
   }
 
 
@@ -321,7 +258,8 @@ export default function BancosParceiros() {
               </div>
 
               <button
-                onClick={() => handleSolicitarBanco(banco)}
+
+                onClick={() => solicitar(banco.name || banco.nome)}
                 className="w-full mt-4 bg-primary text-white py-2.5 rounded-xl font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition"
               >
                 Solicitar Empréstimo
@@ -329,9 +267,9 @@ export default function BancosParceiros() {
             </div>
           ))}
         </div>
-        
+
         {/* SIMULADOR */}
-        
+
         <div className="max-w-2xl mx-auto px-6 pb-12">
           <div className="bg-white p-6 rounded-2xl shadow-md border border-pink-100">
             <div className="text-center mb-4">
@@ -339,18 +277,18 @@ export default function BancosParceiros() {
                 Simulação
               </h3>
               <h2 className="text-lg font-semibold text-gray-800 mt-1">
-               Simulação personalizada
+                Simulação personalizada
               </h2>
             </div>
             <p className="text-sm text-gray-500 mt-1 mb-4">
               Taxa automática baseada no prazo selecionado
             </p>
-          <div className="bg-primary/10 border border-primary/20 p-3 rounded-lg mb-3 text-center">
-  <p className="text-xs text-primary">Banco selecionado</p>
-  <p className="text-sm font-semibold text-foreground">
-    {bancoSelecionado?.name || "Banco parceiro"}
-  </p>
-</div>
+            <div className="bg-primary/10 border border-primary/20 p-3 rounded-lg mb-3 text-center">
+              <p className="text-xs text-primary">Banco selecionado</p>
+              <p className="text-sm font-semibold text-foreground">
+                {bancoSelecionado?.name || "Banco parceiro"}
+              </p>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
               <div>
                 <label className="text-sm text-muted-foreground mb-1 block">
@@ -363,7 +301,7 @@ export default function BancosParceiros() {
                     currency: "BRL",
                   }).format(Number(valor) / 100)}
                   onChange={(e) => {
-                    const numbers = e.target.value.replace(/\D/g, "").slice(0, 15);
+                    const numbers = e.target.value.replace(/\D/g, "");
                     setValor(numbers);
                   }}
                   className="w-full border border-input rounded-lg px-3 py-2 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
@@ -448,10 +386,10 @@ export default function BancosParceiros() {
                   const { error } = await supabase.from("simulations").insert([
                     {
                       user_id: user.id,
-                      user_name: userName || (
-                        user.email?.split("@")[0]?.charAt(0).toUpperCase() +
-                        user.email?.split("@")[0]?.slice(1)
-                      ),
+                      user_name:
+                        user.email?.split("@")[0]
+                          ?.charAt(0).toUpperCase() +
+                        user.email?.split("@")[0]?.slice(1),
                       valor: valorNum,
                       prazo: prazoNum,
                       parcela: parcela,
@@ -468,21 +406,6 @@ export default function BancosParceiros() {
                     });
                     return;
                   }
-
-                  // Notifica o usuário na plataforma sobre o recebimento da solicitação
-                  await supabase.from("notifications").insert([
-                    {
-                      user_id: user.id,
-                      type: "simulacao",
-                      message: `A sua solicitação de empréstimo no valor de ${new Intl.NumberFormat("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      }).format(valorNum)} foi enviada com sucesso e passará por análise. Em breve você receberá atualizações.`,
-                      viewed: false,
-                      archived: false,
-                    },
-                  ]);
-
                   await buscarHistorico();
 
                   // tempo mínimo de loading (1 segundo)
@@ -524,44 +447,43 @@ export default function BancosParceiros() {
           </p>
         ) : (
           historico.slice(0, 3).map((item) => (
+
             <div
               key={item.id}
-              className="bg-zinc-50 p-4 rounded-xl shadow-md mb-3 border border-zinc-200"
+              className="p-4 mb-2 rounded-xl border border-border bg-card/50 backdrop-blur-sm hover:bg-card transition-all duration-200"
             >
-              <p className="text-card-foreground text-sm">
-                <strong>Nome:</strong> {userName || item.user_name}
-              </p>
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <p className="text-sm font-semibold text-foreground">
+                    {item.bank_name || "Banco parceiro"}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {new Date(item.created_at).toLocaleDateString("pt-BR")}
+                  </p>
+                </div>
 
-              <p className="text-card-foreground text-sm">
-                <strong>Valor:</strong>{" "}
-                {new Intl.NumberFormat("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                }).format(item.valor)}
-              </p>
+                <span className={`
+    text-xs font-medium px-2 py-1 rounded-full
+    ${item.status === "Em análise"
+                    ? "bg-yellow-100 text-yellow-700"
+                    : "bg-green-100 text-green-700"}
+  `}>
+                  {item.status}
+                </span>
+              </div>
 
-              <p className="text-card-foreground text-sm">
-                <strong>Prazo:</strong> {item.prazo} meses
-              </p>
-
-              <p className="text-card-foreground text-sm">
-                <strong>Status:</strong> {item.status}
-              </p>
-              {item.valor > 0 && item.bank_name && (
-                <p className="text-card-foreground text-sm">
-                  <strong>Banco:</strong> {item.bank_name}
+              <div className="flex justify-between items-center">
+                <p className="text-sm text-muted-foreground">
+                  {item.prazo} meses
                 </p>
-              )}
 
-              <p className="text-xs text-muted-foreground">
-                {new Date(item.created_at).toLocaleString("pt-BR", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </p>
+                <p className="text-base font-semibold text-foreground">
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(item.valor)}
+                </p>
+              </div>
             </div>
           ))
         )}
