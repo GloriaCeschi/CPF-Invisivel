@@ -2,9 +2,64 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { LEVELS } from "@/data/gamificationData";
 import { useProfile } from "@/hooks/useProfile";
+import { useEffect, useRef } from "react";
+import { useAuth } from "@/context/AuthContext";
+import supabase from "@/utils/supabase";
+import { toast } from "sonner";
 
 export const LevelProgress = () => {
   const { profile, loading } = useProfile();
+  const { user } = useAuth();
+  const prevLevelRef = useRef<number | null>(null);
+
+  const totalPoints = profile?.points || 0;
+  const currentLevelIndex = LEVELS.findIndex(level => totalPoints < level.minPoints) - 1;
+  const currentLevelIndexSafe = Math.max(0, currentLevelIndex);
+  const current = LEVELS[currentLevelIndexSafe];
+  const next = LEVELS[currentLevelIndexSafe + 1] || current;
+
+  useEffect(() => {
+    if (!user || loading || !profile) return;
+
+    const currentLevel = current.level;
+
+    const checkAndNotify = async () => {
+      try {
+        const { data } = await supabase
+          .from('notifications')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('type', 'level_up')
+          .like('message', `%Nível ${currentLevel}%`)
+          .limit(1);
+
+        if (!data || data.length === 0) {
+          if (currentLevel > 1) { // Skip notification for Level 1 (base level)
+            const message = `🎉 Parabéns pela conquista! Você alcançou os pontos necessários e subiu para o Nível ${currentLevel} (${current.name})!`;
+            
+            await supabase.from('notifications').insert({
+              user_id: user.id,
+              type: 'level_up',
+              message: message,
+              viewed: false,
+              archived: false
+            });
+            
+            toast.success(`🎉 Nível ${currentLevel} Alcançado!`, {
+              description: `Você agora é um(a) ${current.name}!`
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Erro ao verificar/enviar notificação de level up", error);
+      }
+    };
+
+    if (prevLevelRef.current === null || currentLevel > prevLevelRef.current) {
+        checkAndNotify();
+        prevLevelRef.current = currentLevel;
+    }
+  }, [current.level, current.name, user, profile, loading]);
 
   if (loading || !profile) {
     return (
@@ -20,12 +75,6 @@ export const LevelProgress = () => {
       </div>
     );
   }
-
-  const totalPoints = profile.points || 0;
-  const currentLevelIndex = LEVELS.findIndex(level => totalPoints < level.minPoints) - 1;
-  const currentLevelIndexSafe = Math.max(0, currentLevelIndex);
-  const current = LEVELS[currentLevelIndexSafe];
-  const next = LEVELS[currentLevelIndexSafe + 1] || current;
 
   const progressInLevel = totalPoints - current.minPoints;
   const pointsForNext = next.minPoints - current.minPoints;
