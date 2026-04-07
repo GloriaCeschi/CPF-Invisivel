@@ -81,6 +81,8 @@ export default function BancosParceiros() {
     if (user?.id) {
       syncCredit(user.id);
 
+      buscarHistorico();
+
     }
   }, [user]);
 
@@ -141,8 +143,15 @@ export default function BancosParceiros() {
       : valorNum / prazoNum;
 
   const bancosOrdenados = [...banks].sort(
+
     (a, b) => (a.interest ?? 999) - (b.interest ?? 999)
   );
+  const bancoSelecionado =
+    prazoNum <= 6
+      ? bancosOrdenados[0]
+      : prazoNum <= 12
+        ? bancosOrdenados[1]
+        : bancosOrdenados[2];
 
 
 
@@ -161,11 +170,11 @@ export default function BancosParceiros() {
 
         {/* TÍTULO */}
         <h2 className="text-center text-xl font-semibold text-foreground mb-2">
-          Bancos Parceiros
+          Melhores ofertas de empréstimo
         </h2>
         <p className="text-center text-muted-foreground max-w-xl mx-auto mb-10 px-4">
-          Compare taxas, limites e prazos entre nossos bancos parceiros <br />
-          e enconre o crédito ideal para a sua realidade.
+          Escolha uma das opções abaixo com condições já aprovadas <br />
+          ou simule um valor personalizado para você.
         </p>
 
         {/* CARDS */}
@@ -258,7 +267,9 @@ export default function BancosParceiros() {
             </div>
           ))}
         </div>
+
         {/* SIMULADOR */}
+
         <div className="max-w-2xl mx-auto px-6 pb-12">
           <div className="bg-white p-6 rounded-2xl shadow-md border border-pink-100">
             <div className="text-center mb-4">
@@ -266,13 +277,18 @@ export default function BancosParceiros() {
                 Simulação
               </h3>
               <h2 className="text-lg font-semibold text-gray-800 mt-1">
-                Simule seu empréstimo
+                Simulação personalizada
               </h2>
             </div>
             <p className="text-sm text-gray-500 mt-1 mb-4">
-              Taxa baseada nas melhores condições disponíveis
+              Taxa automática baseada no prazo selecionado
             </p>
-
+            <div className="bg-primary/10 border border-primary/20 p-3 rounded-lg mb-3 text-center">
+              <p className="text-xs text-primary">Banco selecionado</p>
+              <p className="text-sm font-semibold text-foreground">
+                {bancoSelecionado?.name || "Banco parceiro"}
+              </p>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
               <div>
                 <label className="text-sm text-muted-foreground mb-1 block">
@@ -311,7 +327,6 @@ export default function BancosParceiros() {
                   <option value="6">6 meses</option>
                   <option value="12">12 meses</option>
                   <option value="18">18 meses</option>
-                  <option value="24">24 meses</option>
                 </select>
               </div>
               <div>
@@ -323,9 +338,9 @@ export default function BancosParceiros() {
 
                   className="w-full border border-input rounded-lg px-3 py-2 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
-                  <option value="2.5">2.5%</option>
-                  <option value="2.8">2.8%</option>
-                  <option value="3.1">3.1%</option>
+                  <option value="2.5">2%</option>
+                  <option value="2.8">2.5%</option>
+                  <option value="3.1">3%</option>
                 </select>
               </div>
             </div>
@@ -379,6 +394,7 @@ export default function BancosParceiros() {
                       prazo: prazoNum,
                       parcela: parcela,
                       status: "Em análise",
+                      bank_name: bancoSelecionado?.name,
                     },
                   ]);
 
@@ -430,40 +446,44 @@ export default function BancosParceiros() {
             Você ainda não fez nenhuma solicitação.
           </p>
         ) : (
-          historico.slice(0, 1).map((item) => (
+          historico.slice(0, 3).map((item) => (
+
             <div
               key={item.id}
-              className="bg-zinc-50 p-4 rounded-xl shadow-md mb-3 border border-zinc-200"
+              className="p-4 mb-2 rounded-xl border border-border bg-card/50 backdrop-blur-sm hover:bg-card transition-all duration-200"
             >
-              <p className="text-card-foreground text-sm">
-                <strong>Nome:</strong> {item.user_name}
-              </p>
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <p className="text-sm font-semibold text-foreground">
+                    {item.bank_name || "Banco parceiro"}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {new Date(item.created_at).toLocaleDateString("pt-BR")}
+                  </p>
+                </div>
 
-              <p className="text-card-foreground text-sm">
-                <strong>Valor:</strong>{" "}
-                {new Intl.NumberFormat("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                }).format(item.valor)}
-              </p>
+                <span className={`
+    text-xs font-medium px-2 py-1 rounded-full
+    ${item.status === "Em análise"
+                    ? "bg-yellow-100 text-yellow-700"
+                    : "bg-green-100 text-green-700"}
+  `}>
+                  {item.status}
+                </span>
+              </div>
 
-              <p className="text-card-foreground text-sm">
-                <strong>Prazo:</strong> {item.prazo} meses
-              </p>
+              <div className="flex justify-between items-center">
+                <p className="text-sm text-muted-foreground">
+                  {item.prazo} meses
+                </p>
 
-              <p className="text-card-foreground text-sm">
-                <strong>Status:</strong> {item.status}
-              </p>
-
-              <p className="text-xs text-muted-foreground">
-                {new Date(item.created_at).toLocaleString("pt-BR", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </p>
+                <p className="text-base font-semibold text-foreground">
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(item.valor)}
+                </p>
+              </div>
             </div>
           ))
         )}

@@ -31,17 +31,25 @@ export function ScoreTipsCard() {
         .eq("user_id", user.id)
         .not("completed_at", "is", null);
 
-      let renda = false, luz = false, internet = false, pix = false;
+      let renda = false, luz = false, internet = false, pix = false, cursoProof = false;
 
       if (proofs) {
-        renda = proofs.some((p) => p.type === "income");
+        renda = proofs.some(
+          (p) =>
+            p.title &&
+            (p.title.toLowerCase().includes("renda") ||
+             p.title.toLowerCase().includes("comprovante") ||
+             p.title.toLowerCase().includes("holerite") ||
+             p.title.toLowerCase().includes("salário") ||
+             p.title.toLowerCase().includes("salario"))
+        );
+
         pix = proofs.some(
-          (p) => p.type === "income" && p.title && p.title.toLowerCase().includes("pix")
+          (p) => p.title && p.title.toLowerCase().includes("pix")
         );
 
         luz = proofs.some(
           (p) =>
-            p.type === "bill" &&
             p.title &&
             (p.title.toLowerCase().includes("luz") ||
               p.title.toLowerCase().includes("energia") ||
@@ -53,7 +61,6 @@ export function ScoreTipsCard() {
 
         internet = proofs.some(
           (p) =>
-            p.type === "bill" &&
             p.title &&
             (p.title.toLowerCase().includes("internet") ||
               p.title.toLowerCase().includes("claro") ||
@@ -62,12 +69,21 @@ export function ScoreTipsCard() {
               p.title.toLowerCase().includes("oi") ||
               p.title.toLowerCase().includes("wifi"))
         );
+
+        cursoProof = proofs.some(
+          (p) =>
+            p.title &&
+            (p.title.toLowerCase().includes("curso") ||
+              p.title.toLowerCase().includes("gestão") ||
+              p.title.toLowerCase().includes("gestao") ||
+              p.title.toLowerCase().includes("financeira"))
+        );
       }
 
       setTipsStatus({
-        renda,
+        renda: renda || proofs?.some((p) => p.type === "income" && !p.title?.toLowerCase().includes("pix")),
         luz,
-        curso: coursesCount !== null && coursesCount > 0,
+        curso: (coursesCount !== null && coursesCount > 0) || cursoProof,
         internet,
         pix,
       });
