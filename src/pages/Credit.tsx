@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import supabase from "../utils/supabase";
 import { useAuth } from "../context/AuthContext";
 import { DashboardLayout } from "@/components/layouts/DashboardLayout";
+import nubankLogo from "@/assets/banks/nubank.svg";
+import interLogo from "@/assets/banks/inter.svg";
+import caixaLogo from "@/assets/banks/caixa.svg";
 
 
 
@@ -190,15 +193,21 @@ export default function BancosParceiros() {
                 }`}
             >
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-xl text-primary">
-                  {banco.name?.includes("Caixa")
-                    ? "🏦"
-                    : banco.name?.includes("Inter")
-                      ? "💳"
-                      : banco.name?.includes("Nubank")
-                        ? "🟣"
-                        : "🏦"}
-                </span>
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+  <img
+    src={
+      banco.name?.includes("Caixa")
+        ? caixaLogo
+        : banco.name?.includes("Inter")
+        ? interLogo
+        : banco.name?.includes("Nubank")
+        ? nubankLogo
+        : caixaLogo
+    }
+    alt={banco.name}
+    className="w-7 h-7 object-contain"
+  />
+</div>
                 <div className="flex items-center gap-2">
                   <h3 className="text-base font-semibold text-card-foreground flex items-center gap-2">
                     {banco.name}
@@ -455,16 +464,21 @@ export default function BancosParceiros() {
             >
               <div className="flex items-center gap-3">
 
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                  {item.bank_name?.includes("Caixa")
-                    ? "🏦"
-                    : item.bank_name?.includes("Inter")
-                      ? "💳"
-                      : item.bank_name?.includes("Nubank")
-                        ? "🟣"
-                        : "🏦"}
-                </div>
-
+                <div className="w-10 h-10 rounded-lg bg-white border border-border flex items-center justify-center">
+  <img
+    src={
+      item.bank_name?.includes("Caixa")
+        ? caixaLogo
+        : item.bank_name?.includes("Inter")
+        ? interLogo
+        : item.bank_name?.includes("Nubank")
+        ? nubankLogo
+        : caixaLogo
+    }
+    alt={item.bank_name}
+    className="w-5 h-5 object-contain"
+  />
+</div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
                     <div>
@@ -472,12 +486,17 @@ export default function BancosParceiros() {
                         {item.bank_name || "Banco parceiro"}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {new Date(item.created_at).toLocaleDateString("pt-BR")}
+                        {new Date(item.created_at).toLocaleString("pt-BR", {
+  day: "2-digit",
+  month: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+})}
                       </p>
                     </div>
 
                     <span className={`
-          text-xs font-medium px-3 py-1 rounded-full
+          text-xs font-medium px-2 py-1 text-[11px] rounded-full
           ${item.status === "Em análise"
                         ? "bg-yellow-100 text-yellow-700"
                         : "bg-green-100 text-green-700"}
@@ -487,9 +506,13 @@ export default function BancosParceiros() {
                   </div>
 
                   <div className="flex justify-between items-center">
-                    <p className="text-xs text-muted-foreground">
-                      {item.prazo} meses
-                    </p>
+                   <p className="text-xs text-muted-foreground">
+  {item.prazo}x de{" "}
+  {new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(item.valor / item.prazo)}
+</p>
 
                     <p className="text-lg font-bold text-foreground">
                       {new Intl.NumberFormat("pt-BR", {
