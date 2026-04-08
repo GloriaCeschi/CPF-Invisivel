@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import supabase from "../utils/supabase";
 import { useAuth } from "../context/AuthContext";
 import { DashboardLayout } from "@/components/layouts/DashboardLayout";
+import nubankLogo from "@/assets/banks/nubank.svg";
+import interLogo from "@/assets/banks/inter.svg";
+import caixaLogo from "@/assets/banks/caixa.svg";
 
 
 
@@ -170,11 +173,11 @@ export default function BancosParceiros() {
 
         {/* TÍTULO */}
         <h2 className="text-center text-xl font-semibold text-foreground mb-2">
-          Melhores ofertas de empréstimo
+          Ofertas pré-aprovadas para você
         </h2>
         <p className="text-center text-muted-foreground max-w-xl mx-auto mb-10 px-4">
-          Escolha uma das opções abaixo com condições já aprovadas <br />
-          ou simule um valor personalizado para você.
+          Você já possui limites pré-aprovados nos bancos abaixo.
+          Escolha uma oferta ou simule um valor personalizado.
         </p>
 
         {/* CARDS */}
@@ -190,23 +193,27 @@ export default function BancosParceiros() {
                 }`}
             >
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-xl text-primary">
-                  {banco.name?.includes("Caixa")
-                    ? "🏦"
-                    : banco.name?.includes("Inter")
-                      ? "💳"
-                      : banco.name?.includes("Nubank")
-                        ? "🟣"
-                        : "🏦"}
-                </span>
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+  <img
+    src={
+      banco.name?.includes("Caixa")
+        ? caixaLogo
+        : banco.name?.includes("Inter")
+        ? interLogo
+        : banco.name?.includes("Nubank")
+        ? nubankLogo
+        : caixaLogo
+    }
+    alt={banco.name}
+    className="w-7 h-7 object-contain"
+  />
+</div>
                 <div className="flex items-center gap-2">
                   <h3 className="text-base font-semibold text-card-foreground flex items-center gap-2">
                     {banco.name}
-                    {banco.id === melhorBanco?.id && (
-                      <span className="bg-primary/10 text-primary text-xs px-3 py-1 rounded-full font-semibold whitespace-nowrap">
-                        MELHOR OPÇÃO
-                      </span>
-                    )}
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full shadow-sm font-semibold whitespace-nowrap">
+                      PRÉ-APROVADO ✔
+                    </span>
                   </h3>
                 </div>
               </div>
@@ -260,9 +267,9 @@ export default function BancosParceiros() {
               <button
 
                 onClick={() => solicitar(banco.name || banco.nome)}
-                className="w-full mt-4 bg-primary text-white py-2.5 rounded-xl font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition"
+                className="w-full mt-4 bg-primary text-white py-2.5 rounded-none font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                Solicitar Empréstimo
+                Contratar agora
               </button>
             </div>
           ))}
@@ -347,14 +354,14 @@ export default function BancosParceiros() {
                 </select>
               </div>
             </div>
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-col gap-4">
 
-              <div className="bg-gray-50 p-4 rounded-xl">
-                <span className="text-xs text-muted-foreground">
+              <div className="flex-1 bg-primary/5 p-5 rounded-xl border border-primary/10 text-center">
+                <span className="text-xs text-muted-foreground uppercase tracking-wide">
                   Parcela estimada
                 </span>
 
-                <p className="text-3xl font-bold text-foreground">
+                <p className="text-4xl font-bold text-primary tracking-tight transition-all duration-300">
                   {new Intl.NumberFormat("pt-BR", {
                     style: "currency",
                     currency: "BRL",
@@ -375,7 +382,7 @@ export default function BancosParceiros() {
 
               <div className="flex items-center gap-3">
                 <p className="text-sm text-green-600 font-medium">
-                  ✔ Pré-aprovado
+                  PRÉ-APROVADO ✔
                 </p>
               </div>
 
@@ -423,7 +430,7 @@ export default function BancosParceiros() {
                   });
                 }}
 
-                className="bg-primary text-white border-none py-2.5 px-6 rounded-lg cursor-pointer font-medium text-sm transition-all duration-200 hover:brightness-95 active:scale-95 active:brightness-90"
+                className="w-full bg-primary text-white py-3 rounded-xl font-semibold text-base shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all duration-200"
               >
                 {loadingBtn ? "Enviando..." : "Confirmar Solicitação"}
               </button>
@@ -439,7 +446,7 @@ export default function BancosParceiros() {
       </div>
 
       {/* HISTÓRICO */}
-      <div className="max-w-2xl mx-auto px-6 pb-12">
+      <div className="max-w-2xl mx-auto px-6 pb-16">
         <h3 className="text-lg font-semibold mb-4 text-foreground">
           Histórico de Solicitações
         </h3>
@@ -453,39 +460,69 @@ export default function BancosParceiros() {
 
             <div
               key={item.id}
-              className="p-4 mb-2 rounded-xl border border-border bg-card/50 backdrop-blur-sm hover:bg-card transition-all duration-200"
+              className="p-4 mb-2 rounded-xl border-b border-border last:border-b-0 bg-transparent hover:bg-card hover:shadow-md hover:-translate-y-[2px] transition-all duration-200"
             >
-              <div className="flex items-center justify-between mb-2">
-                <div>
-                  <p className="text-sm font-semibold text-foreground">
-                    {item.bank_name || "Banco parceiro"}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {new Date(item.created_at).toLocaleDateString("pt-BR")}
-                  </p>
+              <div className="flex items-center gap-3">
+
+                <div className="w-10 h-10 rounded-lg bg-white border border-border flex items-center justify-center">
+  <img
+    src={
+      item.bank_name?.includes("Caixa")
+        ? caixaLogo
+        : item.bank_name?.includes("Inter")
+        ? interLogo
+        : item.bank_name?.includes("Nubank")
+        ? nubankLogo
+        : caixaLogo
+    }
+    alt={item.bank_name}
+    className="w-5 h-5 object-contain"
+  />
+</div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-1">
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">
+                        {item.bank_name || "Banco parceiro"}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(item.created_at).toLocaleString("pt-BR", {
+  day: "2-digit",
+  month: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+})}
+                      </p>
+                    </div>
+
+                    <span className={`
+          text-xs font-medium px-2 py-1 text-[11px] rounded-full
+          ${item.status === "Em análise"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-green-100 text-green-700"}
+        `}>
+                      {item.status}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                   <p className="text-xs text-muted-foreground">
+  {item.prazo}x de{" "}
+  {new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(item.valor / item.prazo)}
+</p>
+
+                    <p className="text-lg font-bold text-foreground">
+                      {new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(item.valor)}
+                    </p>
+                  </div>
                 </div>
 
-                <span className={`
-    text-xs font-medium px-2 py-1 rounded-full
-    ${item.status === "Em análise"
-                    ? "bg-yellow-100 text-yellow-700"
-                    : "bg-green-100 text-green-700"}
-  `}>
-                  {item.status}
-                </span>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <p className="text-sm text-muted-foreground">
-                  {item.prazo} meses
-                </p>
-
-                <p className="text-base font-semibold text-foreground">
-                  {new Intl.NumberFormat("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  }).format(item.valor)}
-                </p>
               </div>
             </div>
           ))
