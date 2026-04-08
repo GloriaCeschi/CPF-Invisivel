@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, FileText, HelpCircle, Target } from "lucide-react";
 import supabase from "@/utils/supabase";
@@ -38,8 +39,41 @@ interface Activity {
 
 export const ActivityHistory = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // NOVO: Verificação de perfil
+  useEffect(() => {
+    const checkProfile = async () => {
+      if (!user?.id) return;
+
+      // evita loop se já estiver na página de perfil
+      if (window.location.pathname === "/perfil") return;
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (error || !data) {
+        console.log("Perfil não encontrado");
+        navigate("/profile");
+        return;
+      }
+
+      const isProfileComplete =
+        data.name && data.email; // ajuste se quiser
+
+      if (!isProfileComplete) {
+        console.log("Perfil incompleto");
+        navigate("/perfil");
+      }
+    };
+
+    checkProfile();
+  }, [user, navigate]);
 
   useEffect(() => {
     if (user?.id) {
