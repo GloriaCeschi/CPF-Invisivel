@@ -27,6 +27,22 @@ export function VideoModal({ open, onOpenChange, videoUrl, title, courseId, onCo
 
   useEffect(() => {
     if (open && videoId) {
+      // Limpar player anterior se existir
+      if (playerRef.current) {
+        try {
+          playerRef.current.destroy();
+        } catch (e) {
+          console.error('Erro ao destruir player anterior:', e);
+        }
+        playerRef.current = null;
+      }
+
+      // Limpar elemento do DOM
+      const playerElement = document.getElementById('youtube-player');
+      if (playerElement) {
+        playerElement.innerHTML = '';
+      }
+
       // Load YouTube API if not loaded
       if (!(window as any).YT) {
         const tag = document.createElement('script');
@@ -37,29 +53,48 @@ export function VideoModal({ open, onOpenChange, videoUrl, title, courseId, onCo
 
       // Initialize player when API is ready
       const initPlayer = () => {
-        playerRef.current = new (window as any).YT.Player('youtube-player', {
-          videoId: videoId,
-          playerVars: {
-            autoplay: 1,
-            rel: 0,
-          },
-          events: {
-            onStateChange: onPlayerStateChange,
-            onReady: onPlayerReady,
-          },
-        });
+        try {
+          if (playerRef.current) {
+            playerRef.current.destroy();
+          }
+          
+          playerRef.current = new (window as any).YT.Player('youtube-player', {
+            videoId: videoId,
+            playerVars: {
+              autoplay: 1,
+              rel: 0,
+            },
+            events: {
+              onStateChange: onPlayerStateChange,
+              onReady: onPlayerReady,
+            },
+          });
+        } catch (e) {
+          console.error('Erro ao inicializar player:', e);
+        }
       };
 
-      if ((window as any).YT && (window as any).YT.Player) {
-        initPlayer();
-      } else {
-        (window as any).onYouTubeIframeAPIReady = initPlayer;
-      }
+      // Adicionar pequeno delay para garantir que o DOM está pronto
+      const timer = setTimeout(() => {
+        if ((window as any).YT && (window as any).YT.Player) {
+          initPlayer();
+        } else {
+          (window as any).onYouTubeIframeAPIReady = initPlayer;
+        }
+      }, 100);
+
+      return () => {
+        clearTimeout(timer);
+      };
     }
 
     return () => {
       if (playerRef.current) {
-        playerRef.current.destroy();
+        try {
+          playerRef.current.destroy();
+        } catch (e) {
+          console.error('Erro ao destruir player:', e);
+        }
         playerRef.current = null;
       }
     };
@@ -94,7 +129,7 @@ export function VideoModal({ open, onOpenChange, videoUrl, title, courseId, onCo
       const { error } = await supabase.rpc("complete_course", {
         uid: user.id,
         p_course_id: courseId,
-        pts: 25,
+        pts: 45,
       });
       
       if (error) {

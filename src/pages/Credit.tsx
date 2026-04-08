@@ -81,6 +81,8 @@ export default function BancosParceiros() {
     if (user?.id) {
       syncCredit(user.id);
 
+      buscarHistorico();
+
     }
   }, [user]);
 
@@ -141,8 +143,15 @@ export default function BancosParceiros() {
       : valorNum / prazoNum;
 
   const bancosOrdenados = [...banks].sort(
+
     (a, b) => (a.interest ?? 999) - (b.interest ?? 999)
   );
+  const bancoSelecionado =
+    prazoNum <= 6
+      ? bancosOrdenados[0]
+      : prazoNum <= 12
+        ? bancosOrdenados[1]
+        : bancosOrdenados[2];
 
 
 
@@ -161,11 +170,11 @@ export default function BancosParceiros() {
 
         {/* TÍTULO */}
         <h2 className="text-center text-xl font-semibold text-foreground mb-2">
-          Bancos Parceiros
+          Ofertas pré-aprovadas para você
         </h2>
         <p className="text-center text-muted-foreground max-w-xl mx-auto mb-10 px-4">
-          Compare taxas, limites e prazos entre nossos bancos parceiros <br />
-          e enconre o crédito ideal para a sua realidade.
+          Você já possui limites pré-aprovados nos bancos abaixo.
+          Escolha uma oferta ou simule um valor personalizado.
         </p>
 
         {/* CARDS */}
@@ -193,11 +202,9 @@ export default function BancosParceiros() {
                 <div className="flex items-center gap-2">
                   <h3 className="text-base font-semibold text-card-foreground flex items-center gap-2">
                     {banco.name}
-                    {banco.id === melhorBanco?.id && (
-                      <span className="bg-primary/10 text-primary text-xs px-3 py-1 rounded-full font-semibold whitespace-nowrap">
-                        MELHOR OPÇÃO
-                      </span>
-                    )}
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full shadow-sm font-semibold whitespace-nowrap">
+                      PRÉ-APROVADO ✔
+                    </span>
                   </h3>
                 </div>
               </div>
@@ -251,14 +258,16 @@ export default function BancosParceiros() {
               <button
 
                 onClick={() => solicitar(banco.name || banco.nome)}
-                className="w-full mt-4 bg-primary text-white py-2.5 rounded-xl font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition"
+                className="w-full mt-4 bg-primary text-white py-2.5 rounded-none font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                Solicitar Empréstimo
+                Contratar agora
               </button>
             </div>
           ))}
         </div>
+
         {/* SIMULADOR */}
+
         <div className="max-w-2xl mx-auto px-6 pb-12">
           <div className="bg-white p-6 rounded-2xl shadow-md border border-pink-100">
             <div className="text-center mb-4">
@@ -266,13 +275,18 @@ export default function BancosParceiros() {
                 Simulação
               </h3>
               <h2 className="text-lg font-semibold text-gray-800 mt-1">
-                Simule seu empréstimo
+                Simulação personalizada
               </h2>
             </div>
             <p className="text-sm text-gray-500 mt-1 mb-4">
-              Taxa baseada nas melhores condições disponíveis
+              Taxa automática baseada no prazo selecionado
             </p>
-
+            <div className="bg-primary/10 border border-primary/20 p-3 rounded-lg mb-3 text-center">
+              <p className="text-xs text-primary">Banco selecionado</p>
+              <p className="text-sm font-semibold text-foreground">
+                {bancoSelecionado?.name || "Banco parceiro"}
+              </p>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
               <div>
                 <label className="text-sm text-muted-foreground mb-1 block">
@@ -285,8 +299,11 @@ export default function BancosParceiros() {
                     currency: "BRL",
                   }).format(Number(valor) / 100)}
                   onChange={(e) => {
-                    const numbers = e.target.value.replace(/\D/g, "").slice(0, 15);
-                    setValor(numbers);
+                    const numbers = e.target.value.replace(/\D/g, "");
+                    // Limita a 6 dígitos inteiros (999.999) + 2 decimais = 8 dígitos no total
+                    if (numbers.length <= 8) {
+                      setValor(numbers);
+                    }
                   }}
                   className="w-full border border-input rounded-lg px-3 py-2 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
@@ -311,7 +328,6 @@ export default function BancosParceiros() {
                   <option value="6">6 meses</option>
                   <option value="12">12 meses</option>
                   <option value="18">18 meses</option>
-                  <option value="24">24 meses</option>
                 </select>
               </div>
               <div>
@@ -323,20 +339,20 @@ export default function BancosParceiros() {
 
                   className="w-full border border-input rounded-lg px-3 py-2 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
-                  <option value="2.5">2.5%</option>
-                  <option value="2.8">2.8%</option>
-                  <option value="3.1">3.1%</option>
+                  <option value="2.5">2%</option>
+                  <option value="2.8">2.5%</option>
+                  <option value="3.1">3%</option>
                 </select>
               </div>
             </div>
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-col gap-4">
 
-              <div className="bg-gray-50 p-4 rounded-xl">
-                <span className="text-xs text-muted-foreground">
+              <div className="flex-1 bg-primary/5 p-5 rounded-xl border border-primary/10 text-center">
+                <span className="text-xs text-muted-foreground uppercase tracking-wide">
                   Parcela estimada
                 </span>
 
-                <p className="text-3xl font-bold text-foreground">
+                <p className="text-4xl font-bold text-primary tracking-tight transition-all duration-300">
                   {new Intl.NumberFormat("pt-BR", {
                     style: "currency",
                     currency: "BRL",
@@ -357,7 +373,7 @@ export default function BancosParceiros() {
 
               <div className="flex items-center gap-3">
                 <p className="text-sm text-green-600 font-medium">
-                  ✔ Pré-aprovado
+                  PRÉ-APROVADO ✔
                 </p>
               </div>
 
@@ -379,6 +395,7 @@ export default function BancosParceiros() {
                       prazo: prazoNum,
                       parcela: parcela,
                       status: "Em análise",
+                      bank_name: bancoSelecionado?.name,
                     },
                   ]);
 
@@ -404,7 +421,7 @@ export default function BancosParceiros() {
                   });
                 }}
 
-                className="bg-primary text-white border-none py-2.5 px-6 rounded-lg cursor-pointer font-medium text-sm transition-all duration-200 hover:brightness-95 active:scale-95 active:brightness-90"
+                className="w-full bg-primary text-white py-3 rounded-xl font-semibold text-base shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all duration-200"
               >
                 {loadingBtn ? "Enviando..." : "Confirmar Solicitação"}
               </button>
@@ -420,7 +437,7 @@ export default function BancosParceiros() {
       </div>
 
       {/* HISTÓRICO */}
-      <div className="max-w-2xl mx-auto px-6 pb-12">
+      <div className="max-w-2xl mx-auto px-6 pb-16">
         <h3 className="text-lg font-semibold mb-4 text-foreground">
           Histórico de Solicitações
         </h3>
@@ -430,40 +447,60 @@ export default function BancosParceiros() {
             Você ainda não fez nenhuma solicitação.
           </p>
         ) : (
-          historico.slice(0, 1).map((item) => (
+          historico.slice(0, 3).map((item) => (
+
             <div
               key={item.id}
-              className="bg-zinc-50 p-4 rounded-xl shadow-md mb-3 border border-zinc-200"
+              className="p-4 mb-2 rounded-xl border-b border-border last:border-b-0 bg-transparent hover:bg-card hover:shadow-md hover:-translate-y-[2px] transition-all duration-200"
             >
-              <p className="text-card-foreground text-sm">
-                <strong>Nome:</strong> {item.user_name}
-              </p>
+              <div className="flex items-center gap-3">
 
-              <p className="text-card-foreground text-sm">
-                <strong>Valor:</strong>{" "}
-                {new Intl.NumberFormat("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                }).format(item.valor)}
-              </p>
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                  {item.bank_name?.includes("Caixa")
+                    ? "🏦"
+                    : item.bank_name?.includes("Inter")
+                      ? "💳"
+                      : item.bank_name?.includes("Nubank")
+                        ? "🟣"
+                        : "🏦"}
+                </div>
 
-              <p className="text-card-foreground text-sm">
-                <strong>Prazo:</strong> {item.prazo} meses
-              </p>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-1">
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">
+                        {item.bank_name || "Banco parceiro"}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(item.created_at).toLocaleDateString("pt-BR")}
+                      </p>
+                    </div>
 
-              <p className="text-card-foreground text-sm">
-                <strong>Status:</strong> {item.status}
-              </p>
+                    <span className={`
+          text-xs font-medium px-3 py-1 rounded-full
+          ${item.status === "Em análise"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-green-100 text-green-700"}
+        `}>
+                      {item.status}
+                    </span>
+                  </div>
 
-              <p className="text-xs text-muted-foreground">
-                {new Date(item.created_at).toLocaleString("pt-BR", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </p>
+                  <div className="flex justify-between items-center">
+                    <p className="text-xs text-muted-foreground">
+                      {item.prazo} meses
+                    </p>
+
+                    <p className="text-lg font-bold text-foreground">
+                      {new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(item.valor)}
+                    </p>
+                  </div>
+                </div>
+
+              </div>
             </div>
           ))
         )}
