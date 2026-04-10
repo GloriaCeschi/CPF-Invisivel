@@ -1,6 +1,5 @@
 import { ScoreGauge } from "@/components/ScoreGauge";
 import { ScoreEvolutionChart } from "@/components/ScoreEvolutionChart";
-import { ScoreFactors } from "@/components/ScoreFactors";
 import { ActionButtons } from "@/components/ActionButtons";
 import { DashboardLayout } from "@/components/layouts/DashboardLayout";
 import { useCallback, useEffect, useState } from "react";
@@ -122,23 +121,24 @@ const Score = () => {
 
         <MonthlySummary totalIncome={totalIncome} totalExpenses={totalExpenses} />
 
-        {/* Factors */}
-        <ScoreFactors />
+
       </div>
 
       <div className="min-h-screen">
-        <main className="container mx-auto px-4 py-6 space-y-8 max-w-4xl">
+        <main className="container mx-auto px-4 py-6 space-y-8 max-w-6xl">
           {/* Pendentes */}
           <PendingSection bills={bills} onAddBill={() => setPendingModalOpen(true)} />
 
-          {/* Renda */}
-          <div id="renda">
-            <IncomeSection incomes={incomes} onRefresh={fetchData} />
-          </div>
+          <div className="grid gap-8 lg:grid-cols-2 items-start">
+            {/* Renda */}
+            <div id="renda">
+              <IncomeSection incomes={incomes} onRefresh={fetchData} />
+            </div>
 
-          {/* Contas */}
-          <div id="contas">
-            <BillSection bills={monthlyBills} onRefresh={fetchData} />
+            {/* Contas */}
+            <div id="contas">
+              <BillSection bills={monthlyBills} onRefresh={fetchData} />
+            </div>
           </div>
         </main>
 

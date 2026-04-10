@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { UserPlus, LogIn, Eye, EyeOff } from "lucide-react";
+import { UserPlus, LogIn, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -130,16 +130,19 @@ export default function Auth() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4 relative">
+      <div className="absolute top-4 left-4 md:top-8 md:left-8">
+        <Button variant="ghost" onClick={() => nav("/")} className="gap-2 text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="h-4 w-4" />
+          Voltar
+        </Button>
+      </div>
       <Card className="w-full max-w-md animate-fade-in">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-6 flex items-center justify-center gap-2">
-            <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
-              <Eye className="w-6 h-6 text-primary-foreground" />
+          <div className="mx-auto mb-6 flex items-center justify-center">
+            <div className="w-16 h-16 rounded-3xl bg-primary flex items-center justify-center">
+              <span className="font-display font-bold text-3xl text-white tracking-tight">RV</span>
             </div>
-            <span className="font-display font-bold text-2xl">
-              <span className="text-gray-900">Renda</span><span className="text-primary">Visível</span>
-            </span>
           </div>
 
           {login ? (

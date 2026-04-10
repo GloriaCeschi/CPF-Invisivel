@@ -72,8 +72,10 @@ const Gamificacao = () => {
               <ScoreContribution />
             </div>
             <LevelMap />
-            <CourseList />
-            <ActivityHistory />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <CourseList />
+              <ActivityHistory />
+            </div>
           </main>
         </div>
       </div>

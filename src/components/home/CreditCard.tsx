@@ -63,7 +63,7 @@ export function CreditAreaCard() {
 
   return (
     <Card 
-      className="card-hover cursor-pointer transition-all hover:border-primary/50" 
+      className="card-hover cursor-pointer transition-all hover:border-primary/50 h-full flex flex-col" 
       onClick={() => navigate("/credit")}
     >
       <CardHeader className="pb-3 flex flex-row items-center justify-between space-y-0 relative z-10">
