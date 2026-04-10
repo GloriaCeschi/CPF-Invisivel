@@ -308,7 +308,7 @@ async function enviarMensagem() {
           <header className="h-14 flex items-center justify-between border-b px-4 bg-card">
             <div className="flex items-center gap-2">
               <SidebarTrigger />
-              <span className="text-sm">
+              <span className="text-sm text-customBlue">
                 Olá, <strong>{prof?.name || "Usuário"}</strong> 👋
               </span>
             </div>
