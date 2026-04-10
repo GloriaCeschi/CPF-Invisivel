@@ -28,6 +28,35 @@ type Profile = {
   photo_url?: string,
 };
 
+const formatBirthDateInput = (value: string) => {
+  const numbers = value.replace(/\D/g, '').slice(0, 8);
+  if (numbers.length >= 5) {
+    return `${numbers.slice(0, 2)}/${numbers.slice(2, 4)}/${numbers.slice(4)}`;
+  } else if (numbers.length >= 3) {
+    return `${numbers.slice(0, 2)}/${numbers.slice(2)}`;
+  }
+  return numbers;
+};
+
+const formatDateToDDMMYYYY = (dateStr?: string) => {
+  if (!dateStr) return "";
+  if (dateStr.includes('/')) return dateStr;
+  const parts = dateStr.split('T')[0].split('-');
+  if (parts.length === 3) {
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+  return dateStr;
+};
+
+const formatDateToYYYYMMDD = (dateStr?: string) => {
+  if (!dateStr) return "";
+  const parts = dateStr.split('/');
+  if (parts.length === 3) {
+    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+  }
+  return dateStr;
+};
+
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
@@ -45,7 +74,6 @@ const Profile = () => {
 
   async function syncProfile(user_id: string): Promise<void> {
     const { data, error } = await supabase.from('profiles').select('*').eq("user_id", user_id).maybeSingle();
-    // order('created_at', {ascending: false})
 
     if (error) {
       toast.error(error.message)
@@ -53,7 +81,11 @@ const Profile = () => {
     }
 
     if (data) {
-      setProf(data);
+      const formattedData = { ...data };
+      if (formattedData.birth) {
+        formattedData.birth = formatDateToDDMMYYYY(formattedData.birth);
+      }
+      setProf(formattedData);
       setPhotoUrl(data.photo_url);
     }
 
@@ -64,7 +96,56 @@ const Profile = () => {
   async function handleProfile() {
     if (!user) return;
     
-    const data = { ...prof, user_id: user.id };
+    if (prof.name && prof.name.length > 50) {
+      toast.error("Nome deve ter no máximo 50 caracteres.");
+      return;
+    }
+
+    if (prof.age && (isNaN(Number(prof.age)) || Number(prof.age) < 18)) {
+      toast.error("Você deve ter 18 anos ou mais.");
+      return;
+    }
+
+    if (prof.cpf && prof.cpf.replace(/\D/g, '').length !== 11) {
+      toast.error("CPF deve conter exatamente 11 dígitos.");
+      return;
+    }
+
+    if (prof.city && prof.city.length > 50) {
+      toast.error("Cidade deve ter no máximo 50 caracteres.");
+      return;
+    }
+
+    if (prof.birth) {
+      const birthParts = prof.birth.split('/');
+      if (birthParts.length === 3) {
+        const day = parseInt(birthParts[0]);
+        const month = parseInt(birthParts[1]);
+        const year = parseInt(birthParts[2]);
+
+        const birthDateObj = new Date(year, month - 1, day);
+        const today = new Date();
+        let calculatedAge = today.getFullYear() - birthDateObj.getFullYear();
+        const m = today.getMonth() - birthDateObj.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDateObj.getDate())) {
+          calculatedAge--;
+        }
+
+        if (calculatedAge < 18) {
+          toast.error("A data de nascimento deve corresponder a 18 anos ou mais.");
+          return;
+        }
+      } else {
+        toast.error("Formato de data de nascimento inválido (use DD/MM/AAAA).");
+        return;
+      }
+    }
+
+    const data = { 
+      ...prof, 
+      user_id: user.id,
+      ...(prof.birth ? { birth: formatDateToYYYYMMDD(prof.birth) } : {})
+    };
 
     const { error } = await supabase.from('profiles').upsert(data, { onConflict: "user_id" });
 
@@ -248,8 +329,9 @@ const Profile = () => {
                   <Input
                     id="name"
                     placeholder="Seu nome completo"
-                    value={prof.name}
-                    onChange={(e) => setProf({ ...prof, name: e.target.value })}
+                    maxLength={50}
+                    value={prof.name || ""}
+                    onChange={(e) => setProf({ ...prof, name: e.target.value.slice(0, 50) })}
                     disabled={!isEditing}
                   />
                 </div>
@@ -258,10 +340,11 @@ const Profile = () => {
                   <Label htmlFor="age">Idade</Label>
                   <Input
                     id="age"
-                    type="number"
+                    type="text"
                     placeholder="Ex: 25"
-                    value={prof.age}
-                    onChange={(e) => setProf({ ...prof, age: e.target.value })}
+                    maxLength={2}
+                    value={prof.age || ""}
+                    onChange={(e) => setProf({ ...prof, age: e.target.value.replace(/\D/g, '').slice(0, 2) })}
                     disabled={!isEditing}
                   />
                 </div>
@@ -270,9 +353,10 @@ const Profile = () => {
                   <Label htmlFor="cpf">CPF</Label>
                   <Input
                     id="cpf"
-                    placeholder="000.000.000-00"
-                    value={prof.cpf}
-                    onChange={(e) => setProf({ ...prof, cpf: e.target.value })}
+                    placeholder="00000000000"
+                    maxLength={11}
+                    value={prof.cpf || ""}
+                    onChange={(e) => setProf({ ...prof, cpf: e.target.value.replace(/\D/g, '').slice(0, 11) })}
                     disabled={!isEditing}
                   />
                 </div>
@@ -281,9 +365,11 @@ const Profile = () => {
                   <Label htmlFor="birth">Data de Nascimento</Label>
                   <Input
                     id="birth"
-                    type="date"
-                    value={prof.birth}
-                    onChange={(e) => setProf({ ...prof, birth: e.target.value })}
+                    type="text"
+                    placeholder="DD/MM/AAAA"
+                    maxLength={10}
+                    value={prof.birth || ""}
+                    onChange={(e) => setProf({ ...prof, birth: formatBirthDateInput(e.target.value) })}
                     disabled={!isEditing}
                   />
                 </div>
@@ -293,7 +379,7 @@ const Profile = () => {
                   <Input
                     id="phone"
                     placeholder="(00) 00000-0000"
-                    value={prof.phone}
+                    value={prof.phone || ""}
                     onChange={(e) => setProf({ ...prof, phone: e.target.value })}
                     disabled={!isEditing}
                   />
@@ -322,8 +408,9 @@ const Profile = () => {
                   <Input
                     id="city"
                     placeholder="Sua cidade"
-                    value={prof.city}
-                    onChange={(e) => setProf({ ...prof, city: e.target.value })}
+                    maxLength={50}
+                    value={prof.city || ""}
+                    onChange={(e) => setProf({ ...prof, city: e.target.value.slice(0, 50) })}
                     disabled={!isEditing}
                   />
                 </div>

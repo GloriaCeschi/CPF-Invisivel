@@ -25,8 +25,8 @@ export const PointsFilter = () => {
     <div className="rounded-2xl bg-card p-5 shadow-lg border border-border">
       <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Pontos Totais</h3>
       <div className="text-center">
-        <p className="text-4xl font-extrabold text-primary">{totalPoints}</p>
-        <p className="text-sm text-muted-foreground">pontos acumulados</p>
+        <p className="text-5xl font-extrabold text-primary">{totalPoints}</p>
+        <p className="text-base text-muted-foreground">pontos acumulados</p>
       </div>
     </div>
   );
