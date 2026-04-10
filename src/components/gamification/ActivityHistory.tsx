@@ -40,6 +40,7 @@ export const ActivityHistory = () => {
   const { user } = useAuth();
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     if (user?.id) {
@@ -96,7 +97,7 @@ export const ActivityHistory = () => {
     // Sort by date descending
     activitiesList.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-    setActivities(activitiesList.slice(0, 10)); // Show last 10
+    setActivities(activitiesList); 
     setLoading(false);
   };
 
@@ -113,18 +114,18 @@ export const ActivityHistory = () => {
   }
 
   return (
-    <div className="rounded-2xl bg-card p-5 shadow-lg border border-border">
+    <div className="rounded-2xl bg-card p-5 shadow-lg border border-border h-full flex flex-col">
       <h3 className="text-sm font-semibold text-muted-foreground mb-4 uppercase tracking-wide">
         Atividades Recentes
       </h3>
 
-      <div className="space-y-3">
+      <div className="space-y-3 flex-1 flex flex-col">
         {activities.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">
             Nenhuma atividade recente
           </p>
         ) : (
-          activities.map((act) => {
+          (showAll ? activities : activities.slice(0, 10)).map((act) => {
             const config = typeConfig[act.type];
             const Icon = config.icon;
 
@@ -152,6 +153,15 @@ export const ActivityHistory = () => {
               </div>
             );
           })
+        )}
+
+        {activities.length > 10 && (
+          <button
+            onClick={() => setShowAll(!showAll)}
+            className="w-full text-center text-sm font-semibold text-primary hover:underline mt-auto pt-4 cursor-pointer"
+          >
+            {showAll ? "Ver menos" : "Ver mais"}
+          </button>
         )}
       </div>
     </div>
