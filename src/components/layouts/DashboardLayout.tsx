@@ -23,6 +23,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const location = useLocation();
 
   const [chatOpen, setChatOpen] = useState(false);
+  const [showProactiveBadge, setShowProactiveBadge] = useState(false);
   const [mensagens, setMensagens] = useState<Mensagem[]>([
     {
   texto: "Olá! 👋 Sou o assistente do Renda Visível. Estou aqui pra te ajudar a melhorar seu score financeiro!\n\nSobre o que quer saber?\n\n📚 Cursos\n💳 Crédito\n📊 Jornada Financeira\n🎮 Gamificação",
@@ -42,6 +43,18 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   }, [mensagens]);
   const inputRef = useRef<HTMLInputElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (location.pathname === "/credit" && !chatOpen) {
+       timeout = setTimeout(() => {
+           setShowProactiveBadge(true);
+       }, 5000);
+    } else {
+       setShowProactiveBadge(false);
+    }
+    return () => clearTimeout(timeout);
+  }, [location.pathname, chatOpen]);
 
   useEffect(() => {
     async function loadProfile() {
@@ -362,9 +375,15 @@ async function enviarMensagem() {
             {children}
           </main>
 
+          {showProactiveBadge && !chatOpen && (
+             <div className="fixed bottom-24 right-4 bg-white shrink-0 rounded-xl p-3 shadow-xl border border-primary/20 animate-bounce z-50">
+               <p className="text-sm font-medium text-foreground">Posso te ajudar a achar a melhor taxa? 👇</p>
+             </div>
+          )}
+
           <button
-            onClick={() => setChatOpen(true)}
-            className="fixed bottom-6 right-6 w-14 h-14 bg-primary rounded-full flex items-center justify-center"
+            onClick={() => { setChatOpen(true); setShowProactiveBadge(false); }}
+            className="fixed bottom-6 right-6 w-14 h-14 bg-primary rounded-full flex items-center justify-center z-50 shadow-lg hover:scale-105 transition-transform"
           >
             <MessageCircle className="text-white" />
           </button>
