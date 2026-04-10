@@ -83,15 +83,15 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="p-4 border-b border-sidebar-border">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0">
+      <SidebarHeader className={collapsed ? "p-2 border-b border-sidebar-border" : "p-4 border-b border-sidebar-border"}>
+        <div className={`flex items-center ${collapsed ? 'justify-center w-full' : 'gap-3'}`}>
+          <div className={`${collapsed ? 'mx-auto' : ''} w-8 h-8 md:w-9 md:h-9 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0`}>
             <span className="text-primary-foreground font-bold text-sm">RV</span>
           </div>
           {!collapsed && (
-            <div>
-              <h2 className="font-bold text-base text-sidebar-foreground">Renda Visível</h2>
-              <p className="text-xs text-muted-foreground">Seu score alternativo</p>
+            <div className="overflow-hidden">
+              <h2 className="font-bold text-base text-sidebar-foreground truncate">Renda Visível</h2>
+              <p className="text-xs text-muted-foreground truncate">Seu score alternativo</p>
             </div>
           )}
         </div>
@@ -107,10 +107,10 @@ export function AppSidebar() {
                     <NavLink
                       to={item.url}
                       end
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
+                      className={`flex items-center ${collapsed ? 'justify-center p-0 mx-auto' : 'gap-3 px-3 py-2.5'} rounded-lg text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors`}
                       activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-semibold"
                     >
-                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      <item.icon className={`h-5 w-5 flex-shrink-0 ${collapsed ? 'mx-auto' : ''}`} />
                       {!collapsed && <span>{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
@@ -122,10 +122,10 @@ export function AppSidebar() {
                     <NavLink
                       to={item.url}
                       end
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
+                      className={`flex items-center ${collapsed ? 'justify-center p-0 mx-auto' : 'gap-3 px-3 py-2.5'} rounded-lg text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors`}
                       activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-semibold"
                     >
-                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      <item.icon className={`h-5 w-5 flex-shrink-0 ${collapsed ? 'mx-auto' : ''}`} />
                       {!collapsed && <span>{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
@@ -136,9 +136,9 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-4 border-t border-sidebar-border">
-        <div className="flex items-center gap-3">
-          <Avatar className="h-9 w-9 flex-shrink-0">
+      <SidebarFooter className={collapsed ? "p-2 border-t border-sidebar-border" : "p-4 border-t border-sidebar-border"}>
+        <div className={`flex items-center ${collapsed ? 'justify-center w-full' : 'gap-3'}`}>
+          <Avatar className={`h-8 w-8 md:h-9 md:w-9 flex-shrink-0 ${collapsed ? 'mx-auto' : ''}`}>
             {prof?.photo_url && <AvatarImage src={prof.photo_url} alt={prof?.name || "Usuário"} />}
             <AvatarFallback className="bg-primary text-secondary-foreground font-semibold text-sm">
               {getInitials(prof?.name)}
@@ -146,7 +146,7 @@ export function AppSidebar() {
           </Avatar>
           {!collapsed && (
             <>
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 overflow-hidden">
                 <p className="text-sm font-semibold text-sidebar-foreground truncate">{prof?.name || "Usuário"}</p>
                 <p className="text-xs text-muted-foreground truncate">{user?.email || "email não disponível"} </p>
               </div>
@@ -158,7 +158,7 @@ export function AppSidebar() {
                     }
                   }
                 }}
-                className="text-muted-foreground hover:text-destructive transition-colors"
+                className="text-muted-foreground hover:text-destructive transition-colors flex-shrink-0"
                 title="Sair"
               >
                 <LogOut className="h-4 w-4" />
