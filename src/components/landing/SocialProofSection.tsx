@@ -7,7 +7,7 @@ import mulher25 from "@/assets/mulher25.png";
 import homen28 from "@/assets/homen28.png";
 
 const testimonials = [
-  { name: "Ana, 18 anos", role: "Vendedora online", quote: "Eu fazia R$ 3.000/mês vendendo doces, mas nenhum banco acreditava em mim. Com a Renda Visível, finalmente consegui meu primeiro cartão.", avatar: mulher18 },
+  { name: "Ana, 18 anos", role: "Vendedora online", quote: "Eu fazia R$ 3.000/mês vendendo doces mas banco não acreditava. Com a Renda Visível, consegui meu primeiro cartão.", avatar: mulher18 },
   { name: "Lucas, 19 anos", role: "Freelancer de design", quote: "Trabalho com design desde os 16, mas nunca tive como provar minha renda. O score alternativo mudou minha vida.", avatar: homen19 },
   { name: "Mariana, 25 anos", role: "Cabeleireira autônoma", quote: "Pagava aluguel, luz e internet — tudo no meu nome. Mas meu score era zero. A Renda Visível reconheceu meu esforço.", avatar: mulher25 },
   { name: "Pedro, 28 anos", role: "Motorista de app", quote: "Rodava 12 horas por dia, mas quando fui pedir crédito me trataram como se eu não existisse. Agora é diferente.", avatar:homen28 },
