@@ -19,6 +19,7 @@ export const CourseList = () => {
   const { profile } = useProfile();
   const [courseProgress, setCourseProgress] = useState<CourseProgress[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     if (user?.id) {
@@ -55,13 +56,13 @@ export const CourseList = () => {
   const currentLevel = LEVELS.findIndex(level => (profile.points || 0) < level.minPoints) || LEVELS.length - 1;
 
   return (
-    <div className="rounded-2xl bg-card p-5 shadow-lg border border-border">
+    <div className="rounded-2xl bg-card p-5 shadow-lg border border-border h-full flex flex-col">
       <div className="flex items-center gap-2 mb-4">
         <BookOpen className="h-5 w-5 text-primary" />
         <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Cursos & Aulas</h3>
       </div>
-      <div className="space-y-3">
-        {COURSES.map((course) => {
+      <div className="space-y-3 flex-1 flex flex-col">
+        {(showAll ? COURSES : COURSES.slice(0, 7)).map((course) => {
           const courseId = typeof course.id === 'number' ? course.id : Number(course.id);
           const progressData = courseProgress.find(cp => cp.course_id === courseId);
           const isCompleted = progressData?.progress === 100;
@@ -116,6 +117,15 @@ export const CourseList = () => {
             </div>
           );
         })}
+        
+        {COURSES.length > 7 && (
+          <button
+            onClick={() => setShowAll(!showAll)}
+            className="w-full text-center text-sm font-semibold text-primary hover:underline mt-auto pt-4 cursor-pointer"
+          >
+            {showAll ? "Ver menos" : "Ver mais"}
+          </button>
+        )}
       </div>
     </div>
   );
