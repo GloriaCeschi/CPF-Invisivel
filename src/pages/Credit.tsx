@@ -192,8 +192,8 @@ export default function BancosParceiros() {
                   : "bg-card border border-pink-100 shadow-md hover:shadow-lg hover:-translate-y-1"
                 }`}
             >
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-11 h-11 shrink-0 rounded-lg bg-primary/10 flex items-center justify-center overflow-hidden">
   <img
     src={
       banco.name?.includes("Caixa")
@@ -205,16 +205,24 @@ export default function BancosParceiros() {
         : caixaLogo
     }
     alt={banco.name}
-    className="w-7 h-7 object-contain"
+    className={`w-full h-full ${
+      banco.name?.includes("Nubank")
+        ? "object-cover scale-[1.35]"
+        : "object-contain p-1"
+    }`}
   />
 </div>
-                <div className="flex items-center gap-2">
-                  <h3 className="text-base font-semibold text-card-foreground flex items-center gap-2">
-                    {banco.name}
-                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full shadow-sm font-semibold whitespace-nowrap">
+                <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+                  <div className="h-10 flex items-center">
+                    <h3 className="text-base font-semibold text-card-foreground line-clamp-2 leading-tight break-words">
+                      {banco.name}
+                    </h3>
+                  </div>
+                  <div>
+                    <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full shadow-sm font-semibold whitespace-nowrap inline-block">
                       PRÉ-APROVADO ✔
                     </span>
-                  </h3>
+                  </div>
                 </div>
               </div>
 
@@ -464,7 +472,7 @@ export default function BancosParceiros() {
             >
               <div className="flex items-center gap-3">
 
-                <div className="w-10 h-10 rounded-lg bg-white border border-border flex items-center justify-center">
+                <div className="w-10 h-10 shrink-0 rounded-lg bg-white border border-border flex items-center justify-center overflow-hidden">
   <img
     src={
       item.bank_name?.includes("Caixa")
@@ -476,7 +484,11 @@ export default function BancosParceiros() {
         : caixaLogo
     }
     alt={item.bank_name}
-    className="w-5 h-5 object-contain"
+    className={`w-full h-full ${
+      item.bank_name?.includes("Nubank")
+        ? "object-cover scale-[1.35]"
+        : "object-contain p-1"
+    }`}
   />
 </div>
                 <div className="flex-1">
