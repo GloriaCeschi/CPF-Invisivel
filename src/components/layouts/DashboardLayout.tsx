@@ -76,11 +76,52 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 function normalize(text: string): string {
   return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
 }
-function generateReply(
+async function generateReply(
   userMessage: string,
   history: any[] = []
-): string {
+): Promise<string> {
   const input = normalize(userMessage);
+  const path = location.pathname;
+
+  // 🤖 DICAS INTELIGENTES BASEADAS NA PÁGINA (Contextuais)
+  if (input.includes("ajuda") || input.includes("o que fazer") || input.includes("dica") || input.includes("aqui") || input.includes("suporte")) {
+     if (path === "/credit") {
+        const { data } = await supabase.from('banks').select('*');
+        if (data && data.length > 0) {
+           const melhor = [...data].sort((a,b) => (a.interest ?? 999) - (b.interest ?? 999))[0];
+           return `Você está na aba de Crédito! 💳\n\nNossa sugestão de ouro: O **${melhor.name}** está com a menor taxa atualmente (${melhor.interest}%). Você pode simular um valor direto no card ou tentar opções personalizadas no simulador!\n\nPosso ajudar em algo mais?`;
+        }
+        return `Você está na aba de Crédito! 💳\n\nAqui você pode verificar seus limites pré-aprovados ou fazer uma simulação personalizada. Sugiro conferir o simulador no fim da página para ver as parcelas exatas!\n\nMais alguma dúvida?`;
+     } else if (path === "/score") {
+        return `Você está vendo seu Score! 📈\n\nA dica de ouro é sempre adicionar mais contas e comprovantes de renda. O sistema analisa isso em tempo real para aumentar sua pontuação.\n\nExperimente adicionar um boleto pago hoje. O que acha?`;
+     } else if (path === "/home" || path === "/") {
+        return `Você está no Resumo da sua Jornada! 🏠\n\nDica de ouro: verifique as abas de Renda e Contas para garantir que seus comprovantes financeiros estão em dia. É o jeito mais rápido de subir seu Score.\n\nQuer que eu explique como adicionar uma conta?`;
+     } else if (path === "/cursos") {
+        return `Você está na área de Cursos! 📚\n\nFazer cursos é uma ótima forma de aumentar seu Score. Recomendo começar por "Gestão Financeira" se ainda não fez.\n\nQuer saber mais sobre algum curso específico?`;
+     }
+  }
+
+  // 🤖 RECOMENDAÇÃO ATIVA DE BANCO E CRÉDITO
+  if (input.includes("melhor banco") || input.includes("melhor opcao") || input.includes("menor taxa") || (path === "/credit" && input.includes("melhor"))) {
+      const { data } = await supabase.from('banks').select('*');
+      if (data && data.length > 0) {
+         const melhor = [...data].sort((a,b) => (a.interest ?? 999) - (b.interest ?? 999))[0];
+         return `Dei uma olhada aqui e, atualmente, o **${melhor.name}** possui a melhor oferta pré-aprovada para você, com uma taxa de apenas ${melhor.interest}% ao mês! \n\nAproveite e vá até a aba de Crédito para simular e contratar sem burocracia.`;
+      }
+  }
+
+  // 🤖 CONSULTA ATIVA DE HISTÓRICO DE PEDIDOS
+  if (input.includes("historico") || input.includes("pedido") || input.includes("fiz ") || input.includes("status") || input.includes("andamento")) {
+     if (user?.id) {
+       const { data } = await supabase.from('simulations').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+       if (data && data.length > 0) {
+           return `Você tem ${data.length} simulações de crédito recentes. A última foi pelo banco **${data[0].bank_name}**, e consta com o status: **${data[0].status}**.\n\nVocê pode conferir o histórico completo no fim da aba de Crédito!`;
+       } else {
+           return `Dei uma olhada e você ainda não enviou simulações de crédito. Quando enviar, o histórico de status aparecerá tanto aqui quanto na aba de Crédito!`;
+       }
+     }
+  }
+
 
   // 📚 CURSOS (AGORA COMPLETO)
   if (input.includes("curso")) {
@@ -275,7 +316,8 @@ async function enviarMensagem() {
 
   await new Promise((r) => setTimeout(r, 300));
 
-  const respostas = [generateReply(mensagemUser.texto)];
+  const resposta = await generateReply(mensagemUser.texto);
+  const respostas = [resposta];
 
   setTyping(false);
 

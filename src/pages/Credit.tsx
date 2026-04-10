@@ -193,7 +193,9 @@ export default function BancosParceiros() {
                 }`}
             >
               <div className="flex items-start gap-3 mb-4">
-                <div className="w-11 h-11 shrink-0 rounded-lg bg-primary/10 flex items-center justify-center overflow-hidden">
+                <div className={`w-11 h-11 shrink-0 rounded-lg flex items-center justify-center overflow-hidden ${
+                  banco.name?.includes("Nubank") ? "bg-primary/10" : "bg-white shadow-sm border border-gray-100"
+                }`}>
   <img
     src={
       banco.name?.includes("Caixa")
@@ -472,7 +474,9 @@ export default function BancosParceiros() {
             >
               <div className="flex items-center gap-3">
 
-                <div className="w-10 h-10 shrink-0 rounded-lg bg-white border border-border flex items-center justify-center overflow-hidden">
+                <div className={`w-10 h-10 shrink-0 rounded-lg flex items-center justify-center overflow-hidden ${
+                  item.bank_name?.includes("Nubank") ? "bg-primary/10" : "bg-white border border-border"
+                }`}>
   <img
     src={
       item.bank_name?.includes("Caixa")
