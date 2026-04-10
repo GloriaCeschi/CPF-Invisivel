@@ -133,12 +133,18 @@ export default function Auth() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md animate-fade-in">
         <CardHeader className="text-center">
+          <div className="mx-auto mb-6 flex items-center justify-center gap-2">
+            <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
+              <Eye className="w-6 h-6 text-primary-foreground" />
+            </div>
+            <span className="font-display font-bold text-2xl">
+              <span className="text-gray-900">Renda</span><span className="text-primary">Visível</span>
+            </span>
+          </div>
+
           {login ? (
             <>
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-                <LogIn className="h-7 w-7 text-primary" />
-              </div>
-              <CardTitle className="font-display text-2xl">
+              <CardTitle className="font-display text-xl">
                 Bem-vindo de volta
               </CardTitle>
               <CardDescription>
@@ -147,10 +153,7 @@ export default function Auth() {
             </>
           ) : (
             <>
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-                <UserPlus className="h-7 w-7 text-primary" />
-              </div>
-              <CardTitle className="font-display text-2xl">
+              <CardTitle className="font-display text-xl">
                 Criar sua conta
               </CardTitle>
               <CardDescription>
