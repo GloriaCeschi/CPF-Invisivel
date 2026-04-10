@@ -76,7 +76,7 @@ const Profile = () => {
     const { data, error } = await supabase.from('profiles').select('*').eq("user_id", user_id).maybeSingle();
 
     if (error) {
-      alert(error.message)
+      toast.error(error.message)
       return
     }
 

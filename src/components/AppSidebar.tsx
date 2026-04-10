@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -29,6 +30,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
 import supabase from "@/utils/supabase";
 import { ShieldCheck } from "lucide-react";
+
 
 const menuItems = [
   { title: "Início", url: "/home", icon: Home },
@@ -150,8 +152,10 @@ export function AppSidebar() {
               </div>
               <button
                 onClick={() => {
-                  if (confirm("Deseja sair da conta?")) {
-                    handleLogout();
+                  if (toast.error ("Deseja sair da conta?")) { 
+                    if (toast.success ("Saindo...")) {
+                      handleLogout();
+                    }
                   }
                 }}
                 className="text-muted-foreground hover:text-destructive transition-colors"
