@@ -1,12 +1,16 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Star, Quote } from "lucide-react";
+import mulher18 from "@/assets/mulher18.png";
+import homen19 from "@/assets/homen19.png";
+import mulher25 from "@/assets/mulher25.png";
+import homen28 from "@/assets/homen28.png";
 
 const testimonials = [
-  { name: "Ana, 22 anos", role: "Vendedora online", quote: "Eu fazia R$ 3.000/mês vendendo doces, mas nenhum banco acreditava em mim. Com a Renda Visível, finalmente consegui meu primeiro cartão.", avatar: "A" },
-  { name: "Lucas, 19 anos", role: "Freelancer de design", quote: "Trabalho com design desde os 16, mas nunca tive como provar minha renda. O score alternativo mudou minha vida.", avatar: "L" },
-  { name: "Mariana, 25 anos", role: "Cabeleireira autônoma", quote: "Pagava aluguel, luz e internet — tudo no meu nome. Mas meu score era zero. A Renda Visível reconheceu meu esforço.", avatar: "M" },
-  { name: "Pedro, 21 anos", role: "Motorista de app", quote: "Rodava 12 horas por dia, mas quando fui pedir crédito me trataram como se eu não existisse. Agora é diferente.", avatar: "P" },
+  { name: "Ana, 18 anos", role: "Vendedora online", quote: "Eu fazia R$ 3.000/mês vendendo doces, mas nenhum banco acreditava em mim. Com a Renda Visível, finalmente consegui meu primeiro cartão.", avatar: mulher18 },
+  { name: "Lucas, 19 anos", role: "Freelancer de design", quote: "Trabalho com design desde os 16, mas nunca tive como provar minha renda. O score alternativo mudou minha vida.", avatar: homen19 },
+  { name: "Mariana, 25 anos", role: "Cabeleireira autônoma", quote: "Pagava aluguel, luz e internet — tudo no meu nome. Mas meu score era zero. A Renda Visível reconheceu meu esforço.", avatar: mulher25 },
+  { name: "Pedro, 28 anos", role: "Motorista de app", quote: "Rodava 12 horas por dia, mas quando fui pedir crédito me trataram como se eu não existisse. Agora é diferente.", avatar:homen28 },
 ];
 
 const partners = ["Banco Futuro", "FinTech+", "CréditoJá", "NeoBank", "PaySmart"];
@@ -45,7 +49,7 @@ const SocialProofSection = () => {
               <p className="text-foreground text-sm leading-relaxed mb-4">"{t.quote}"</p>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
-                  {t.avatar}
+                  <img src={t.avatar} className="rounded-full"/>
                 </div>
                 <div>
                   <div className="font-semibold text-foreground text-sm">{t.name}</div>
