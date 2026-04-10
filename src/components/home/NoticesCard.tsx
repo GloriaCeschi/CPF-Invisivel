@@ -27,7 +27,7 @@ export function NoticesCard() {
           .select("*")
           .eq("user_id", user.id)
           .order("created_at", { ascending: false })
-          .limit(4);
+          .limit(3);
 
         if (!error && data) {
           setNotices(data);
@@ -72,7 +72,7 @@ export function NoticesCard() {
   }
 
   return (
-    <Card className="card-hover mt-4">
+    <Card className="card-hover h-full flex flex-col">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           <Bell className="h-5 w-5 text-support" />
