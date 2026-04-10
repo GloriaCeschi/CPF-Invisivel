@@ -111,7 +111,7 @@ const Score = () => {
 
         {/* Score gauge + actions */}
         <div className="grid gap-8 lg:grid-cols-[1fr_1.5fr]">
-          <div className="flex justify-center rounded-xl border border-border bg-card p-6">
+          <div className="flex justify-center items-center rounded-xl border border-border bg-card p-6">
             <ScoreGauge score={calculatedScore} />
           </div>
           <div className="space-y-6">

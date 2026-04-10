@@ -83,7 +83,7 @@ export const LevelProgress = () => {
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   return (
-    <div className="flex flex-col items-center gap-4 rounded-2xl bg-card p-6 shadow-lg border border-border">
+    <div className="flex flex-col items-center gap-6 rounded-2xl bg-card p-6 shadow-lg border border-border">
       {/* Circular Progress */}
       <div className="relative">
         <svg width="130" height="130" className="-rotate-90">
@@ -99,7 +99,7 @@ export const LevelProgress = () => {
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
           <Avatar className="h-16 w-16 border-2 border-primary">
-            <AvatarFallback className="bg-secondary text-secondary-foreground text-2xl font-bold">
+            <AvatarFallback className="bg-secondary text-secondary-foreground text-xl font-bold">
               {current.icon}
             </AvatarFallback>
           </Avatar>
@@ -107,7 +107,7 @@ export const LevelProgress = () => {
       </div>
 
       <div className="text-center">
-        <Badge className="mb-2 bg-gold text-customBlue text-sm px-3 py-1 hover:bg-gold/90">
+        <Badge className="mb-2 bg-gold text-customBlue text-lg px-4 py-2 hover:bg-gold/90">
           Nível {current.level} — {current.name}
         </Badge>
         <p className="text-3xl font-extrabold text-foreground">{totalPoints} <span className="text-base font-medium text-muted-foreground">pts</span></p>
