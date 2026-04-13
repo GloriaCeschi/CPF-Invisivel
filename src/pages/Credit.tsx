@@ -28,8 +28,9 @@ interface DataRowProps {
 
 function DataRow({ label, value }: DataRowProps) {
   return (
-    <p className="text-sm text-card-foreground">
-      <span className="font-bold">{label}:</span> {value}
+    <p className="text-sm">
+      <span className="font-normal text-muted-foreground">{label}:</span>{" "}
+      <span className="font-bold text-foreground text-[15px]">{value}</span>
     </p>
   );
 }
@@ -193,7 +194,9 @@ export default function BancosParceiros() {
                 }`}
             >
               <div className="flex items-start gap-3 mb-4">
-                <div className="w-11 h-11 shrink-0 rounded-lg bg-primary/10 flex items-center justify-center overflow-hidden">
+                <div className={`w-11 h-11 shrink-0 rounded-lg flex items-center justify-center overflow-hidden ${
+                  banco.name?.includes("Nubank") ? "bg-primary/10" : "bg-white shadow-sm border border-gray-100"
+                }`}>
   <img
     src={
       banco.name?.includes("Caixa")
@@ -205,11 +208,11 @@ export default function BancosParceiros() {
         : caixaLogo
     }
     alt={banco.name}
-    className={`w-full h-full ${
+    className={
       banco.name?.includes("Nubank")
-        ? "object-cover scale-[1.35]"
-        : "object-contain p-1"
-    }`}
+        ? "w-full h-full object-cover scale-[1.35]"
+        : "w-[80%] h-[80%] object-contain"
+    }
   />
 </div>
                 <div className="flex flex-col gap-1.5 flex-1 min-w-0">
@@ -472,7 +475,9 @@ export default function BancosParceiros() {
             >
               <div className="flex items-center gap-3">
 
-                <div className="w-10 h-10 shrink-0 rounded-lg bg-white border border-border flex items-center justify-center overflow-hidden">
+                <div className={`w-10 h-10 shrink-0 rounded-lg flex items-center justify-center overflow-hidden ${
+                  item.bank_name?.includes("Nubank") ? "bg-primary/10" : "bg-white border border-border"
+                }`}>
   <img
     src={
       item.bank_name?.includes("Caixa")
@@ -484,11 +489,11 @@ export default function BancosParceiros() {
         : caixaLogo
     }
     alt={item.bank_name}
-    className={`w-full h-full ${
+    className={
       item.bank_name?.includes("Nubank")
-        ? "object-cover scale-[1.35]"
-        : "object-contain p-1"
-    }`}
+        ? "w-full h-full object-cover scale-[1.35]"
+        : "w-[80%] h-[80%] object-contain"
+    }
   />
 </div>
                 <div className="flex-1">
