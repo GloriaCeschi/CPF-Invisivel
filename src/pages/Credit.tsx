@@ -211,7 +211,7 @@ export default function BancosParceiros() {
     className={`w-full h-full ${
       banco.name?.includes("Nubank")
         ? "object-cover scale-[1.35]"
-        : "object-contain p-1"
+        : "object-contain"
     }`}
   />
 </div>
