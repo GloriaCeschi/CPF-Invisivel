@@ -28,8 +28,9 @@ interface DataRowProps {
 
 function DataRow({ label, value }: DataRowProps) {
   return (
-    <p className="text-sm text-card-foreground">
-      <span className="font-bold">{label}:</span> {value}
+    <p className="text-sm">
+      <span className="font-normal text-muted-foreground">{label}:</span>{" "}
+      <span className="font-bold text-foreground text-[15px]">{value}</span>
     </p>
   );
 }
