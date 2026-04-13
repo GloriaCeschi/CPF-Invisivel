@@ -278,7 +278,7 @@ export default function BancosParceiros() {
               <button
 
                 onClick={() => solicitar(banco.name || banco.nome)}
-                className="w-full mt-4 bg-primary text-white py-2.5 rounded-none font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full mt-4 bg-primary text-white py-2.5 rounded-xl font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 Contratar agora
               </button>
