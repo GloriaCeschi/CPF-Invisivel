@@ -31,7 +31,7 @@ export default function PendingSection({ bills, onAddBill }: PendingSectionProps
 
   return (
     <section>
-      <h2 className="text-xl font-bold font-display mb-4">⚠️ Pendências e Alertas</h2>
+      <h2 className="text-xl font-bold font-display mb-4 text-customBlue"> Pendências e Alertas</h2>
       <div className="space-y-3">
         {overdue.map((bill) => (
           <Card key={bill.id} className="border-destructive/30 bg-destructive/5">
