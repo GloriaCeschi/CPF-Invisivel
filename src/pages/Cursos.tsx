@@ -6,12 +6,14 @@ import { Progress } from "@/components/ui/progress";
 import { CourseCard, CourseData } from "@/components/CourseCard";
 import supabase from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
+import { useProfile } from "@/hooks/useProfile";
 import { toast } from "@/hooks/use-toast";
 import { COURSES as initialCoursesData } from "@/data/coursesData";
 
 
 export default function Cursos() {
   const { user } = useAuth();
+  const { profile } = useProfile();
   const [courses, setCourses] = useState<CourseData[]>(initialCoursesData);
   const [overallProgress, setOverallProgress] = useState(0);
 
@@ -52,6 +54,28 @@ export default function Cursos() {
     fetchProgress();
   }, [user]);
 
+  useEffect(() => {
+    if (!profile) return;
+    
+    setCourses((prev) => {
+      const course11 = prev.find(c => c.id === 11);
+      const course6 = prev.find(c => c.id === 6);
+      const course3 = prev.find(c => c.id === 3);
+
+      const isId12Unlocked =
+        (profile.points || 0) >= 500 &&
+        (course11?.progress === 100) &&
+        (course6?.progress === 100) &&
+        ((course3?.progress || 0) >= 75);
+
+      const course12 = prev.find(c => c.id === 12);
+      if (course12 && course12.locked !== !isId12Unlocked) {
+        return prev.map(c => c.id === 12 ? { ...c, locked: !isId12Unlocked } : c);
+      }
+      return prev;
+    });
+  }, [profile, courses]);
+
   const handleCourseCompletion = async (course: CourseData) => {
     if (!user) return;
     if (course.progress < 100) return; // só pontua se concluído
@@ -59,7 +83,7 @@ export default function Cursos() {
     try {
       const { error } = await supabase.rpc("complete_course", {
         uid: user.id,
-        course_id: course.id,
+        p_course_id: course.id,
         pts: 45,
       });
 

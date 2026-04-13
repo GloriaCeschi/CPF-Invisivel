@@ -28,8 +28,9 @@ interface DataRowProps {
 
 function DataRow({ label, value }: DataRowProps) {
   return (
-    <p className="text-sm text-card-foreground">
-      <span className="font-bold">{label}:</span> {value}
+    <p className="text-sm">
+      <span className="font-normal text-muted-foreground">{label}:</span>{" "}
+      <span className="font-bold text-foreground text-[15px]">{value}</span>
     </p>
   );
 }
@@ -207,11 +208,11 @@ export default function BancosParceiros() {
         : caixaLogo
     }
     alt={banco.name}
-    className={`w-full h-full ${
+    className={
       banco.name?.includes("Nubank")
-        ? "object-cover scale-[1.35]"
-        : "object-contain p-1"
-    }`}
+        ? "w-full h-full object-cover scale-[1.35]"
+        : "w-[80%] h-[80%] object-contain"
+    }
   />
 </div>
                 <div className="flex flex-col gap-1.5 flex-1 min-w-0">
@@ -488,11 +489,11 @@ export default function BancosParceiros() {
         : caixaLogo
     }
     alt={item.bank_name}
-    className={`w-full h-full ${
+    className={
       item.bank_name?.includes("Nubank")
-        ? "object-cover scale-[1.35]"
-        : "object-contain p-1"
-    }`}
+        ? "w-full h-full object-cover scale-[1.35]"
+        : "w-[80%] h-[80%] object-contain"
+    }
   />
 </div>
                 <div className="flex-1">

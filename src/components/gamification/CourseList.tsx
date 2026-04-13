@@ -66,7 +66,20 @@ export const CourseList = () => {
           const courseId = typeof course.id === 'number' ? course.id : Number(course.id);
           const progressData = courseProgress.find(cp => cp.course_id === courseId);
           const isCompleted = progressData?.progress === 100;
-          const locked = course.requiredLevel > currentLevel + 1;
+          
+          let locked = course.requiredLevel > currentLevel + 1;
+          if (courseId === 12) {
+            const course11 = courseProgress.find(cp => cp.course_id === 11);
+            const course6 = courseProgress.find(cp => cp.course_id === 6);
+            const course3 = courseProgress.find(cp => cp.course_id === 3);
+            locked = !(
+              (profile.points || 0) >= 500 &&
+              (course11?.progress === 100) &&
+              (course6?.progress === 100) &&
+              ((course3?.progress || 0) >= 75)
+            );
+          }
+          
           const reqLevel = LEVELS[course.requiredLevel - 1];
           const lessonProgress = progressData ? progressData.progress : 0;
 
