@@ -1,10 +1,13 @@
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
-import { Play } from "lucide-react";
+import { useRef, useState } from "react";
+import { Play, X } from "lucide-react";
 
 const VideoSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
+  const videoId = "tu0QZ5YRjMY";
+  const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
 
   return (
     <section id="video" className="py-20 md:py-28 bg-background" ref={ref}>
@@ -30,14 +33,47 @@ const VideoSection = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={inView ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="aspect-video bg-muted rounded-3xl border border-border shadow-card flex items-center justify-center cursor-pointer hover:shadow-float transition-shadow group"
+          className="aspect-video rounded-3xl border border-border shadow-card overflow-hidden relative bg-black"
         >
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Play className="w-8 h-8 text-primary-foreground ml-1" />
-            </div>
-            <p className="text-muted-foreground text-sm font-medium">Vídeo em breve</p>
-          </div>
+          {!isVideoOpen ? (
+            <button
+              onClick={() => setIsVideoOpen(true)}
+              className="absolute inset-0 flex items-center justify-center cursor-pointer group w-full h-full"
+              style={{
+                backgroundImage: `url(${thumbnailUrl})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            >
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
+              <div className="relative z-10 w-24 h-24 rounded-full bg-primary flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                <Play className="w-10 h-10 text-primary-foreground ml-1" fill="white" />
+              </div>
+            </button>
+          ) : (
+            <>
+              <div className="absolute inset-0 bg-black overflow-hidden">
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src={`https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0&showinfo=0&fs=1&controls=1&iv_load_policy=3`}
+                  title="Como funciona a Renda Visível"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute inset-0"
+                  style={{
+                    border: "none",
+                  }}
+                />
+              </div>
+              <button
+                onClick={() => setIsVideoOpen(false)}
+                className="absolute top-4 right-4 bg-black/50 hover:bg-black/75 text-white p-2 rounded-full transition-colors z-10"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </>
+          )}
         </motion.div>
       </div>
     </section>
