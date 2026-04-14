@@ -15,7 +15,7 @@ export interface CourseInfo {
 }
 
 export const COURSES: CourseInfo[] = [
-  { id: 1, title: "Como adicionar contas e boletos", description: "Aprenda a organizar e registrar suas contas e boletos de forma prática.", points: 45, progress: 0, completed: false, requiredLevel: 1, totalLessons: 5, completedLessons: 0, locked: false, category: "Básico", videoUrl: "https://youtu.be/dQw4w9WgXcQ?si=QzmfJ4v62nAcxv6j" },
+  { id: 1, title: "Como adicionar comprovantes de pagamento", description: "Aprenda a organizar e registrar seus comprovantes de pagamento de forma prática no sistema.", points: 45, progress: 0, completed: false, requiredLevel: 1, totalLessons: 5, completedLessons: 0, locked: false, category: "Básico", videoUrl: "https://youtu.be/npZmkgfalOI" },
   { id: 2, title: "Acompanhamento de renda", description: "Monitore suas fontes de renda e entenda seu fluxo financeiro mensal.", points: 45, progress: 0, completed: false, requiredLevel: 1, totalLessons: 4, completedLessons: 0, locked: false, category: "Básico", videoUrl: "https://youtu.be/3LNafnShdxE?si=yHpneS-xpMEFMso6" },
   { id: 3, title: "Gestão Financeira", description: "Curso completo de gestão financeira pessoal e familiar.", points: 45, progress: 0, completed: false, requiredLevel: 2, totalLessons: 6, completedLessons: 0, locked: false, category: "Intermediário", videoUrl: "https://youtu.be/PfsO9apQy-w?si=8aww5rwLFwxXnKB2" },
   { id: 4, title: "Empreendedorismo", description: "Inicie seu negócio com bases sólidas e planejamento estratégico.", points: 45, progress: 0, completed: false, requiredLevel: 3, totalLessons: 7, completedLessons: 0, locked: false, category: "Avançado", videoUrl: "https://youtu.be/kIFCyGkjEh4?si=NX8q3IUJj3nI9s1v" },
