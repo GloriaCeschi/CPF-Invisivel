@@ -9,14 +9,14 @@ import supabase from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { Upload } from "lucide-react";
-import type { Income } from "@/types/jornada";
+import type { Proof } from "@/types/jornada";
 import { Console } from "console";
 
 interface IncomeModalProps {
   open: boolean;
   onClose: () => void;
   onSaved: () => void;
-  editingIncome?: Income | null;
+  editingIncome?: Proof | null;
 }
 
 const RECEIPT_TYPES = [
@@ -71,34 +71,50 @@ export default function IncomeModal({ open, onClose, onSaved, editingIncome }: I
     setLoading(true);
       
     try {
-      let receiptUrl = editingIncome?.receipt_url || null;
+      let receiptUrl = editingIncome?.proof || null;
       if (file) {
         
         receiptUrl = await uploadFile(file);
       }
 
       const parsedAmount = parseFloat(amount.replace(",", "."));
+      const calculatedPoints = Math.floor(parsedAmount / 10);
 
       const data = {
         title: title.trim(),
         description: description.trim() || null,
         amount: parsedAmount,
         receipt_type: receiptType,
-        receipt_url: receiptUrl,
+        proof: receiptUrl,
+        type: "income",
+        status: editingIncome?.status || "pendente",
         user_id: user.id,
+        points: calculatedPoints,
       };
 
       let error;
       if (editingIncome) {
-        ({ error } = await supabase.from("incomes").update(data).eq("id", editingIncome.id));
+        ({ error } = await supabase.from("proofs").update(data).eq("id", editingIncome.id));
       } else {
-        ({ error } = await supabase.from("incomes").insert(data));
+        ({ error } = await supabase.from("proofs").insert(data));
       }
 
       if (error) {
         toast({ title: "Erro", description: error.message, variant: "destructive" });
       } else {
         toast({ title: editingIncome ? "Renda atualizada!" : "Renda adicionada!" });
+
+        await supabase.from('notifications').insert({
+          user_id: user.id,
+          message: editingIncome
+            ? '📄 Comprovante de renda atualizado e está sob análise.'
+            : '📄 Comprovante de renda foi enviado com sucesso e está sob análise.',
+          type: 'proof',
+          viewed: false,
+          archived: false,
+          key_id: editingIncome ? editingIncome.id : null,
+        });
+
         onSaved();
         onClose();
       }

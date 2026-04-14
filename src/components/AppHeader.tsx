@@ -1,24 +1,66 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Bell, LogOut, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import supabase from "@/integrations/supabase/client";
+import { useAuth } from "@/context/AuthContext";
 
-const mockNotifications = [
-  { id: 1, text: "Você completou 50% do curso de Gestão Financeira!", time: "2h atrás" },
-  { id: 2, text: "Novo curso disponível: Direitos do Consumidor", time: "1d atrás" },
-  { id: 3, text: "Seu score aumentou 15 pontos! 🎉", time: "3d atrás" },
-];
+type HeaderNotification = {
+  id: string;
+  message: string;
+  viewed: boolean;
+  created_at: string;
+};
 
 export function AppHeader() {
+  const { user } = useAuth();
   const [isDark, setIsDark] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState<HeaderNotification[]>([]);
+  const [profile, setProfile] = useState<{ name?: string; photo_url?: string }>({});
+
+  useEffect(() => {
+    if (!user) return;
+
+    const fetch = async () => {
+      const { data } = await supabase
+        .from("notifications")
+        .select("id,message,viewed,created_at")
+        .eq("user_id", user.id)
+        .eq("archived", false)
+        .order("created_at", { ascending: false })
+        .limit(5);
+
+      if (data) setNotifications(data as HeaderNotification[]);
+    };
+
+    fetch();
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchProfile = async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("name, photo_url")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (data) setProfile(data);
+    };
+
+    fetchProfile();
+  }, [user]);
 
   const toggleTheme = () => {
     setIsDark(!isDark);
     document.documentElement.classList.toggle("dark");
   };
+
+  const unread = notifications.filter((n) => !n.viewed).length;
 
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-card px-4">
@@ -42,18 +84,25 @@ export function AppHeader() {
           <Button variant="ghost" size="icon" className="h-8 w-8 relative" onClick={() => setShowNotifications(!showNotifications)}>
             <Bell className="h-4 w-4" />
             <Badge className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-[10px] bg-destructive text-destructive-foreground">
-              3
+              {unread}
             </Badge>
           </Button>
           {showNotifications && (
-            <div className="absolute right-0 top-10 w-72 rounded-lg border border-border bg-card p-3 shadow-lg animate-scale-in z-50">
-              <p className="mb-2 text-xs font-semibold text-muted-foreground">Notificações</p>
-              {mockNotifications.map((n) => (
-                <div key={n.id} className="mb-2 rounded-md bg-muted p-2 text-xs last:mb-0">
-                  <p className="text-foreground">{n.text}</p>
-                  <p className="mt-1 text-muted-foreground">{n.time}</p>
-                </div>
-              ))}
+            <div className="absolute right-0 top-10 w-80 rounded-lg border border-border bg-card p-3 shadow-lg animate-scale-in z-50">
+            {profile?.photo_url && <AvatarImage src={profile.photo_url} alt={profile?.name || "Usuário"} />}
+            <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+              {profile?.name ? profile.name.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase() : "US"}
+            </AvatarFallback>
+          </Avatar>
+          <span className="text-sm font-medium">{profile?.name || "Usuário"}0">Nenhuma notificação recente</div>
+              ) : (
+                notifications.map((n) => (
+                  <div key={n.id} className="mb-2 rounded-md bg-muted p-2 text-xs last:mb-0">
+                    <p className="text-foreground">{n.message}</p>
+                    <p className="mt-1 text-muted-foreground">{new Date(n.created_at).toLocaleString()}</p>
+                  </div>
+                ))
+              )}
             </div>
           )}
         </div>

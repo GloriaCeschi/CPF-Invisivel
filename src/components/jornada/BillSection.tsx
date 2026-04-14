@@ -2,17 +2,17 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Pencil, Trash2, FileText, AlertTriangle, CheckCircle, XCircle } from "lucide-react";
-import  supabase  from "@/integrations/supabase/client";
+import supabase from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import BillModal from "./BillModal";
-import type { Bill } from "@/types/jornada";
+import type { Proof } from "@/types/jornada";
 
 interface BillSectionProps {
-  bills: Bill[];
+  bills: Proof[];
   onRefresh: () => void;
 }
 
-function getBillStatus(bill: Bill): "pago" | "proximo" | "atrasado" {
+function getBillStatus(bill: Proof): "pago" | "proximo" | "atrasado" {
   if (!bill.next_due_date) return "pago";
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -31,10 +31,15 @@ const STATUS_CONFIG = {
 
 export default function BillSection({ bills, onRefresh }: BillSectionProps) {
   const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<Bill | null>(null);
+  const [editing, setEditing] = useState<Proof | null>(null);
 
   const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("bills").delete().eq("id", id);
+    const { error } = await supabase
+      .from("proofs")
+      .delete()
+      .eq("id", id)
+      .eq("type", "bill"); // garante que só remove contas
+
     if (error) {
       toast({ title: "Erro ao excluir", description: error.message, variant: "destructive" });
     } else {
@@ -43,7 +48,8 @@ export default function BillSection({ bills, onRefresh }: BillSectionProps) {
     }
   };
 
-  const formatCurrency = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  const formatCurrency = (v: number) =>
+    v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   const formatDate = (d: string) => new Date(d).toLocaleDateString("pt-BR");
 
   return (
@@ -79,7 +85,7 @@ export default function BillSection({ bills, onRefresh }: BillSectionProps) {
                         <StatusIcon className="h-3 w-3" />
                         {cfg.label}
                       </span>
-                      {bill.total_installments > 1 && (
+                      {bill.total_installments && bill.total_installments > 1 && (
                         <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium">
                           {bill.current_installment}/{bill.total_installments}
                         </span>
@@ -87,16 +93,16 @@ export default function BillSection({ bills, onRefresh }: BillSectionProps) {
                     </div>
                     {bill.description && <p className="text-sm text-muted-foreground truncate">{bill.description}</p>}
                     <div className="flex gap-3 mt-1 text-xs text-muted-foreground">
-                      <span>Pago em: {formatDate(bill.payment_date)}</span>
+                      <span>Registrado em: {formatDate(bill.created_at)}</span>
                       {bill.next_due_date && <span>Próx. vencimento: {formatDate(bill.next_due_date)}</span>}
                     </div>
                   </div>
                   <div className="flex items-center gap-3 ml-4">
                     <span className="text-lg font-bold text-destructive whitespace-nowrap">{formatCurrency(bill.amount)}</span>
                     <div className="flex gap-1">
-                      {bill.receipt_url && (
+                      {bill.proof && (
                         <Button size="icon" variant="ghost" className="h-8 w-8" asChild>
-                          <a href={bill.receipt_url} target="_blank" rel="noopener noreferrer"><FileText className="h-4 w-4" /></a>
+                          <a href={bill.proof} target="_blank" rel="noopener noreferrer"><FileText className="h-4 w-4" /></a>
                         </Button>
                       )}
                       <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => { setEditing(bill); setModalOpen(true); }}>

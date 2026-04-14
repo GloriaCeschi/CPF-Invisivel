@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { UserPlus, LogIn, Eye, EyeOff } from "lucide-react";
+import { UserPlus, LogIn, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -75,6 +75,9 @@ export default function Auth() {
       return;
     }
 
+    // Limpa erros de validação de senha no login
+    setPasswordError("");
+
     const { error } = await supabase.auth.signInWithPassword({
       email: user.email,
       password: user.pass,
@@ -127,15 +130,24 @@ export default function Auth() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4 relative">
+      <div className="absolute top-4 left-4 md:top-8 md:left-8">
+        <Button variant="ghost" onClick={() => nav("/")} className="gap-2 text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="h-4 w-4" />
+          Voltar
+        </Button>
+      </div>
       <Card className="w-full max-w-md animate-fade-in">
         <CardHeader className="text-center">
+          <div className="mx-auto mb-6 flex items-center justify-center">
+            <div className="w-16 h-16 rounded-3xl bg-primary flex items-center justify-center">
+              <span className="font-display font-bold text-3xl text-white tracking-tight">RV</span>
+            </div>
+          </div>
+
           {login ? (
             <>
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-                <LogIn className="h-7 w-7 text-primary" />
-              </div>
-              <CardTitle className="font-display text-2xl">
+              <CardTitle className="font-display text-xl">
                 Bem-vindo de volta
               </CardTitle>
               <CardDescription>
@@ -144,10 +156,7 @@ export default function Auth() {
             </>
           ) : (
             <>
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-                <UserPlus className="h-7 w-7 text-primary" />
-              </div>
-              <CardTitle className="font-display text-2xl">
+              <CardTitle className="font-display text-xl">
                 Criar sua conta
               </CardTitle>
               <CardDescription>
@@ -210,13 +219,21 @@ export default function Auth() {
                   onChange={(e) =>
                     setUser({ ...user, pass: e.target.value })
                   }
-                  onBlur={() =>
-                    setPasswordError(
-                      Object.values(passwordChecks).every(Boolean)
-                        ? ""
-                        : "A senha não atende aos requisitos."
-                    )
-                  }
+                  onBlur={() => {
+                    if (!login) {
+                      // Só valida requisitos de senha no cadastro
+                      setPasswordError(
+                        Object.values(passwordChecks).every(Boolean)
+                          ? ""
+                          : "A senha não atende aos requisitos."
+                      );
+                    } else {
+                      // No login, só valida se não está vazia
+                      setPasswordError(
+                        user.pass ? "" : "Senha é obrigatória"
+                      );
+                    }
+                  }}
                   required
                 />
                 <button
